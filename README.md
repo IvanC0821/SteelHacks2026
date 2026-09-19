@@ -16,6 +16,9 @@ across restarts. The normal server runs with **no model configured**.
 
 Related: [[docs/SPEC]] · [Frontend handoff](docs/FRONTEND.md) · [Model adapter](docs/MODEL.md).
 
+The [presentation folder](presentation/README.md) includes the editable pitch deck, exact spoken
+script, fictional illustration records and blank evaluation worksheet for the team.
+
 ## Install
 
 Python 3.12+ and uv. Run from this repository root:
