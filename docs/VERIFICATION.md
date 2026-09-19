@@ -36,4 +36,7 @@ because outbound PyPI DNS was unavailable. The fresh-machine requirements instal
 
 No frontend, OCR, live model integration, fine-tuning, model evaluation or public deployment is
 included. Fictional scripted estimates of 2/4 and 4/4 are workflow fixtures, not empirical model
-results. The destination GitHub repository URL is still needed before remote integration/push.
+results. Ivan has now authorized creating `steelhacks2026` and pushing the complete project.
+Publication is still unverified: the GitHub CLI cannot connect, and browser access to github.com
+is rejected by a saved site permission. An existing tab points to `IvanC0821/SteelHacks2026`,
+but its existence/content cannot be verified until access is available. Do not assume it is empty.
