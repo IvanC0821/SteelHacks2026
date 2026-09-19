@@ -29,9 +29,9 @@ uv pip install -r requirements.txt
 ```
 
 `requirements.txt` pins the dependency versions used for verification. `pyproject.toml` is the
-dependency manifest. This workspace's network could not reach PyPI, so its isolated `.venv` was
-populated from locally installed dependency distributions. No old Verity application code was reused.
-The install commands above require package-index access on a fresh machine.
+dependency manifest. Installation into a fresh Python 3.13 virtual environment, all 33 API tests,
+lint/format checks and the live HTTP smoke test have passed. Package-index access is required
+when dependencies are not cached. No old Verity application code was reused.
 
 ## Start the backend
 

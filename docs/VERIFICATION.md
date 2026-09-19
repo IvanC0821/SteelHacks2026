@@ -24,19 +24,24 @@ application code, real student records, provider keys or deployment was used.
 - A separate read-only review found private-identifier projection and reference-upload/rubric-job
   race defects. Both were fixed and covered by regression tests.
 
-The API server reaches application startup, but this managed workspace rejects binding
-`127.0.0.1:8026` with `operation not permitted`. Therefore **real HTTP smoke execution remains
-unverified** here. `scripts/smoke_http.py` is ready to run against a seeded local server outside
-that restriction. API tests run in process and do not claim browser or network verification.
+After the workspace access settings changed, the pinned requirements installed successfully
+into a fresh Python 3.13 virtual environment. All 33 tests and Ruff lint/format checks passed
+again in that environment.
+
+**Live HTTP smoke passed** against a real Uvicorn server on a temporary loopback port, using
+`scripts/smoke_http.py`. It uploaded/mapped two fictional attempts, polled their assessment jobs,
+verified scripted estimates of 2/4 and 4/4, handed in the revision, saved/completed the TA review,
+released its 4/4 grade and checked analytics. The temporary server was stopped after verification.
+This verifies the HTTP workflow; no frontend/browser rendering or real model inference is claimed.
 
 The test dependencies emit two deprecation warnings (Starlette's httpx adapter and AnyIO's
-BlockingPortal alias). They do not fail the checks; no dependency upgrade was attempted without
-package-index access. Dependencies were installed locally from existing dependency distributions
-because outbound PyPI DNS was unavailable. The fresh-machine requirements install is not verified.
+BlockingPortal alias). They do not fail the checks. Verification used the pinned versions without
+an unrelated dependency upgrade. Fresh-environment installation was verified on this Mac; other
+operating systems and Python versions have not been tested.
 
 No frontend, OCR, live model integration, fine-tuning, model evaluation or public deployment is
 included. Fictional scripted estimates of 2/4 and 4/4 are workflow fixtures, not empirical model
-results. Ivan has now authorized creating `steelhacks2026` and pushing the complete project.
-Publication is still unverified: the GitHub CLI cannot connect, and browser access to github.com
-is rejected by a saved site permission. An existing tab points to `IvanC0821/SteelHacks2026`,
-but its existence/content cannot be verified until access is available. Do not assume it is empty.
+results. The authenticated GitHub CLI confirmed `IvanC0821/SteelHacks2026` already exists,
+is private and was empty before publication. Ivan authorized pushing the complete project there.
+The local publication branch is `main`; the backend and presentation files are included.
+Runtime databases, session tokens and virtual environments are excluded from Git.
