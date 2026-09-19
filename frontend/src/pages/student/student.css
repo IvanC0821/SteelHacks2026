@@ -1,0 +1,736 @@
+/* Task 4: the student workspace. Content pages use the 1040 measure; the two workspace routes are
+   full-height panes with a 360px panel beside the paper. */
+
+/* --- content page --------------------------------------------------------- */
+
+.v-student-page {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--v-space-24);
+}
+
+.v-student-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-24);
+}
+
+.v-student-due {
+  color: var(--v-muted);
+}
+
+.v-student-lede {
+  max-width: 62ch;
+  color: var(--v-ink);
+  margin: 0;
+}
+
+.v-panel-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-16);
+  padding: var(--v-space-24);
+  background: var(--v-panel);
+  border: 1px solid var(--v-line);
+  border-radius: var(--v-radius-8);
+}
+
+.v-panel-card h2 {
+  margin: 0;
+}
+
+.v-student-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v-space-8);
+  align-self: flex-start;
+  color: var(--v-teal-500);
+  font-size: var(--v-text-14);
+  line-height: var(--v-lead-14);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* --- upload zone ---------------------------------------------------------- */
+
+.v-upload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-12);
+}
+
+.v-upload__zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--v-space-8);
+  padding: var(--v-space-32) var(--v-space-24);
+  background: var(--v-surface);
+  border: 1px dashed var(--v-line-strong);
+  border-radius: var(--v-radius-8);
+  text-align: center;
+  transition: background var(--v-motion-state) var(--v-ease);
+}
+
+.v-upload__zone.is-over {
+  background: var(--v-teal-50);
+  border-color: var(--v-teal-600);
+}
+
+.v-upload__zone.is-disabled {
+  background: var(--v-panel-strong);
+  border-style: solid;
+}
+
+.v-upload__glyph {
+  color: var(--v-teal-600);
+}
+
+.v-upload__label {
+  margin: 0;
+}
+
+.v-upload__hint,
+.v-upload__busy {
+  margin: 0;
+  color: var(--v-muted);
+}
+
+.v-upload__busy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v-space-8);
+}
+
+.v-upload__zone .v-button {
+  margin-top: var(--v-space-8);
+}
+
+/* --- attempts ------------------------------------------------------------- */
+
+.v-student-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--v-space-16);
+}
+
+.v-student-actions__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v-space-8);
+}
+
+.v-student-final {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-16);
+}
+
+.v-student-final__score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--v-space-2);
+}
+
+.v-student-final__score .v-label-12 {
+  color: var(--v-muted);
+}
+
+.v-student-attempts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-12);
+}
+
+.v-student-attempts h2 {
+  margin: 0;
+}
+
+.v-attempts__name,
+.v-attempts__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v-space-8);
+}
+
+.v-attempts__muted {
+  color: var(--v-muted);
+  margin: 0;
+}
+
+/* --- workspace shell ------------------------------------------------------ */
+
+.v-workspace {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--v-panel-width);
+}
+
+.v-workspace__paper {
+  min-width: 0;
+  min-height: 0;
+  background: var(--v-canvas);
+  overflow: auto;
+}
+
+.v-workspace__state {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--v-space-32);
+}
+
+.v-workspace__pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--v-panel);
+  border-left: 1px solid var(--v-line);
+}
+
+.v-pane__body {
+  align-items: flex-start;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--v-space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-16);
+}
+
+.v-pane__footer {
+  border-top: 1px solid var(--v-line);
+  padding: var(--v-space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-8);
+  background: var(--v-panel);
+}
+
+.v-pane__lede,
+.v-pane__muted,
+.v-pane__count,
+.v-pane__hint {
+  margin: 0;
+  color: var(--v-muted);
+}
+
+.v-pane__count {
+  color: var(--v-ink);
+}
+
+.v-student-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-8);
+}
+
+/* --- stepper -------------------------------------------------------------- */
+
+.v-stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-12);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.v-stepper__step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v-space-4);
+  color: var(--v-muted);
+}
+
+.v-stepper__step + .v-stepper__step::before {
+  content: "";
+  width: 12px;
+  height: 1px;
+  background: var(--v-line-strong);
+  margin-right: var(--v-space-8);
+}
+
+.v-stepper__number {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--v-radius-round);
+  border: 1px solid var(--v-line-strong);
+  font-size: var(--v-text-12);
+  line-height: 1;
+}
+
+.v-stepper__step.is-current {
+  color: var(--v-ink);
+}
+
+.v-stepper__step.is-current .v-stepper__number {
+  background: var(--v-teal-600);
+  border-color: var(--v-teal-600);
+  color: var(--v-surface);
+}
+
+.v-stepper__step.is-done .v-stepper__number {
+  background: var(--v-teal-100);
+  border-color: var(--v-teal-300);
+  color: var(--v-teal-800);
+}
+
+/* --- assign pages --------------------------------------------------------- */
+
+.v-assign__pages {
+  padding: var(--v-space-24);
+}
+
+/* keep the tiles in one readable band instead of stranding them on a wide canvas */
+.v-assign__pages .v-thumbs {
+  max-width: 660px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.v-assign__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v-space-4);
+  padding: var(--v-space-4);
+}
+
+.v-question-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-4);
+}
+
+.v-question {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-2);
+  padding: var(--v-space-8) var(--v-space-12);
+  background: transparent;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: var(--v-radius-6);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--v-motion-state) var(--v-ease);
+}
+
+.v-question:hover {
+  background: var(--v-hover);
+}
+
+.v-question.is-active {
+  background: var(--v-teal-100);
+  border-left-color: var(--v-teal-600);
+}
+
+.v-question__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--v-space-8);
+}
+
+.v-question__pages {
+  color: var(--v-muted);
+}
+
+/* --- feedback ------------------------------------------------------------- */
+
+.v-total {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--v-space-4);
+  padding: var(--v-space-16);
+  background: var(--v-surface);
+  border: 1px solid var(--v-line);
+  border-radius: var(--v-radius-8);
+}
+
+.v-total .v-label-12 {
+  color: var(--v-muted);
+}
+
+/* The released final is the one green thing in this pane: credit ink on its soft fill. */
+.v-final-notice {
+  align-self: stretch;
+  background: var(--v-credit-soft);
+  border-color: var(--v-credit);
+  border-left-width: 2px;
+  color: var(--v-ink);
+}
+
+.v-final-notice .v-notice__icon {
+  color: var(--v-credit);
+}
+
+.v-pane__running {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--v-space-8);
+  padding: var(--v-space-16);
+  background: var(--v-surface);
+  border: 1px solid var(--v-line);
+  border-radius: var(--v-radius-8);
+}
+
+.v-pane__running p {
+  margin: 0;
+}
+
+.v-pane__empty {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--v-space-8);
+  padding: var(--v-space-16);
+  background: var(--v-surface);
+  border: 1px solid var(--v-line);
+  border-radius: var(--v-radius-8);
+}
+
+.v-pane__empty p {
+  margin: 0;
+}
+
+.v-findings,
+.v-flags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.v-findings {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-12);
+}
+
+.v-finding {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-8);
+  padding: var(--v-space-12);
+  background: var(--v-surface);
+  border: 1px solid var(--v-line);
+  border-radius: var(--v-radius-8);
+}
+
+.v-finding__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-4);
+}
+
+.v-finding__head h3 {
+  margin: 0;
+}
+
+.v-finding__scores {
+  display: flex;
+  align-items: baseline;
+  gap: var(--v-space-12);
+  white-space: nowrap;
+}
+
+.v-finding__score {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--v-space-4);
+}
+
+.v-finding__score .v-label-12 {
+  color: var(--v-muted);
+}
+
+.v-finding__score--final {
+  padding-left: var(--v-space-12);
+  border-left: 1px solid var(--v-line);
+}
+
+.v-flags {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-4);
+}
+
+.v-flag {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--v-space-4) var(--v-space-8);
+  padding: var(--v-space-8);
+  background: transparent;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: var(--v-radius-6);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--v-motion-state) var(--v-ease);
+}
+
+.v-flag:hover {
+  background: var(--v-hover);
+}
+
+.v-flag.is-selected {
+  background: var(--v-teal-100);
+  border-left-color: var(--v-teal-600);
+}
+
+.v-flag__message {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.v-flag__page {
+  color: var(--v-muted);
+  white-space: nowrap;
+  justify-self: end;
+}
+
+.v-finding__actions {
+  display: flex;
+  gap: var(--v-space-8);
+}
+
+/* --- version popover ------------------------------------------------------ */
+
+.v-versions {
+  position: relative;
+}
+
+.v-versions__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v-space-4);
+  padding: var(--v-space-4) var(--v-space-8);
+  border: 1px solid var(--v-line-strong);
+  border-radius: var(--v-radius-6);
+  cursor: pointer;
+  list-style: none;
+  white-space: nowrap;
+}
+
+.v-versions__summary::-webkit-details-marker {
+  display: none;
+}
+
+.v-versions__list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + var(--v-space-4));
+  left: 0;
+  min-width: 220px;
+  margin: 0;
+  padding: var(--v-space-4);
+  list-style: none;
+  background: var(--v-surface);
+  border: 1px solid var(--v-line);
+  border-radius: var(--v-radius-8);
+  box-shadow: var(--v-shadow-float);
+}
+
+.v-versions__item {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--v-space-12);
+  padding: var(--v-space-8);
+  background: transparent;
+  border: 0;
+  border-radius: var(--v-radius-6);
+  text-align: left;
+  cursor: pointer;
+}
+
+.v-versions__item:hover {
+  background: var(--v-hover);
+}
+
+.v-versions__item.is-active {
+  background: var(--v-teal-100);
+}
+
+.v-versions__meta {
+  color: var(--v-muted);
+}
+
+/* --- phone-only controls -------------------------------------------------- */
+
+.v-sheet__handle,
+.v-sheet__actions,
+.v-pane__actions {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .v-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  /* Assign pages stacks: the tiles first, the question list under them, one page scroll. */
+  .v-workspace--stack {
+    display: block;
+    overflow: auto;
+  }
+
+  .v-workspace--stack .v-workspace__paper {
+    overflow: visible;
+  }
+
+  .v-workspace--stack .v-workspace__pane {
+    border-left: 0;
+    border-top: 1px solid var(--v-line);
+  }
+
+  /* Feedback keeps the paper full-height and puts the panel in a bottom sheet. */
+  .v-workspace--sheet {
+    position: relative;
+  }
+
+  .v-workspace--sheet .v-workspace__pane {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 72dvh;
+    border-left: 0;
+    border-top: 1px solid var(--v-line);
+    border-radius: var(--v-radius-8) var(--v-radius-8) 0 0;
+    box-shadow: var(--v-shadow-float);
+    transition: transform var(--v-motion-panel) var(--v-ease);
+  }
+
+  .v-sheet {
+    transform: translateY(calc(100% - var(--v-control-lg)));
+  }
+
+  .v-sheet.is-open {
+    transform: translateY(0);
+  }
+
+  .v-sheet .v-pane__body {
+    max-height: calc(72dvh - var(--v-control-lg));
+  }
+
+  .v-sheet__handle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--v-space-8);
+    width: 100%;
+    min-height: var(--v-control-lg);
+    padding: var(--v-space-8) var(--v-space-16);
+    background: var(--v-panel-strong);
+    border: 0;
+    border-radius: var(--v-radius-8) var(--v-radius-8) 0 0;
+    cursor: pointer;
+  }
+
+  .v-sheet.is-open .v-sheet__handle .v-icon {
+    transform: rotate(180deg);
+  }
+
+  .v-assign__pages {
+    padding: var(--v-space-16);
+    padding-bottom: calc(var(--v-control-lg) + var(--v-space-24));
+  }
+
+  .v-stepper__label {
+    display: none;
+  }
+
+  /* On a phone the header row holds the steps and the title; the two page actions move into the
+     panel where they stay reachable without squeezing the title out. */
+  .v-feedback-actions,
+  .v-assign-actions {
+    display: none;
+  }
+
+  .v-pane__actions {
+    display: flex;
+    gap: var(--v-space-8);
+  }
+
+  .v-pane__actions .v-button {
+    flex: 1;
+  }
+
+  .v-sheet__actions {
+    display: flex;
+    gap: var(--v-space-8);
+    position: sticky;
+    bottom: 0;
+    padding: var(--v-space-12) var(--v-space-16);
+    border-top: 1px solid var(--v-line);
+    background: var(--v-panel);
+  }
+
+  .v-student-page {
+    padding: var(--v-space-16);
+  }
+
+  /* The attempts table stacks into one block per attempt: four columns cannot fit 390px without
+     a horizontal scroll, and the row action must stay reachable. */
+  .v-student-attempts .v-table,
+  .v-student-attempts .v-table tbody,
+  .v-student-attempts .v-table tr,
+  .v-student-attempts .v-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .v-student-attempts .v-table thead {
+    display: none;
+  }
+
+  .v-student-attempts .v-table tr {
+    padding: var(--v-space-12) 0;
+    border-bottom: 1px solid var(--v-line);
+  }
+
+  .v-student-attempts .v-table td {
+    padding: var(--v-space-2) 0;
+    border: 0;
+  }
+
+  .v-student-attempts .v-table td.v-table__cell--end {
+    text-align: left;
+  }
+
+  .v-student-attempts .v-table td.v-table__cell--end .v-button {
+    padding-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-workspace__pane,
+  .v-question,
+  .v-flag,
+  .v-upload__zone {
+    transition: none;
+  }
+}
