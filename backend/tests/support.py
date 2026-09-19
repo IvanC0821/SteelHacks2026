@@ -1,4 +1,4 @@
-"""Fresh fictional PDFs, independent of old Verity source and any student records."""
+"""In-memory API test inputs and a provider stub. No training or demo corpus."""
 
 import hashlib
 import json
@@ -7,41 +7,34 @@ from verity.provider import ProviderUnavailable
 from verity.schemas import RubricInput
 
 ASSIGNMENT = {
-    "title": "Linear systems: explain your reasoning",
-    "questions": [
-        {
-            "id": "q1",
-            "title": "Solve the system",
-            "prompt": "Solve x + y = 5 and x - y = 1. Show a valid derivation. Any valid method is accepted.",
-            "max_points": 4,
-        }
-    ],
+    "title": "API test assignment",
+    "questions": [{"id": "q1", "title": "Question", "prompt": "Test prompt", "max_points": 4}],
 }
 RUBRIC = {
     "criteria": [
         {
-            "id": "x",
+            "id": "c1",
             "question_id": "q1",
-            "description": "Correct x = 3",
+            "description": "Private criterion one",
             "points": 1,
             "category": "arithmetic",
         },
         {
-            "id": "y",
+            "id": "c2",
             "question_id": "q1",
-            "description": "Correct y = 2",
+            "description": "Private criterion two",
             "points": 1,
             "category": "arithmetic",
         },
         {
-            "id": "work",
+            "id": "c3",
             "question_id": "q1",
-            "description": "Show a valid derivation; elimination, substitution and other valid methods accepted",
+            "description": "Private criterion three",
             "points": 2,
             "category": "justification",
         },
     ],
-    "instructor_notes": "Award derivation credit only for justified steps. Accept alternative methods.",
+    "instructor_notes": "Private test notes",
 }
 
 
@@ -86,53 +79,13 @@ def make_pdf(pages: list[list[str]]) -> bytes:
     return bytes(output)
 
 
-def demo_pdfs():
+def pdf_inputs():
+    """Minimal parser inputs generated in memory for temporary test storage only."""
     return {
-        "questions.pdf": make_pdf(
-            [
-                [
-                    "VERITY - FICTIONAL DEMO ASSIGNMENT",
-                    "Question 1 (4 points)",
-                    ASSIGNMENT["questions"][0]["prompt"][:100],
-                    "Show a valid derivation. Any valid method is accepted.",
-                ]
-            ]
-        ),
-        "solution.pdf": make_pdf(
-            [
-                [
-                    "PRIVATE INSTRUCTOR REFERENCE - FICTIONAL DEMO",
-                    "Add the two equations: 2x = 6, so x = 3.",
-                    "Substitute in x + y = 5 to obtain y = 2.",
-                    "Other valid derivations receive full credit.",
-                ]
-            ]
-        ),
-        "attempt-1.pdf": make_pdf(
-            [["FICTIONAL STUDENT WORK - DEMO ONLY", "Question 1", "x = 3, y = 2"]]
-        ),
-        "attempt-2.pdf": make_pdf(
-            [
-                [
-                    "FICTIONAL STUDENT WORK - DEMO ONLY",
-                    "Question 1",
-                    "(x + y) + (x - y) = 5 + 1",
-                    "2x = 6, x = 3",
-                    "3 + y = 5, y = 2",
-                ]
-            ]
-        ),
-        "alternative.pdf": make_pdf(
-            [
-                [
-                    "FICTIONAL STUDENT WORK - DEMO ONLY",
-                    "Question 1",
-                    "x - y = 1 implies x = y + 1",
-                    "(y + 1) + y = 5",
-                    "2y = 4, y = 2, x = 3",
-                ]
-            ]
-        ),
+        "reference.pdf": make_pdf([["Private reference test payload"]]),
+        "attempt-1.pdf": make_pdf([["API test case A"]]),
+        "attempt-2.pdf": make_pdf([["API test case B"]]),
+        "attempt-3.pdf": make_pdf([["API test case C"]]),
         "unreadable.pdf": make_pdf([[]]),
     }
 
@@ -141,8 +94,8 @@ def fingerprint(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
 
 
-class DemoProvider:
-    id = "scripted-fictional-fixtures-v1"
+class StubProvider:
+    id = "api-test-stub"
     mode = "fixture"
 
     def assess(self, context):
@@ -157,7 +110,7 @@ class DemoProvider:
             raise ProviderUnavailable("Fixture mapping mismatch")
         if context["document"]["extraction"] != "pdf_text":
             raise ProviderUnavailable("Fixture transcript mismatch")
-        files = demo_pdfs()
+        files = pdf_inputs()
         match = next(
             (
                 name
@@ -166,7 +119,7 @@ class DemoProvider:
             ),
             None,
         )
-        if match not in {"attempt-1.pdf", "attempt-2.pdf", "alternative.pdf", "unreadable.pdf"}:
+        if match not in {"attempt-1.pdf", "attempt-2.pdf", "attempt-3.pdf", "unreadable.pdf"}:
             raise ProviderUnavailable("No fixture for this document")
         return {
             "decisions": [
@@ -174,14 +127,14 @@ class DemoProvider:
                     "criterion_id": c["id"],
                     "outcome": "uncertain"
                     if match == "unreadable.pdf"
-                    else ("not_met" if c["id"] == "work" and match == "attempt-1.pdf" else "met"),
+                    else ("not_met" if c["id"] == "c3" and match == "attempt-1.pdf" else "met"),
                     "evidence_ids": ["p1"],
                     "rationale": (
-                        "Scripted illustration: unreadable input."
+                        "Test-only uncertain outcome."
                         if match == "unreadable.pdf"
-                        else "Scripted illustration: reasoning absent."
-                        if c["id"] == "work" and match == "attempt-1.pdf"
-                        else "Scripted illustration: criterion met."
+                        else "Test-only negative outcome."
+                        if c["id"] == "c3" and match == "attempt-1.pdf"
+                        else "Test-only positive outcome."
                     ),
                 }
                 for c in RUBRIC["criteria"]
@@ -192,7 +145,3 @@ class DemoProvider:
         if context["assignment"]["questions"] != ASSIGNMENT["questions"]:
             raise ProviderUnavailable("No fixture rubric for this assignment")
         return RUBRIC
-
-
-def create_provider():
-    return DemoProvider()

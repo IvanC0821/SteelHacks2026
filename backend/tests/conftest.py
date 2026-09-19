@@ -4,12 +4,12 @@ import pytest
 from fastapi.testclient import TestClient
 from verity.api import create_app
 
-from scripts.demo_data import ASSIGNMENT, RUBRIC, DemoProvider, demo_pdfs
+from .support import ASSIGNMENT, RUBRIC, StubProvider, pdf_inputs
 
 
 class Harness:
     def __init__(self, root, provider=None, run_jobs=True):
-        self.app = create_app(root, provider or DemoProvider(), run_jobs=run_jobs)
+        self.app = create_app(root, provider or StubProvider(), run_jobs=run_jobs)
         self.client = TestClient(self.app)
         self.users = {}
         self.headers = {}
@@ -33,7 +33,7 @@ class Harness:
         return response.json()
 
     def setup(self, assignment=None):
-        self.course = self.call("POST", "/courses", json={"name": "Fictional Linear Algebra"})
+        self.course = self.call("POST", "/courses", json={"name": "API test course"})
         for name in ("student", "other", "ta"):
             self.call(
                 "POST",
@@ -61,7 +61,7 @@ class Harness:
             files={
                 "file": (
                     filename,
-                    content if content is not None else demo_pdfs()[filename],
+                    content if content is not None else pdf_inputs()[filename],
                     "application/pdf",
                 )
             },

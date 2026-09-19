@@ -1,13 +1,12 @@
 from copy import deepcopy
 
-from scripts.demo_data import RUBRIC, DemoProvider
-
 from .conftest import Harness
+from .support import RUBRIC, StubProvider
 
 
 def test_private_identifiers_are_not_returned_in_student_feedback(h):
     rubric = deepcopy(RUBRIC)
-    rubric["criteria"][2]["id"] = "secret_solution_x_equals_3"
+    rubric["criteria"][2]["id"] = "secret_criterion_label"
     h.call("PUT", f"/assignments/{h.aid}/rubric-draft", json=rubric)
     h.call("POST", f"/assignments/{h.aid}/rubric-publish")
     s = h.upload()
@@ -17,20 +16,20 @@ def test_private_identifiers_are_not_returned_in_student_feedback(h):
         "ta",
         json={
             "blocks": [
-                {"id": "secret_block_y_equals_2", "page": 1, "text": "Student text", "bbox": None}
+                {"id": "secret_block_label", "page": 1, "text": "Student text", "bbox": None}
             ]
         },
     )
     h.call("PUT", f"/submissions/{s['id']}/mapping", "student", json={"questions": {"q1": [1]}})
 
-    class Provider(DemoProvider):
+    class Provider(StubProvider):
         def assess(self, context):
             return {
                 "decisions": [
                     {
                         "criterion_id": c["id"],
                         "outcome": "not_met",
-                        "evidence_ids": ["secret_block_y_equals_2"],
+                        "evidence_ids": ["secret_block_label"],
                         "rationale": "secret teacher rationale",
                     }
                     for c in context["rubric"]["criteria"]
@@ -46,7 +45,7 @@ def test_private_identifiers_are_not_returned_in_student_feedback(h):
 def test_reference_upload_invalidates_pending_rubric_generation(tmp_path):
     h = Harness(tmp_path, run_jobs=False).setup()
     job = h.call("POST", f"/assignments/{h.aid}/rubric-jobs")
-    h.upload("solution.pdf", "instructor", kind="solution")
+    h.upload("reference.pdf", "instructor", kind="solution")
     h.app.state.service.run_job(job["id"])
     result = h.call("GET", f"/jobs/{job['id']}")
     assert result["status"] == "failed" and result["error_code"] == "invalid_result"
@@ -94,7 +93,7 @@ def test_rubric_reference_version_and_job_context_are_frozen(tmp_path):
     h = Harness(tmp_path, run_jobs=False).setup()
     first = h.attempt()
     job = h.assess(first)
-    h.upload("solution.pdf", "instructor", kind="solution")
+    h.upload("reference.pdf", "instructor", kind="solution")
     new_rubric = h.call("POST", f"/assignments/{h.aid}/rubric-publish")
     assert new_rubric["version"] == 2 and len(new_rubric["reference_ids"]) == 1
     with h.app.state.store.connection() as db:

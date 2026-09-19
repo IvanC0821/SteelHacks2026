@@ -68,6 +68,7 @@ Student output uses fixed category text and backend-generated flag/anchor identi
 the original rubric, decisions and reasons. Never put raw provider output in a frontend response.
 Human review is separate and required even when automated results appear clean.
 
-For training/evaluation later, collect reviewed examples deliberately, split by underlying problem
-family and retain the unchanged base-model comparison. The shipped demo examples are illustration
-fixtures, excluded from training and scored evaluation. There are no measured improvements yet.
+The model team owns dataset creation, fine-tuning and evaluation. This repository bundles no model
+dataset. The test-only provider verifies API behavior and supplies no evidence of model quality.
+For evaluation, split reviewed examples by underlying problem family and retain the unchanged
+base-model comparison. There are no measured model improvements yet.

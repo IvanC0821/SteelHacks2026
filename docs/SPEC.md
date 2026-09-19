@@ -51,9 +51,8 @@ is exposed to students in this build.
 - Durable assessment and rubric-draft jobs use queued/running/succeeded/failed states.
   Duplicate starts return the existing job. Failed jobs are explicitly retried. Interrupted
   jobs become failed on process restart rather than silently repeated model calls.
-- The default provider reports not_configured. A separate demo provider accepts only
-  exact hashes of fresh fictional PDFs and matching demo rubrics and labels all results
-  as scripted fixtures. Arbitrary uploads never get canned grades.
+- The default provider reports not_configured. The model team supplies the real adapter.
+  Provider stubs are confined to automated tests. Arbitrary uploads never get canned grades.
 - Reviews use a revision counter to reject concurrent overwrites; every mutation is audited.
   Human corrections do not retrain models, modify published rubrics or regrade other papers.
 - First-attempt/latest analytics count students, distinguish unavailable results, and do
@@ -74,4 +73,4 @@ in, complete and release human review, and read teaching analytics. Separate che
 must reject cross-course access, other-student PDF access, solution leakage, malformed
 provider output, missing/invalid mappings, stale review writes and invalid state transitions.
 Restart must retain records and make interrupted jobs retryable. The default no-model
-path and exact-file demo path must both be tested. No AI accuracy claim follows from these checks.
+path and provider contract must both be tested. No AI accuracy claim follows from these checks.

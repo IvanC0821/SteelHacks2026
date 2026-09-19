@@ -6,9 +6,8 @@ from fastapi.testclient import TestClient
 from verity.api import create_app
 from verity.provider import UnconfiguredProvider
 
-from scripts.demo_data import ASSIGNMENT, RUBRIC, DemoProvider, demo_pdfs, make_pdf
-
 from .conftest import Harness
+from .support import ASSIGNMENT, RUBRIC, StubProvider, make_pdf, pdf_inputs
 
 
 def test_auth_and_cross_user_course_access(h):
@@ -39,7 +38,7 @@ def test_auth_and_cross_user_course_access(h):
 def test_pdf_bytes_and_invalid_file(h):
     s = h.attempt()
     r = h.request("GET", f"/documents/{s['document_id']}/file", "student")
-    assert r.content == demo_pdfs()["attempt-1.pdf"]
+    assert r.content == pdf_inputs()["attempt-1.pdf"]
     assert r.headers["cache-control"] == "no-store"
     for content in (b"not a PDF", b"%PDF-1.4\ninvalid"):
         r = h.request(
@@ -61,7 +60,7 @@ def test_unpublished_assignment_is_private(h):
 def test_rubric_validation(h, change):
     rubric = deepcopy(RUBRIC)
     if change == "duplicate":
-        rubric["criteria"][1]["id"] = "x"
+        rubric["criteria"][1]["id"] = "c1"
     elif change == "missing":
         rubric["criteria"] = []
     elif change == "points":
@@ -73,7 +72,7 @@ def test_rubric_validation(h, change):
 
 @pytest.mark.parametrize("bad", ["unknown", "duplicate", "evidence", "exception", "blank"])
 def test_provider_output_rejected_without_leaking(h, bad):
-    class BadProvider(DemoProvider):
+    class BadProvider(StubProvider):
         def assess(self, context):
             if bad == "exception":
                 raise RuntimeError("SECRET_API_KEY PRIVATE_SOLUTION")
@@ -105,7 +104,7 @@ def test_no_model_jobs_retry_and_manual_fallback(h):
     assert job["error_code"] == "not_configured"
     duplicate = h.call("POST", f"/submissions/{s['id']}/assessment-jobs", "student")
     assert duplicate["id"] == job["id"] and duplicate["attempts"] == 1
-    h.app.state.service.provider = DemoProvider()
+    h.app.state.service.provider = StubProvider()
     h.call("POST", f"/jobs/{job['id']}/retry", "student")
     assert h.call("GET", f"/jobs/{job['id']}", "student")["attempts"] == 2
     assert h.sub(s)["assessment"]["score"] == 2
@@ -117,7 +116,7 @@ def test_restart_persistence_and_interrupted_jobs(tmp_path):
     s = h.attempt()
     queued = h.assess(s)
     assert queued["status"] == "queued"
-    app = create_app(tmp_path, DemoProvider())
+    app = create_app(tmp_path, StubProvider())
     with TestClient(app) as restarted:
         job = restarted.get(f"/api/jobs/{queued['id']}", headers=h.headers["student"]).json()
         assert job["status"] == "failed" and job["error_code"] == "interrupted"
@@ -137,7 +136,7 @@ def test_deadline_prevents_changes_but_allows_staff_review(tmp_path):
             "POST",
             f"/assignments/{h.aid}/documents?kind=submission",
             "student",
-            files={"file": ("x.pdf", demo_pdfs()["attempt-1.pdf"], "application/pdf")},
+            files={"file": ("x.pdf", pdf_inputs()["attempt-1.pdf"], "application/pdf")},
         ).status_code
         == 409
     )

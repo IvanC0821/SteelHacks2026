@@ -7,17 +7,16 @@ tags: [project/verity]
 # Claude Code frontend handoff
 
 Build the interface against this fresh backend. Related: [[README]] · [[SPEC]] · [[MODEL]].
-Use `docs/openapi.json` for request schemas and `docs/examples.json` for real API response examples.
-The response examples are fictional fixture results; do not turn them into hardcoded application data.
+Use `docs/openapi.json` for request schemas and the running API for responses.
 
 ## Run and connect
 
-Follow the root README's install and demo commands. API defaults to `http://127.0.0.1:8026`.
+Follow the root README's install, server and local identity commands. API defaults to `http://127.0.0.1:8026`.
 Allowed frontend origins default to `http://localhost:3000` and `http://localhost:5173`; override
 `VERITY_CORS_ORIGINS` with comma-separated exact origins if needed. No wildcard credentials.
 
 Use the current identity's bearer token on every `/api` call. For local development, paste a token
-from `.data/demo-credentials.json` into a session setup screen or inject it in a local server session.
+printed by `verity.cli` into a session setup screen or inject it in a local server session.
 Do not embed instructor/TA tokens in a student bundle or commit local credentials. The production
 authentication UX is a separate integration; the backend currently provisions expiring local tokens.
 
@@ -72,7 +71,7 @@ for PDF.js; do not put bearer tokens in download query strings.
 3. Start a job, poll until `succeeded` or `failed`, then refetch the submission. The initial 202
    means queued, not finished. Failed jobs can be retried. Duplicate starts reuse the existing job.
 4. `assessment.score` is an estimate, and may be null. Display null as unavailable, never zero.
-   `assessment.mode === "fixture"` must visibly say “Scripted demo”; it is not live model output.
+   `assessment.mode === "fixture"` must visibly say “Test fixture”; it is not live model output.
 5. Render `questions[].flags[]` using provided message/category. An anchor's bbox is normalized,
    origin at top-left. With bbox null, highlight/select the page without inventing a precise marker.
    Anchor IDs are local to a flag; key with submission/question/flag/anchor IDs.
@@ -113,4 +112,4 @@ mixed standards. Changes in flags/estimates are not evidence of learning.
 Verify real PDF upload/rendering, shared-page mapping, revision history, clear model/fixture states,
 polling failure/retry, original final paper in TA queue, concurrent review conflict, released score,
 small-screen navigation and keyboard access. Do not add a frontend-only role switch with access to
-all users' tokens. A separately labeled local demo harness may select local fictional sessions.
+all users' tokens. The model team supplies the provider and demonstration materials separately.

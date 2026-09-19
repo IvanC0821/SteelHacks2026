@@ -16,8 +16,9 @@ across restarts. The normal server runs with **no model configured**.
 
 Related: [[docs/SPEC]] · [Frontend handoff](docs/FRONTEND.md) · [Model adapter](docs/MODEL.md).
 
-The [presentation folder](presentation/README.md) includes the editable pitch deck, exact spoken
-script, fictional illustration records and blank evaluation worksheet for the team.
+This repository contains application code, configuration, API documentation and automated tests.
+The model team owns model integration, training data and evaluation. Presentation materials live
+separately and no demo dataset is bundled here.
 
 ## Install
 
@@ -30,7 +31,7 @@ uv pip install -r requirements.txt
 
 `requirements.txt` pins the dependency versions used for verification. `pyproject.toml` is the
 dependency manifest. Installation into a fresh Python 3.13 virtual environment, all 33 API tests,
-lint/format checks and the live HTTP smoke test have passed. Package-index access is required
+and lint/format checks have passed. Package-index access is required
 when dependencies are not cached. No old Verity application code was reused.
 
 ## Start the backend
@@ -47,40 +48,19 @@ Data defaults to `.data/`; override with `VERITY_DATA_DIR`. Run **one API proces
 background threads in that process. Interrupted queued/running jobs become failed/retryable on
 restart. A retry is explicit to avoid silently repeating model calls.
 
-## Fictional demo
+## Local identities
 
 ```sh
-PYTHONPATH=backend:. .venv/bin/python -m scripts.seed_demo
-VERITY_PROVIDER_FACTORY=scripts.demo_data:create_provider PYTHONPATH=backend:. .venv/bin/python -m uvicorn verity.api:create_app --factory --host 127.0.0.1 --port 8026
+PYTHONPATH=backend .venv/bin/python -m verity.cli "Instructor" --role instructor
+PYTHONPATH=backend .venv/bin/python -m verity.cli "Student" --role student
 ```
 
-The seeder creates an instructor, TA, two students, one published assignment, private solution
-and downloadable questions. Tokens expire after 24 hours and live in the ignored
-`.data/demo-credentials.json`. Never ship that file to a browser bundle or commit it.
-Use each role's own token as `Authorization: Bearer <token>`.
+Replace the names with the intended local users. Each command prints a user ID and a bearer token
+that expires after 24 hours. Keep tokens private and use the current user's token as
+`Authorization: Bearer <token>`. Use the same `VERITY_DATA_DIR` as the API server.
 
-Fresh PDFs are in `demo/pdfs/`. `attempt-1.pdf` has the right values without required reasoning;
-`attempt-2.pdf` adds elimination steps; `alternative.pdf` uses substitution. `unreadable.pdf` is
-blank and receives no score. The demo provider accepts **only these exact PDF hashes, question,
-mapping and rubric**. Every result says `mode: fixture`. These outcomes demonstrate the application
-workflow, not Nemotron inference, model accuracy, fine-tuning or learning gains.
-
-For a full HTTP rehearsal against a disposable seeded database:
-
-```sh
-PYTHONPATH=backend:. .venv/bin/python -m scripts.smoke_http
-```
-
-This creates two attempts, hands in the second, saves a TA review and releases its grade. Use a
-new `--data-dir` with the seeder and the matching `VERITY_DATA_DIR` on the server for a fresh live demo.
-
-Provision another local identity:
-
-```sh
-PYTHONPATH=backend .venv/bin/python -m verity.cli "Fictional student" --role student
-```
-
-An instructor enrolls the returned user ID through the course-members endpoint. There is no
+The instructor creates a course, then enrolls the returned user IDs through the course-members
+endpoint. Staff create assignments and supply their own materials through the API. There is no
 public signup or self-selected staff role. CLI access is trusted local administration.
 
 ## Verify
@@ -93,6 +73,14 @@ public signup or self-selected staff role. CLI access is trusted local administr
 
 The tests exercise the real API with temporary databases, including role separation, private
 solutions, malformed output, page mapping, version history, restart recovery and human review.
+Minimal PDF inputs and a provider stub exist only under `backend/tests/`; they exercise software
+behavior and are not model training or evaluation examples.
+
+Regenerate the OpenAPI contract without creating users or documents:
+
+```sh
+PYTHONPATH=backend:. .venv/bin/python -m scripts.export_contract
+```
 
 ## Deliberate limits
 

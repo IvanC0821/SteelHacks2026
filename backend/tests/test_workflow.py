@@ -1,10 +1,10 @@
 from copy import deepcopy
 
-from scripts.demo_data import RUBRIC, make_pdf
+from .support import RUBRIC, make_pdf
 
 
 def test_complete_workflow_and_private_projections(h):
-    reference = h.upload("solution.pdf", "instructor", kind="solution")
+    reference = h.upload("reference.pdf", "instructor", kind="solution")
     first = h.attempt()
     assert h.assess(first)["status"] == "succeeded"
     first_result = h.sub(first)
@@ -14,7 +14,7 @@ def test_complete_workflow_and_private_projections(h):
     assert "rationale" not in str(first_result)
     assert "description" not in str(first_result)
     assert "decisions" not in str(first_result)
-    assert "Correct x = 3" not in str(first_result)
+    assert "Private criterion one" not in str(first_result)
     assert h.request("GET", f"/documents/{reference['id']}/file", "student").status_code == 403
     second = h.attempt("attempt-2.pdf")
     h.assess(second)
@@ -54,7 +54,7 @@ def test_rubric_history_and_final_identity(h):
     h.assess(first)
     final = h.attempt("attempt-2.pdf")
     h.call("POST", f"/submissions/{final['id']}/hand-in", "student")
-    practice = h.attempt("alternative.pdf")
+    practice = h.attempt("attempt-3.pdf")
     changed = deepcopy(RUBRIC)
     changed["instructor_notes"] = "New standards version"
     h.call("PUT", f"/assignments/{h.aid}/rubric-draft", json=changed)
@@ -90,10 +90,10 @@ def test_mapping_required_and_sealed_after_assessment(h):
     )
 
 
-def test_alternative_and_unreadable(h):
-    alternative = h.attempt("alternative.pdf")
-    assert h.assess(alternative)["status"] == "succeeded"
-    assert h.sub(alternative)["assessment"]["score"] == 4
+def test_scored_and_unreadable_results(h):
+    scored = h.attempt("attempt-3.pdf")
+    assert h.assess(scored)["status"] == "succeeded"
+    assert h.sub(scored)["assessment"]["score"] == 4
     unreadable = h.attempt("unreadable.pdf")
     assert h.assess(unreadable)["status"] == "succeeded"
     assessment = h.sub(unreadable)["assessment"]
@@ -102,7 +102,7 @@ def test_alternative_and_unreadable(h):
 
 
 def test_custom_pdf_never_receives_canned_assessment(h):
-    s = h.upload(content=make_pdf([["Different fictional work", "x = 99"]]))
+    s = h.upload(content=make_pdf([["Unrecognized API test payload"]]))
     h.call("PUT", f"/submissions/{s['id']}/mapping", "student", json={"questions": {"q1": [1]}})
     assert h.assess(s)["status"] == "failed"
     assert h.sub(s)["assessment"] is None
