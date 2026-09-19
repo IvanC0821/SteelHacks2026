@@ -1,0 +1,17 @@
+.v-kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--v-space-4);
+  border-radius: var(--v-radius-6);
+  border: 1px solid var(--v-line-strong);
+  border-bottom-width: 2px;
+  background: var(--v-panel);
+  color: var(--v-ink);
+  font-family: var(--v-font-sans);
+  font-size: var(--v-text-12);
+  line-height: var(--v-lead-12);
+  font-weight: var(--v-weight-medium);
+  font-variant-numeric: lining-nums;
+}

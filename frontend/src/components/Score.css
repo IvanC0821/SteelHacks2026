@@ -1,0 +1,58 @@
+.v-score-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--v-space-2);
+}
+
+.v-score-value {
+  color: var(--v-ink);
+}
+
+.v-score--sm {
+  font-size: var(--v-text-16);
+  line-height: var(--v-lead-16);
+}
+
+.v-score--md {
+  font-size: var(--v-text-20);
+  line-height: var(--v-lead-20);
+}
+
+.v-score--lg {
+  font-size: var(--v-text-28);
+  line-height: var(--v-lead-28);
+}
+
+.v-score-max {
+  color: var(--v-muted);
+  font-weight: var(--v-weight-regular);
+}
+
+.v-score--deduction {
+  color: var(--v-deduction);
+}
+
+.v-score--credit {
+  color: var(--v-credit);
+}
+
+.v-score--neutral {
+  color: var(--v-muted);
+}
+
+.v-score-estimated {
+  font-family: var(--v-font-sans);
+  font-size: var(--v-text-12);
+  line-height: var(--v-lead-12);
+  font-weight: var(--v-weight-medium);
+  color: var(--v-muted);
+}
+
+.v-score-null {
+  font-family: var(--v-font-sans);
+  font-size: var(--v-text-14);
+  line-height: var(--v-lead-14);
+  font-weight: var(--v-weight-medium);
+  color: var(--v-muted);
+}

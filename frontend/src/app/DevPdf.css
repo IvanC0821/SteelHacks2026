@@ -1,0 +1,79 @@
+.v-devpdf {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr var(--v-panel-width);
+}
+
+.v-devpdf__paper {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.v-devpdf__state {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: var(--v-space-24);
+  background: var(--v-canvas);
+}
+
+.v-devpdf__panel {
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-12);
+  padding: var(--v-space-16);
+  border-left: var(--v-border-hairline);
+  background: var(--v-panel);
+}
+
+.v-devpdf__flags {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-4);
+}
+
+.v-devpdf__flag {
+  display: grid;
+  gap: var(--v-space-4);
+  width: 100%;
+  padding: var(--v-space-8);
+  border: 0;
+  border-radius: var(--v-radius-6);
+  background: transparent;
+  text-align: left;
+  transition: background-color var(--v-motion-state) var(--v-ease);
+}
+
+.v-devpdf__flag:hover {
+  background: var(--v-hover);
+}
+
+.v-devpdf__flag > .v-chip {
+  justify-self: start;
+}
+
+.v-devpdf__flag > .v-label-12 {
+  color: var(--v-muted);
+}
+
+.v-devpdf__flag.is-selected {
+  background: var(--v-teal-100);
+  box-shadow: inset 2px 0 0 var(--v-teal-600);
+}
+
+@media (max-width: 1100px) {
+  .v-devpdf {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+  }
+
+  .v-devpdf__panel {
+    border-left: 0;
+    border-top: var(--v-border-hairline);
+  }
+}

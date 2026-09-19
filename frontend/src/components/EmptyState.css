@@ -1,0 +1,31 @@
+.v-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--v-space-12);
+  padding: var(--v-space-32) var(--v-space-24);
+  border-radius: var(--v-radius-8);
+  border: var(--v-border-hairline);
+  background: var(--v-panel);
+  max-width: 56ch;
+}
+
+.v-empty__icon {
+  color: var(--v-teal-500);
+}
+
+.v-empty__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-4);
+}
+
+.v-empty__sentence {
+  color: var(--v-muted);
+}
+
+.v-empty--bare {
+  border: 0;
+  background: transparent;
+  padding: var(--v-space-24) 0;
+}

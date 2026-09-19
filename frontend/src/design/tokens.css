@@ -1,0 +1,148 @@
+/* Verity design tokens. Every value is decided in design/BRIEF.md and measured in design/DESIGN.md.
+ * Colours are authored in OKLCH; the preceding :root block carries the sRGB hex fallback for
+ * engines without oklch(). Both blocks are kept byte-identical in meaning: the hex was computed
+ * from the OKLCH triple, so there is no drift between them. */
+
+:root {
+  /* teal, hue 212 */
+  --v-teal-50: #eff9fb;
+  --v-teal-100: #ddf1f6;
+  --v-teal-300: #95c8d2;
+  --v-teal-500: #0c7686;
+  --v-teal-600: #09606e;
+  --v-teal-800: #033d46;
+
+  /* tinted neutrals, chroma 0.004-0.014 toward hue 212 */
+  --v-surface: #ffffff;
+  --v-panel: #f7fafb;
+  --v-panel-strong: #edf4f5;
+  --v-hover: #e7eff1;
+  --v-canvas: #e0e8ea;
+  --v-line: #d9e2e4;
+  --v-line-strong: #7d898b;
+  --v-muted: #5c6769;
+  --v-ink: #182123;
+
+  /* semantic ink + soft fill */
+  --v-deduction: #a5292b;
+  --v-deduction-soft: #ffedeb;
+  --v-credit: #176933;
+  --v-credit-soft: #e6f6e8;
+  --v-hint: #6e5c09;
+  --v-hint-soft: #fcf2cd;
+  --v-ai: #614999;
+  --v-ai-soft: #f4f1ff;
+  --v-error: #a91518;
+  --v-error-soft: #ffeeec;
+  --v-warn: #8a4603;
+  --v-warn-soft: #ffefe3;
+  --v-focus: #086a9c;
+}
+
+@supports (color: oklch(50% 0.1 212)) {
+  :root {
+    --v-teal-50: oklch(97.6% 0.011 212);
+    --v-teal-100: oklch(94.6% 0.022 212);
+    --v-teal-300: oklch(80% 0.055 212);
+    --v-teal-500: oklch(52% 0.088 212);
+    --v-teal-600: oklch(45% 0.076 212);
+    --v-teal-800: oklch(33% 0.056 212);
+
+    --v-surface: oklch(100% 0 212);
+    --v-panel: oklch(98.3% 0.004 212);
+    --v-panel-strong: oklch(96.2% 0.007 212);
+    --v-hover: oklch(94.8% 0.009 212);
+    --v-canvas: oklch(92.6% 0.009 212);
+    --v-line: oklch(90.6% 0.01 212);
+    --v-line-strong: oklch(62% 0.014 212);
+    --v-muted: oklch(50.5% 0.014 212);
+    --v-ink: oklch(24% 0.014 212);
+
+    --v-deduction: oklch(48% 0.16 25);
+    --v-deduction-soft: oklch(96% 0.019 25);
+    --v-credit: oklch(46% 0.115 150);
+    --v-credit-soft: oklch(95.8% 0.025 150);
+    --v-hint: oklch(48% 0.095 95);
+    --v-hint-soft: oklch(96% 0.05 95);
+    --v-ai: oklch(47% 0.125 295);
+    --v-ai-soft: oklch(96.5% 0.018 295);
+    --v-error: oklch(47% 0.18 27);
+    --v-error-soft: oklch(96.2% 0.018 27);
+    --v-warn: oklch(47% 0.115 55);
+    --v-warn-soft: oklch(96.2% 0.024 60);
+    --v-focus: oklch(50% 0.112 240);
+  }
+}
+
+:root {
+  /* type */
+  --v-font-sans: "IBM Plex Sans", "IBM Plex Sans Fallback", system-ui, sans-serif;
+  --v-font-serif: "IBM Plex Serif", "IBM Plex Serif Fallback", Georgia, serif;
+  --v-text-12: 12px;
+  --v-text-14: 14px;
+  --v-text-16: 16px;
+  --v-text-20: 20px;
+  --v-text-28: 28px;
+  --v-lead-12: 16px;
+  --v-lead-14: 18px; /* components */
+  --v-lead-14-prose: 20px;
+  --v-lead-16: 24px; /* panels */
+  --v-lead-16-prose: 26px;
+  --v-lead-20: 28px;
+  --v-lead-28: 36px;
+  --v-track-tight: -0.006em;
+  --v-track-normal: 0;
+  --v-weight-regular: 400;
+  --v-weight-medium: 500;
+  --v-weight-semibold: 600;
+
+  /* space */
+  --v-space-2: 2px;
+  --v-space-4: 4px;
+  --v-space-8: 8px;
+  --v-space-12: 12px;
+  --v-space-16: 16px;
+  --v-space-24: 24px;
+  --v-space-32: 32px;
+  --v-space-48: 48px;
+
+  /* radius */
+  --v-radius-6: 6px;
+  --v-radius-8: 8px;
+  --v-radius-round: 999px;
+
+  /* border */
+  --v-border-hairline: 1px solid var(--v-line);
+  --v-border-control: 1px solid var(--v-line-strong);
+
+  /* shadow */
+  --v-shadow-float: 0 1px 2px rgb(24 33 35 / 0.14);
+
+  /* motion */
+  --v-motion-instant: 0ms;
+  --v-motion-state: 100ms;
+  --v-motion-panel: 200ms;
+  --v-motion-toast: 350ms;
+  --v-ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* icon */
+  --v-icon-16: 16px;
+  --v-icon-20: 20px;
+  --v-stroke-16: 1.5;
+  --v-stroke-20: 1.75;
+
+  /* layout */
+  --v-rail: 240px;
+  --v-rail-collapsed: 56px;
+  --v-panel-width: 360px;
+  --v-measure: 1040px;
+  --v-header-row: 52px;
+  --v-control: 40px;
+  --v-control-lg: 44px;
+
+  /* z scale */
+  --v-z-sticky: 200;
+  --v-z-backdrop: 300;
+  --v-z-dialog: 400;
+  --v-z-toast: 500;
+}

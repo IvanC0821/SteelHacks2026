@@ -1,0 +1,71 @@
+.v-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-4);
+}
+
+.v-field__label {
+  color: var(--v-ink);
+}
+
+.v-field__row {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-8);
+}
+
+.v-field__control {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--v-control);
+  padding: var(--v-space-8) var(--v-space-12);
+  border-radius: var(--v-radius-6);
+  border: var(--v-border-control);
+  background: var(--v-surface);
+  color: var(--v-ink);
+  font-size: var(--v-text-14);
+  line-height: var(--v-lead-14);
+  transition: border-color var(--v-motion-state) var(--v-ease);
+}
+
+textarea.v-field__control {
+  min-height: auto;
+  line-height: var(--v-lead-14-prose);
+  resize: vertical;
+}
+
+select.v-field__control {
+  padding-right: var(--v-space-8);
+}
+
+.v-field__control::placeholder {
+  color: var(--v-muted);
+}
+
+.v-field__control:hover:not(:disabled) {
+  border-color: var(--v-muted);
+}
+
+.v-field__control:disabled {
+  background: var(--v-panel-strong);
+  border-color: var(--v-line);
+  color: var(--v-muted);
+  cursor: not-allowed;
+}
+
+.v-field.is-invalid .v-field__control {
+  border-color: var(--v-error);
+}
+
+.v-field__trailing {
+  flex: none;
+}
+
+.v-field__hint {
+  color: var(--v-muted);
+}
+
+.v-field__error {
+  color: var(--v-error);
+  font-weight: var(--v-weight-medium);
+}

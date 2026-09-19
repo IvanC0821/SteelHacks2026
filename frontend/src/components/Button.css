@@ -1,0 +1,119 @@
+.v-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--v-radius-6);
+  border: 1px solid transparent;
+  font-size: var(--v-text-14);
+  line-height: var(--v-lead-14);
+  font-weight: var(--v-weight-medium);
+  white-space: nowrap;
+  transition: background-color var(--v-motion-state) var(--v-ease),
+    border-color var(--v-motion-state) var(--v-ease), color var(--v-motion-state) var(--v-ease);
+}
+
+.v-button__content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v-space-8);
+}
+
+.v-button.is-busy .v-button__content {
+  visibility: hidden;
+}
+
+.v-button__busy {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.v-button--md {
+  height: var(--v-control);
+  padding: 0 var(--v-space-12);
+}
+
+.v-button--lg {
+  height: var(--v-control-lg);
+  padding: 0 var(--v-space-16);
+  font-size: var(--v-text-16);
+  line-height: var(--v-lead-16);
+}
+
+.v-button--icon-only {
+  width: var(--v-control-lg);
+  height: var(--v-control-lg);
+  padding: 0;
+}
+
+/* primary: the one teal fill per view */
+.v-button--primary {
+  background: var(--v-teal-600);
+  color: var(--v-surface);
+}
+
+.v-button--primary:hover:not(:disabled) {
+  background: var(--v-teal-500);
+}
+
+.v-button--primary:active:not(:disabled) {
+  background: var(--v-teal-800);
+}
+
+/* secondary: a typed-into-strength border on the white ground */
+.v-button--secondary {
+  background: var(--v-surface);
+  border-color: var(--v-line-strong);
+  color: var(--v-ink);
+}
+
+.v-button--secondary:hover:not(:disabled) {
+  background: var(--v-hover);
+}
+
+.v-button--secondary:active:not(:disabled) {
+  background: var(--v-panel-strong);
+  border-color: var(--v-muted);
+}
+
+/* quiet: no chrome until hover */
+.v-button--quiet {
+  background: transparent;
+  color: var(--v-ink);
+}
+
+.v-button--quiet:hover:not(:disabled) {
+  background: var(--v-hover);
+}
+
+.v-button--quiet:active:not(:disabled) {
+  background: var(--v-panel-strong);
+}
+
+.v-button--danger {
+  background: var(--v-surface);
+  border-color: var(--v-deduction);
+  color: var(--v-deduction);
+}
+
+.v-button--danger:hover:not(:disabled) {
+  background: var(--v-deduction-soft);
+}
+
+.v-button--danger:active:not(:disabled) {
+  background: var(--v-deduction);
+  color: var(--v-surface);
+}
+
+.v-button:disabled:not(.is-busy) {
+  cursor: not-allowed;
+  background: var(--v-panel-strong);
+  border-color: var(--v-line);
+  color: var(--v-muted);
+}
+
+.v-button.is-busy {
+  cursor: progress;
+}

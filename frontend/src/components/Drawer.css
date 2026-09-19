@@ -1,0 +1,68 @@
+.v-drawer-layer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--v-z-dialog);
+}
+
+.v-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: var(--v-z-backdrop);
+  background: rgb(24 33 35 / 0.24);
+}
+
+.v-drawer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: var(--v-z-dialog);
+  width: min(var(--v-panel-width), calc(100vw - var(--v-space-48)));
+  display: flex;
+  flex-direction: column;
+  background: var(--v-surface);
+  box-shadow: var(--v-shadow-float);
+  animation: v-drawer-in var(--v-motion-panel) var(--v-ease);
+}
+
+.v-drawer--right {
+  right: 0;
+  border-left: var(--v-border-hairline);
+}
+
+.v-drawer--left {
+  left: 0;
+  border-right: var(--v-border-hairline);
+  animation-name: v-drawer-in-left;
+}
+
+.v-drawer__head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--v-space-12);
+  height: var(--v-header-row);
+  padding: 0 var(--v-space-8) 0 var(--v-space-16);
+  border-bottom: var(--v-border-hairline);
+}
+
+.v-drawer__body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--v-space-16);
+}
+
+@keyframes v-drawer-in {
+  from {
+    transform: translateX(40px);
+    opacity: 0;
+  }
+}
+
+@keyframes v-drawer-in-left {
+  from {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+}

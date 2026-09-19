@@ -1,0 +1,181 @@
+.v-pdf {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  background: var(--v-surface);
+}
+
+.v-pdf__scroll {
+  /* the scroll container is the offset parent, so page.offsetTop is a scrollTop */
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--v-space-24);
+  background: var(--v-canvas);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--v-space-24);
+}
+
+.v-pdf__state {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding: var(--v-space-48) var(--v-space-16);
+}
+
+.v-pdf-page {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.v-pdf-page__gutter {
+  flex: none;
+  width: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 24px keeps the pins' 44px hit targets from overlapping each other */
+  gap: var(--v-space-24);
+  padding-top: var(--v-space-4);
+}
+
+.v-pdf-page__number {
+  color: var(--v-muted);
+  font-variant-numeric: lining-nums;
+}
+
+.v-pdf-page__paper {
+  position: relative;
+  flex: none;
+  background: var(--v-surface);
+  box-shadow: var(--v-shadow-float);
+}
+
+.v-pdf-page__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.v-pdf-page__paper.has-edge-deduction {
+  box-shadow: inset 3px 0 0 var(--v-deduction), var(--v-shadow-float);
+}
+
+.v-pdf-page__paper.has-edge-hint {
+  box-shadow: inset 3px 0 0 var(--v-hint), var(--v-shadow-float);
+}
+
+.v-pdf-page__paper.has-edge-credit {
+  box-shadow: inset 3px 0 0 var(--v-credit), var(--v-shadow-float);
+}
+
+/* --- pins ----------------------------------------------------------------- */
+
+.v-pdf-pin {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--v-radius-round);
+  font-family: var(--v-font-sans);
+  font-size: var(--v-text-12);
+  line-height: 1;
+  font-weight: var(--v-weight-semibold);
+  font-variant-numeric: lining-nums;
+  color: var(--v-surface);
+  transition: transform var(--v-motion-state) var(--v-ease),
+    box-shadow var(--v-motion-state) var(--v-ease);
+}
+
+button.v-pdf-pin {
+  cursor: pointer;
+}
+
+/* 44px hit target without a 44px dot */
+button.v-pdf-pin::before {
+  content: "";
+  position: absolute;
+  inset: -11px;
+  border-radius: var(--v-radius-round);
+}
+
+button.v-pdf-pin {
+  position: relative;
+}
+
+.v-pdf-pin--deduction {
+  background: var(--v-deduction);
+}
+
+.v-pdf-pin--hint {
+  background: var(--v-hint);
+}
+
+.v-pdf-pin--credit {
+  background: var(--v-credit);
+}
+
+.v-pdf-pin.is-selected {
+  box-shadow: 0 0 0 3px var(--v-surface), 0 0 0 5px currentColor;
+}
+
+.v-pdf-pin--deduction.is-selected {
+  box-shadow: 0 0 0 3px var(--v-surface), 0 0 0 5px var(--v-deduction);
+}
+
+.v-pdf-pin--hint.is-selected {
+  box-shadow: 0 0 0 3px var(--v-surface), 0 0 0 5px var(--v-hint);
+}
+
+.v-pdf-pin--credit.is-selected {
+  box-shadow: 0 0 0 3px var(--v-surface), 0 0 0 5px var(--v-credit);
+}
+
+/* --- bbox outlines -------------------------------------------------------- */
+
+.v-pdf-box {
+  position: absolute;
+  border: 1.5px solid currentColor;
+  border-radius: var(--v-radius-6);
+  pointer-events: none;
+}
+
+.v-pdf-box--deduction {
+  color: var(--v-deduction);
+  background: color-mix(in oklab, var(--v-deduction) 7%, transparent);
+}
+
+.v-pdf-box--hint {
+  color: var(--v-hint);
+  background: color-mix(in oklab, var(--v-hint) 7%, transparent);
+}
+
+.v-pdf-box--credit {
+  color: var(--v-credit);
+  background: color-mix(in oklab, var(--v-credit) 7%, transparent);
+}
+
+.v-pdf-box__pin {
+  position: absolute;
+  top: -11px;
+  left: -11px;
+  pointer-events: auto;
+}
+
+@media (max-width: 760px) {
+  .v-pdf__scroll {
+    padding: var(--v-space-12);
+    gap: var(--v-space-12);
+  }
+
+  .v-pdf-page__gutter {
+    width: 26px;
+  }
+}

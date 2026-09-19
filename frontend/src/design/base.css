@@ -1,0 +1,205 @@
+/* Reset, body type and the composed type classes. Tasks 2-5 use the .v-* classes rather than
+ * setting font-size and line-height by hand, so the vertical rhythm stays on the 4px grid. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd,
+ul,
+ol {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--v-surface);
+  color: var(--v-ink);
+  font-family: var(--v-font-sans);
+  font-size: var(--v-text-14);
+  line-height: var(--v-lead-14);
+  font-weight: var(--v-weight-regular);
+  font-synthesis: none;
+  font-kerning: normal;
+  font-variant-numeric: tabular-nums lining-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100dvh;
+  isolation: isolate;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+  font-variant-numeric: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+hr {
+  border: 0;
+  border-top: var(--v-border-hairline);
+  margin: 0;
+}
+
+/* --- composed type classes ------------------------------------------------ */
+
+.v-label-12 {
+  font-size: var(--v-text-12);
+  line-height: var(--v-lead-12);
+  font-weight: var(--v-weight-medium);
+  letter-spacing: var(--v-track-normal);
+  color: var(--v-muted);
+}
+
+.v-label-14 {
+  font-size: var(--v-text-14);
+  line-height: var(--v-lead-14);
+  font-weight: var(--v-weight-medium);
+}
+
+.v-copy-14 {
+  font-size: var(--v-text-14);
+  line-height: var(--v-lead-14-prose);
+  font-weight: var(--v-weight-regular);
+}
+
+.v-copy-16 {
+  font-size: var(--v-text-16);
+  line-height: var(--v-lead-16-prose);
+  font-weight: var(--v-weight-regular);
+}
+
+.v-heading-14 {
+  font-size: var(--v-text-14);
+  line-height: var(--v-lead-14);
+  font-weight: var(--v-weight-semibold);
+}
+
+.v-heading-16 {
+  font-size: var(--v-text-16);
+  line-height: var(--v-lead-16);
+  font-weight: var(--v-weight-semibold);
+}
+
+.v-heading-20 {
+  font-family: var(--v-font-serif);
+  font-size: var(--v-text-20);
+  line-height: var(--v-lead-20);
+  font-weight: var(--v-weight-semibold);
+  letter-spacing: var(--v-track-tight);
+}
+
+.v-heading-28 {
+  font-family: var(--v-font-serif);
+  font-size: var(--v-text-28);
+  line-height: var(--v-lead-28);
+  font-weight: var(--v-weight-semibold);
+  letter-spacing: var(--v-track-tight);
+}
+
+.v-score {
+  font-family: var(--v-font-serif);
+  font-weight: var(--v-weight-semibold);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: var(--v-track-tight);
+}
+
+.v-muted {
+  color: var(--v-muted);
+}
+
+.v-measure {
+  max-width: var(--v-measure);
+}
+
+/* --- links ---------------------------------------------------------------- */
+
+a {
+  color: var(--v-teal-500);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.v-prose a,
+p a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* --- focus ---------------------------------------------------------------- */
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--v-focus);
+  outline-offset: 2px;
+  border-radius: var(--v-radius-6);
+}
+
+.v-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- reduced motion ------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

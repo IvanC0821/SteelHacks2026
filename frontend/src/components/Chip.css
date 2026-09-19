@@ -1,0 +1,82 @@
+.v-chip {
+  --v-chip-bg: var(--v-panel-strong);
+  --v-chip-fg: var(--v-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v-space-4);
+  min-height: 22px;
+  padding: 0 var(--v-space-8);
+  border-radius: var(--v-radius-round);
+  border: 1px solid transparent;
+  background: var(--v-chip-bg);
+  color: var(--v-chip-fg);
+  font-size: var(--v-text-12);
+  line-height: var(--v-lead-12);
+  font-weight: var(--v-weight-medium);
+  white-space: nowrap;
+}
+
+/* the numbered circle: the digit is knocked out of the chip's own ink */
+.v-chip__number {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-left: -2px;
+  border-radius: var(--v-radius-round);
+  background: var(--v-chip-fg);
+  color: var(--v-chip-bg);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: var(--v-weight-semibold);
+  font-variant-numeric: lining-nums;
+}
+
+.v-chip__detail {
+  color: var(--v-muted);
+  font-weight: var(--v-weight-regular);
+}
+
+.v-chip--neutral {
+  --v-chip-bg: var(--v-panel-strong);
+  --v-chip-fg: var(--v-ink);
+}
+
+.v-chip--teal {
+  --v-chip-bg: var(--v-teal-100);
+  --v-chip-fg: var(--v-teal-600);
+}
+
+.v-chip--deduction {
+  --v-chip-bg: var(--v-deduction-soft);
+  --v-chip-fg: var(--v-deduction);
+}
+
+.v-chip--credit {
+  --v-chip-bg: var(--v-credit-soft);
+  --v-chip-fg: var(--v-credit);
+}
+
+.v-chip--hint {
+  --v-chip-bg: var(--v-hint-soft);
+  --v-chip-fg: var(--v-hint);
+}
+
+.v-chip--ai {
+  --v-chip-bg: var(--v-ai-soft);
+  --v-chip-fg: var(--v-ai);
+  border-color: var(--v-line);
+}
+
+.v-chip--fixture {
+  --v-chip-bg: var(--v-surface);
+  --v-chip-fg: var(--v-warn);
+  border-color: var(--v-warn);
+  border-style: dashed;
+}
+
+.v-chip.is-selected {
+  --v-chip-bg: var(--v-teal-100);
+  --v-chip-fg: var(--v-teal-600);
+  box-shadow: inset 2px 0 0 var(--v-teal-600);
+}

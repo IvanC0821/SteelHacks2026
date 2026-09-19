@@ -1,0 +1,62 @@
+.v-toast-layer {
+  position: fixed;
+  left: 50%;
+  bottom: var(--v-space-24);
+  transform: translateX(-50%);
+  z-index: var(--v-z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-8);
+  pointer-events: none;
+}
+
+.v-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-12);
+  min-height: var(--v-control);
+  max-width: min(480px, calc(100vw - var(--v-space-32)));
+  padding: var(--v-space-8) var(--v-space-16);
+  border-radius: var(--v-radius-8);
+  border: 1px solid var(--v-teal-800);
+  background: var(--v-teal-800);
+  color: var(--v-surface);
+  font-size: var(--v-text-14);
+  line-height: var(--v-lead-14);
+  box-shadow: var(--v-shadow-float);
+  pointer-events: auto;
+  animation: v-toast-in var(--v-motion-toast) var(--v-ease);
+}
+
+.v-toast--error {
+  border-color: var(--v-error);
+  background: var(--v-error);
+}
+
+.v-toast__message {
+  flex: 1;
+}
+
+.v-toast__action {
+  flex: none;
+  min-height: 24px;
+  padding: 0 var(--v-space-4);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-weight: var(--v-weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.v-toast__action:focus-visible {
+  outline: 2px solid var(--v-surface);
+  outline-offset: 2px;
+}
+
+@keyframes v-toast-in {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+}

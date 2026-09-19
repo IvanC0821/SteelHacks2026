@@ -1,0 +1,220 @@
+.v-shell {
+  display: grid;
+  grid-template-columns: var(--v-rail) 1fr;
+  height: 100dvh;
+  background: var(--v-surface);
+}
+
+.v-shell.is-collapsed {
+  grid-template-columns: var(--v-rail-collapsed) 1fr;
+}
+
+/* --- rail ----------------------------------------------------------------- */
+
+.v-rail {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-right: var(--v-border-hairline);
+  background: var(--v-panel);
+  overflow: hidden;
+}
+
+.v-rail--drawer {
+  border-right: 0;
+  background: transparent;
+  height: 100%;
+  margin: calc(-1 * var(--v-space-16));
+}
+
+.v-rail--drawer .v-rail__course {
+  padding-top: var(--v-space-4);
+}
+
+.v-rail__brand {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--v-space-4);
+  height: var(--v-header-row);
+  padding: 0 var(--v-space-8) 0 var(--v-space-16);
+  border-bottom: var(--v-border-hairline);
+}
+
+.is-collapsed .v-rail__brand {
+  flex-direction: column;
+  justify-content: center;
+  height: auto;
+  padding: var(--v-space-8) 0;
+  gap: var(--v-space-8);
+}
+
+.v-rail__brand-link {
+  display: inline-flex;
+  color: var(--v-ink);
+  text-decoration: none;
+}
+
+.v-rail__brand-link:hover {
+  text-decoration: none;
+}
+
+.v-rail__course {
+  flex: none;
+  display: block;
+  padding: var(--v-space-12) var(--v-space-16) var(--v-space-8);
+  color: var(--v-ink);
+  text-decoration: none;
+}
+
+.v-rail__course:hover {
+  color: var(--v-teal-500);
+  text-decoration: none;
+}
+
+.v-rail__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--v-space-4) var(--v-space-8) var(--v-space-16);
+}
+
+.is-collapsed .v-rail__list {
+  padding: var(--v-space-8) var(--v-space-8) var(--v-space-16);
+}
+
+.v-rail__list-label {
+  padding: var(--v-space-4) var(--v-space-8) var(--v-space-4);
+}
+
+.v-rail__item {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-8);
+  min-height: var(--v-control);
+  padding: var(--v-space-8);
+  border-radius: var(--v-radius-6);
+  color: var(--v-ink);
+  font-size: var(--v-text-14);
+  line-height: var(--v-lead-14);
+  font-weight: var(--v-weight-regular);
+  text-decoration: none;
+  transition: background-color var(--v-motion-state) var(--v-ease);
+}
+
+.v-rail__item:hover {
+  background: var(--v-hover);
+  text-decoration: none;
+}
+
+.v-rail__item.is-active {
+  background: var(--v-teal-100);
+  color: var(--v-teal-600);
+  font-weight: var(--v-weight-medium);
+  box-shadow: inset 2px 0 0 var(--v-teal-600);
+}
+
+.v-rail__item-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.is-collapsed .v-rail__item {
+  justify-content: center;
+  width: var(--v-control);
+  height: var(--v-control);
+  padding: 0;
+  margin: 0 auto;
+}
+
+.v-rail__footer {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-2);
+  padding: var(--v-space-12) var(--v-space-16);
+  border-top: var(--v-border-hairline);
+}
+
+.is-collapsed .v-rail__footer {
+  align-items: center;
+  padding: var(--v-space-8) 0;
+}
+
+.v-rail__identity {
+  color: var(--v-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v-rail__role {
+  color: var(--v-muted);
+  font-weight: var(--v-weight-regular);
+}
+
+.v-rail__signout {
+  align-self: flex-start;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--v-teal-500);
+  font-weight: var(--v-weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* --- main ----------------------------------------------------------------- */
+
+.v-shell__main {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.v-shell__denied {
+  padding: var(--v-space-32) var(--v-space-24);
+}
+
+.v-shell__phone-header {
+  display: none;
+}
+
+/* --- phone ---------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .v-shell,
+  .v-shell.is-collapsed {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--v-header-row) 1fr;
+  }
+
+  .v-rail {
+    display: none;
+  }
+
+  .v-rail--drawer {
+    display: flex;
+  }
+
+  .v-shell__phone-header {
+    display: flex;
+    align-items: center;
+    gap: var(--v-space-4);
+    height: var(--v-header-row);
+    padding: 0 var(--v-space-8);
+    border-bottom: var(--v-border-hairline);
+    background: var(--v-panel);
+  }
+
+  .v-shell__denied {
+    padding: var(--v-space-24) var(--v-space-16);
+  }
+}

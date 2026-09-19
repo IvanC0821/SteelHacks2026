@@ -1,0 +1,20 @@
+// The component contract for Tasks 2-5. Every prop is documented in design/DESIGN.md.
+export { Button, type ButtonProps, type ButtonVariant, type ButtonSize } from "./Button";
+export { Chip, type ChipProps, type ChipTone } from "./Chip";
+export { StatusChip, type StatusChipProps } from "./StatusChip";
+export { assessmentState, type AssessmentState } from "./status";
+export { Score, type ScoreProps, type ScoreSize } from "./Score";
+export { formatPoints, formatDelta, deltaToneClass } from "./score-format";
+export { Dialog, type DialogProps, type DialogAction } from "./Dialog";
+export { Drawer, type DrawerProps } from "./Drawer";
+export { ToastProvider } from "./Toast";
+export { useToast, type ToastApi, type ToastRequest, type ToastTone } from "./toast-context";
+export { Notice, type NoticeProps, type NoticeTone } from "./Notice";
+export { Field, type FieldProps } from "./Field";
+export { Table, type TableProps, type Column } from "./Table";
+export { Tabs, type TabsProps, type TabSpec } from "./Tabs";
+export { activeTab } from "./tabs-url";
+export { EmptyState, type EmptyStateProps } from "./EmptyState";
+export { Spinner, type SpinnerProps } from "./Spinner";
+export { Kbd, type KbdProps } from "./Kbd";
+export { Icon, type IconProps } from "./Icon";

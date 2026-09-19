@@ -1,0 +1,32 @@
+.v-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v-space-8);
+  color: var(--v-ink);
+}
+
+.v-wordmark__word {
+  font-family: var(--v-font-serif);
+  font-weight: var(--v-weight-semibold);
+  letter-spacing: var(--v-track-tight);
+}
+
+.v-wordmark--sm .v-wordmark__mark {
+  width: 24px;
+  height: 24px;
+}
+
+.v-wordmark--sm .v-wordmark__word {
+  font-size: var(--v-text-20);
+  line-height: var(--v-lead-20);
+}
+
+.v-wordmark--lg .v-wordmark__mark {
+  width: 32px;
+  height: 32px;
+}
+
+.v-wordmark--lg .v-wordmark__word {
+  font-size: var(--v-text-28);
+  line-height: var(--v-lead-28);
+}

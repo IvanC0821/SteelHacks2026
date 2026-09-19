@@ -1,0 +1,44 @@
+.v-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--v-space-8);
+  padding: var(--v-space-12) var(--v-space-12) var(--v-space-12) var(--v-space-16);
+  border-radius: var(--v-radius-8);
+  color: var(--v-ink);
+  /* a 3px rule in the semantic ink: the same marginalia language as the page edge and selection */
+  box-shadow: inset 3px 0 0 var(--v-notice-ink);
+}
+
+.v-notice__icon {
+  margin-top: 2px;
+  color: var(--v-notice-ink);
+}
+
+.v-notice__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-2);
+  max-width: 68ch;
+}
+
+.v-notice__action {
+  flex: none;
+  align-self: center;
+}
+
+.v-notice--info {
+  --v-notice-ink: var(--v-teal-500);
+  background: var(--v-teal-50);
+}
+
+.v-notice--warn {
+  --v-notice-ink: var(--v-warn);
+  background: var(--v-warn-soft);
+}
+
+.v-notice--error {
+  --v-notice-ink: var(--v-error);
+  background: var(--v-error-soft);
+}
