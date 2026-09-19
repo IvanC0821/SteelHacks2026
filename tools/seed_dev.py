@@ -26,6 +26,7 @@ API = os.getenv("VERITY_API", "http://127.0.0.1:8026")
 DATA_DIR = os.getenv("VERITY_DATA_DIR", ".data")
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "frontend" / ".dev" / "session.json"
+FIXTURES = ROOT / "tools" / "fixtures" / "out"
 
 COURSE = "21-241 Linear Algebra (fictional section)"
 
@@ -209,6 +210,19 @@ def student_pdf(name: str, version: int):
     return make_pdf([p1, p2, p3], f"{name} (fictional)")
 
 
+def fixture(name: str, fallback) -> bytes:
+    """Prefer the rendered handwriting fixture, fall back to the typed writer above.
+
+    `node tools/fixtures/make.mjs` writes tools/fixtures/out/<name>. Those PDFs carry the same
+    fictional content in a scanned-handwriting style; when they are absent (fresh checkout, no
+    Node) the typed PDFs are used instead and everything else in the seed is unchanged.
+    """
+    path = FIXTURES / name
+    if path.is_file():
+        return path.read_bytes()
+    return fallback()
+
+
 class Client:
     def __init__(self, token):
         self.http = httpx.Client(base_url=API + "/api", headers={"Authorization": f"Bearer {token}"}, timeout=30)
@@ -261,8 +275,8 @@ def main():
     )
     aid = hw["id"]
     for kind, data, filename in (
-        ("questions", questions_pdf(), "homework-1.pdf"),
-        ("solution", solution_pdf(), "homework-1-solution.pdf"),
+        ("questions", fixture("questions.pdf", questions_pdf), "homework-1.pdf"),
+        ("solution", fixture("solution.pdf", solution_pdf), "homework-1-solution.pdf"),
     ):
         instructor.call(
             "POST",
@@ -291,12 +305,14 @@ def main():
     for name, versions, hand_in in STUDENTS:
         _, client = students[name]
         latest = None
+        slug = name.split()[0].lower()
         for v in range(1, versions + 1):
+            data = fixture(f"{slug}-v{v}.pdf", lambda n=name, i=v: student_pdf(n, i))
             sub = client.call(
                 "POST",
                 f"/assignments/{aid}/documents",
                 params={"kind": "submission"},
-                files={"file": (f"hw1-{name.split()[0].lower()}-v{v}.pdf", student_pdf(name, v), "application/pdf")},
+                files={"file": (f"hw1-{slug}-v{v}.pdf", data, "application/pdf")},
             )
             client.call("PUT", f"/submissions/{sub['id']}/mapping", json=mapping)
             job = client.call("POST", f"/submissions/{sub['id']}/assessment-jobs")

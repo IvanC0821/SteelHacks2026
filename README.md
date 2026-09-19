@@ -20,6 +20,12 @@ This repository contains application code, configuration, API documentation and 
 The model team owns model integration, training data and evaluation. Presentation materials live
 separately and no demo dataset is bundled here.
 
+## AI tools used
+
+Built during SteelHacks 2026 (after the 11:00 am Saturday start) with OpenAI Codex (backend) and
+Claude Code (frontend, dev tooling), both directed by the team. All data in this repository is
+fictional. No model weights were trained and no prior Verity code was reused.
+
 ## Install
 
 Python 3.12+ and uv. Run from this repository root:

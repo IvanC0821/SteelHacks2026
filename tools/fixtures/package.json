@@ -1,0 +1,6 @@
+{
+  "name": "verity-fixtures",
+  "private": true,
+  "type": "module",
+  "description": "Fictional demo PDFs. Resolves playwright from frontend/node_modules; no dependencies of its own."
+}
