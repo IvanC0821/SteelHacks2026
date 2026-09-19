@@ -265,6 +265,18 @@ export interface Analytics {
   interpretation: string;
 }
 
+export interface FieldError {
+  /** e.g. ["body", "questions", 0, "id"] */
+  path: Array<string | number>;
+  type: string;
+}
+
 export interface ApiErrorBody {
-  detail: { code: string; fields?: Array<{ path: string; type: string }> } | string;
+  detail: { code: string; fields?: FieldError[] } | string;
+}
+
+/** PUT /api/assignments/{id}/rubric-draft returns the saved draft and its revision. */
+export interface SavedRubricDraft {
+  draft: RubricInput;
+  revision: number;
 }

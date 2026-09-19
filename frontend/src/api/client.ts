@@ -9,6 +9,7 @@ import type {
   Course,
   DocumentKind,
   DocumentMeta,
+  FieldError,
   Job,
   Member,
   PageMapping,
@@ -17,6 +18,7 @@ import type {
   ReviewQuestion,
   Rubric,
   RubricInput,
+  SavedRubricDraft,
   StaffSubmission,
   Submission,
   User,
@@ -26,9 +28,9 @@ import type { Session } from "./session";
 export class ApiError extends Error {
   status: number;
   code: string;
-  fields: Array<{ path: string; type: string }>;
+  fields: FieldError[];
 
-  constructor(status: number, code: string, fields: Array<{ path: string; type: string }> = []) {
+  constructor(status: number, code: string, fields: FieldError[] = []) {
     super(code);
     this.status = status;
     this.code = code;
@@ -76,12 +78,12 @@ export class VerityClient {
     }
     if (!response.ok) {
       let code = `http_${response.status}`;
-      let fields: Array<{ path: string; type: string }> = [];
+      let fields: FieldError[] = [];
       try {
         const data = (await response.json()) as { detail?: unknown };
         if (typeof data.detail === "string") code = data.detail;
         else if (data.detail && typeof data.detail === "object") {
-          const d = data.detail as { code?: string; fields?: Array<{ path: string; type: string }> };
+          const d = data.detail as { code?: string; fields?: FieldError[] };
           if (d.code) code = d.code;
           if (d.fields) fields = d.fields;
         }
@@ -130,7 +132,8 @@ export class VerityClient {
   assignment(assignmentId: string): Promise<AssignmentDetail> {
     return this.request("GET", `/assignments/${assignmentId}`);
   }
-  saveRubricDraft(assignmentId: string, input: RubricInput): Promise<AssignmentDetail> {
+  /** Returns the saved draft and its new revision, not the assignment detail. */
+  saveRubricDraft(assignmentId: string, input: RubricInput): Promise<SavedRubricDraft> {
     return this.request("PUT", `/assignments/${assignmentId}/rubric-draft`, input);
   }
   requestRubricDraft(assignmentId: string): Promise<Job> {
