@@ -18,3 +18,4 @@ export { EmptyState, type EmptyStateProps } from "./EmptyState";
 export { Spinner, type SpinnerProps } from "./Spinner";
 export { Kbd, type KbdProps } from "./Kbd";
 export { Icon, type IconProps } from "./Icon";
+export { flagLabel, flagTone, FLAG_LABEL } from "./flags";

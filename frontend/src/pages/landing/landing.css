@@ -1,0 +1,115 @@
+/* The signed-out page. One column on the white ground, left aligned, nothing floating. */
+
+.v-landing {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--v-surface);
+}
+
+/* `/?preview=landing`: the same page lifted over the shell, so it can be reviewed while signed in */
+.v-landing--preview {
+  position: fixed;
+  inset: 0;
+  z-index: var(--v-z-dialog);
+  overflow: auto;
+}
+
+.v-landing__inner {
+  width: 100%;
+  max-width: 640px;
+  padding: var(--v-space-48) var(--v-space-24);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--v-space-24);
+}
+
+.v-landing__line {
+  max-width: 34em;
+  margin: 0;
+}
+
+.v-landing__columns {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--v-space-32);
+  padding: var(--v-space-24) 0;
+  border-top: var(--v-border-hairline);
+  border-bottom: var(--v-border-hairline);
+}
+
+.v-landing__steps h2 {
+  margin-bottom: var(--v-space-12);
+}
+
+.v-landing__step {
+  display: flex;
+  align-items: baseline;
+  gap: var(--v-space-8);
+  padding: var(--v-space-4) 0;
+}
+
+.v-landing__step-n {
+  flex: none;
+  width: 1.1em;
+  color: var(--v-teal-600);
+  font-size: var(--v-text-16);
+  line-height: var(--v-lead-16-prose);
+}
+
+.v-landing__continue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--v-control-lg);
+  padding: 0 var(--v-space-24);
+  border-radius: var(--v-radius-6);
+  background: var(--v-teal-600);
+  color: var(--v-surface);
+  font-size: var(--v-text-16);
+  line-height: var(--v-lead-16);
+  font-weight: var(--v-weight-medium);
+  text-decoration: none;
+  transition: background-color var(--v-motion-state) var(--v-ease);
+}
+
+.v-landing__continue:hover {
+  background: var(--v-teal-500);
+  text-decoration: none;
+}
+
+.v-landing__continue:active {
+  background: var(--v-teal-800);
+}
+
+.v-landing__footnote {
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .v-landing__inner {
+    padding: var(--v-space-32) var(--v-space-16);
+    gap: var(--v-space-16);
+  }
+
+  .v-landing__columns {
+    grid-template-columns: 1fr;
+    gap: var(--v-space-24);
+  }
+
+  .v-landing__continue {
+    width: 100%;
+  }
+}
+
+/* the signed-in visitor with no course: the same page frame, one sentence */
+.v-landing__enrol {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--v-space-24);
+  max-width: var(--v-measure);
+}

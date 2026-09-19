@@ -1,0 +1,382 @@
+/* Course home, staff assignment page, Overview and Reports. Content pages: one scrolling column
+ * on the 1040px measure, left aligned, no cards around cards. */
+
+.v-page {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--v-space-32);
+  padding: var(--v-space-24);
+  max-width: var(--v-measure);
+  width: 100%;
+}
+
+.v-link-button {
+  text-decoration: none;
+}
+
+.v-link-button:hover {
+  text-decoration: none;
+}
+
+.v-footnote {
+  margin: 0;
+}
+
+.v-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-12);
+}
+
+/* a chart reads better short than wide: the bars stop well inside the 1040 measure */
+.v-block--chart {
+  max-inline-size: 720px;
+}
+
+.v-wide-only {
+  display: inline;
+}
+
+.v-phone-only {
+  display: none;
+}
+
+/* --- the four staff tabs, directly under the 52px header ------------------- */
+
+.v-assignment__tabs {
+  flex: none;
+  padding: 0 var(--v-space-24);
+  gap: var(--v-space-4);
+}
+
+.v-assignment__tabs .v-tabs__tab {
+  text-decoration: none;
+  color: var(--v-muted);
+}
+
+.v-assignment__tabs .v-tabs__tab:hover {
+  text-decoration: none;
+}
+
+.v-assignment__tabs .v-tabs__tab[aria-current="page"] {
+  color: var(--v-ink);
+  border-bottom-color: var(--v-teal-600);
+}
+
+/* --- assignment table ------------------------------------------------------ */
+
+.v-assignments__title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-2);
+}
+
+.v-assignments__status {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-8);
+}
+
+.v-progress {
+  display: block;
+  inline-size: 96px;
+  block-size: 4px;
+  border-radius: var(--v-radius-round);
+  background: var(--v-canvas);
+  overflow: hidden;
+}
+
+.v-progress__fill {
+  display: block;
+  block-size: 100%;
+  background: var(--v-teal-600);
+}
+
+/* --- tiles ----------------------------------------------------------------- */
+
+.v-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  border: var(--v-border-hairline);
+  border-radius: var(--v-radius-8);
+  background: var(--v-panel);
+}
+
+.v-tile {
+  flex: 1 1 0;
+  min-inline-size: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-2);
+  padding: var(--v-space-16);
+  border-left: var(--v-border-hairline);
+  color: var(--v-ink);
+  text-decoration: none;
+}
+
+.v-tile:first-child {
+  border-left: 0;
+}
+
+.v-tile__value {
+  font-size: var(--v-text-20);
+  line-height: var(--v-lead-20);
+}
+
+.v-tile--link:hover {
+  background: var(--v-hover);
+  text-decoration: none;
+}
+
+.v-tile--link .v-tile__value {
+  color: var(--v-teal-600);
+}
+
+/* --- bars ------------------------------------------------------------------ */
+
+.v-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-16);
+}
+
+.v-bar__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--v-space-12);
+  margin-bottom: var(--v-space-4);
+}
+
+.v-bar__label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v-space-8);
+  min-width: 0;
+}
+
+.v-bar__value {
+  flex: none;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.v-bar__track {
+  position: relative;
+  block-size: 12px;
+  border-radius: 2px;
+  background: var(--v-panel-strong);
+}
+
+.v-bar__fill {
+  block-size: 100%;
+  border-radius: 2px;
+  background: var(--v-teal-600);
+}
+
+.v-bar__tick {
+  position: absolute;
+  inset-block: -3px;
+  inline-size: 2px;
+  background: var(--v-line-strong);
+}
+
+/* inside the teal fill the tick has to read against the fill, not the track */
+.v-bar__tick.is-inside {
+  background: var(--v-surface);
+}
+
+.v-bars__key {
+  margin: 0;
+}
+
+/* --- most flagged ---------------------------------------------------------- */
+
+.v-flagged {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-8);
+}
+
+.v-flagged__row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--v-space-12);
+  padding-block: var(--v-space-4);
+  border-bottom: var(--v-border-hairline);
+}
+
+.v-flagged__row:last-child {
+  border-bottom: 0;
+}
+
+.v-flagged__label {
+  flex: none;
+  inline-size: 240px;
+}
+
+.v-flagged__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v-space-4);
+}
+
+/* --- roster and enroll ------------------------------------------------------ */
+
+.v-roster {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-12);
+  padding-top: var(--v-space-24);
+  border-top: var(--v-border-hairline);
+}
+
+.v-roster__groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v-space-32);
+}
+
+.v-roster__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-4);
+  min-inline-size: 160px;
+}
+
+.v-enroll {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--v-space-12);
+  padding-top: var(--v-space-8);
+}
+
+.v-enroll__id {
+  inline-size: 320px;
+}
+
+.v-enroll__submit {
+  margin-top: 22px;
+}
+
+/* --- reports ---------------------------------------------------------------- */
+
+.v-reports__message {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.v-reports__quote {
+  padding: var(--v-space-12);
+  border-left: 2px solid var(--v-line-strong);
+  background: var(--v-panel);
+  color: var(--v-muted);
+}
+
+/* --- phone ------------------------------------------------------------------ */
+
+@media (max-width: 760px) {
+  .v-wide-only {
+    display: none;
+  }
+
+  .v-phone-only {
+    display: inline;
+  }
+
+  .v-page {
+    gap: var(--v-space-24);
+    padding: var(--v-space-16);
+  }
+
+  .v-assignment__tabs {
+    padding: 0 var(--v-space-16);
+    overflow-x: auto;
+  }
+
+  .v-assignment__tabs .v-tabs__tab {
+    height: var(--v-control-lg);
+  }
+
+  /* tiles stack two by two */
+  .v-tile {
+    flex: 1 1 42%;
+    min-inline-size: 42%;
+  }
+
+  .v-tile:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .v-tile:nth-child(n + 3) {
+    border-top: var(--v-border-hairline);
+  }
+
+  /* tables become stacked rows with the action at the end */
+  .v-rows thead {
+    display: none;
+  }
+
+  .v-rows,
+  .v-rows tbody,
+  .v-rows tr,
+  .v-rows td {
+    display: block;
+    width: 100%;
+  }
+
+  .v-rows tr {
+    padding: var(--v-space-12) 0;
+    border-bottom: var(--v-border-hairline);
+  }
+
+  .v-rows tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  .v-rows td {
+    padding: var(--v-space-2) 0;
+    border-bottom: 0;
+    text-align: left;
+  }
+
+  .v-rows td.v-table__cell--end {
+    text-align: left;
+    padding-top: var(--v-space-8);
+  }
+
+  .v-reports__message {
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
+
+  .v-flagged__row {
+    flex-direction: column;
+    gap: var(--v-space-4);
+  }
+
+  .v-flagged__label {
+    inline-size: auto;
+  }
+
+  .v-enroll {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .v-enroll__id {
+    inline-size: auto;
+  }
+
+  .v-enroll__submit {
+    margin-top: 0;
+    align-self: flex-start;
+    height: var(--v-control-lg);
+  }
+}

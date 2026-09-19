@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ApiError, VerityClient } from "../api/client";
 import { clearSession, loadSession, saveSession, type Session } from "../api/session";
 import type { Capabilities, Course, User } from "../api/types";
 import { SessionContext, type SessionValue } from "./session-context";
 import { SessionSetup } from "./SessionSetup";
+import { Landing } from "../pages/landing";
 import { Spinner } from "../components/Spinner";
 
 interface Loaded {
@@ -19,6 +20,7 @@ interface Loaded {
  *  `onExpired` callback the client errors are checked against. */
 export function SessionProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [session, setSession] = useState<Session | null>(() => loadSession());
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [checking, setChecking] = useState(session !== null);
@@ -135,6 +137,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }
 
   if (!value) {
+    // "/" is the signed-out landing page; every other path needs an identity first.
+    if (location.pathname === "/") return <Landing />;
     return <SessionSetup message={message} onContinue={onContinue} />;
   }
 
