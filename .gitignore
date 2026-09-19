@@ -12,3 +12,9 @@ dist/
 /demo/
 /presentation/
 /pitch/
+
+# frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.dev/
+frontend/design/screenshots/
