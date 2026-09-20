@@ -7,7 +7,7 @@ tags: [project/verity]
 # Verity · SteelHacks 2026
 
 Practice feedback under an instructor's rubric, followed by human review of every final paper.
-Fresh backend implementation. Claude Code will build the frontend; the model is supplied later.
+FastAPI backend, React frontend, and an optional server-side OpenRouter model adapter.
 
 Working API: courses and memberships, private PDFs, published rubric versions, student page mapping,
 immutable assessment attempts, jobs/retries, revisions, hand-in, TA review, grade release,
@@ -17,8 +17,9 @@ across restarts. The normal server runs with **no model configured**.
 Related: [[docs/SPEC]] · [Frontend handoff](docs/FRONTEND.md) · [Model adapter](docs/MODEL.md).
 
 This repository contains application code, configuration, API documentation and automated tests.
-The model team owns model integration, training data and evaluation. Presentation materials live
-separately and no demo dataset is bundled here.
+The [discrete math demo](docs/demos/discrete-math/README.md) includes a problem PDF, a fictional
+student response, an instructor guide, and a captured live assessment with reproduction steps.
+It is an illustrative workflow example, not a training dataset or model-quality benchmark.
 
 ## AI tools used
 
@@ -90,15 +91,18 @@ PYTHONPATH=backend:. .venv/bin/python -m scripts.export_contract
 
 ## Deliberate limits
 
-- No model weights, vendor API keys, paid calls or training run. Supply a provider using
-  `VERITY_PROVIDER_FACTORY=your_module:create_provider`; see [the contract](docs/MODEL.md).
+- No model weights, committed vendor API keys, or training run. The optional
+  [OpenRouter adapter](docs/OPENROUTER.md) makes paid model calls when configured.
+  Custom providers use `VERITY_PROVIDER_FACTORY=your_module:create_provider`;
+  see [the contract](docs/MODEL.md).
 - Embedded PDF text extraction is available; handwriting OCR is not. Staff can add a sourced
   transcript before assessment. No exact annotation boxes are invented from page-only extraction.
 - Explicit hand-in before the deadline. No automatic deadline finalization or replacement of an
   existing final. Later practice uploads remain separate from the handed-in paper.
 - Local hackathon backend: no production identity provider, rate limiter, hostile-PDF sandbox,
   distributed worker, LMS integration or public deployment. Use fictional inputs.
-- No frontend screens yet. [Claude's handoff](docs/FRONTEND.md) contains exact routes and states.
+- The [frontend](frontend/README.md) provides student feedback, rubric editing, and staff review.
+  [The API handoff](docs/FRONTEND.md) describes routes and states.
 
 Text extraction behavior follows [pypdf's documented limits](https://pypdf.readthedocs.io/en/stable/user/extract-text.html).
 API tests use [FastAPI's TestClient workflow](https://fastapi.tiangolo.com/tutorial/testing/).

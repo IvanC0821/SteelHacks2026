@@ -1,0 +1,76 @@
+{
+  "id": "sub_fc42c616ed484272aa4b99c2a1940c2b",
+  "assignment_id": "asg_ae01165be4274e9bacd90c6d0da531bd",
+  "student_id": "usr_1bfa081cabeb46e981c4d19f363c31b8",
+  "document_id": "doc_2374f7df065c4b1fb02d0df613fbfb3a",
+  "version": 1,
+  "rubric_id": "rub_b63e14aa9c1841158e9e75f81a4241a5",
+  "created_at": "2026-09-20T14:06:19.503903+00:00",
+  "mapping": {
+    "q1": [
+      1
+    ]
+  },
+  "sealed": true,
+  "final": false,
+  "handed_in_at": null,
+  "job_id": "job_490236c18dde4feabcb822b37919c225",
+  "document": {
+    "id": "doc_2374f7df065c4b1fb02d0df613fbfb3a",
+    "assignment_id": "asg_ae01165be4274e9bacd90c6d0da531bd",
+    "kind": "submission",
+    "filename": "discrete-math-student-response.pdf",
+    "page_count": 1,
+    "sha256": "6d2f4d18698cc7848f9ee76598cf8344d4f5a38de30aba538f0b99f929e219b3",
+    "extraction": "pdf_text",
+    "has_unreadable_pages": false
+  },
+  "assessment": {
+    "score": 4.0,
+    "max_points": 10.0,
+    "status": "estimated",
+    "questions": [
+      {
+        "question_id": "q1",
+        "score": 4.0,
+        "max_points": 10.0,
+        "status": "estimated",
+        "flags": [
+          {
+            "id": "q1-flag-1",
+            "category": "logic",
+            "message": "Have you justified the transition from the assumed case to the next case?",
+            "anchors": [
+              {
+                "id": "anchor-1",
+                "page": 1,
+                "bbox": null
+              }
+            ],
+            "message_source": "model_selected"
+          },
+          {
+            "id": "q1-flag-2",
+            "category": "arithmetic",
+            "message": "Does this calculation follow from the line immediately before it?",
+            "anchors": [
+              {
+                "id": "anchor-1",
+                "page": 1,
+                "bbox": null
+              }
+            ],
+            "message_source": "model_selected"
+          }
+        ]
+      }
+    ],
+    "provider_id": "openrouter:nvidia/nemotron-3-nano-30b-a3b:rubric=nvidia/nemotron-3-nano-30b-a3b:feedback=nvidia/nemotron-3-nano-30b-a3b:v2",
+    "mode": "model",
+    "assessed_at": "2026-09-20T14:06:24.946725+00:00"
+  },
+  "review": {
+    "status": "not_started",
+    "comments": {}
+  }
+}

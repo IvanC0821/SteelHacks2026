@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-09-20T14:10:18.034Z",
+  "checks": [
+    {
+      "view": "student-feedback",
+      "pdf_visible": true,
+      "console_errors": 0,
+      "screenshot": "student-feedback.png"
+    },
+    {
+      "view": "instructor-rubric",
+      "pdf_visible": false,
+      "console_errors": 0,
+      "screenshot": "instructor-rubric.png"
+    }
+  ]
+}

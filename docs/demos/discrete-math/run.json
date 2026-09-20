@@ -1,0 +1,72 @@
+{
+  "demo": "discrete-math-induction",
+  "fictional": true,
+  "exported_at": "2026-09-20T14:06:27.579654+00:00",
+  "created_at": "2026-09-20T14:06:19.434760+00:00",
+  "course_id": "crs_18af0492d5c24e11bae9dc541b9f6a1d",
+  "assignment_id": "asg_ae01165be4274e9bacd90c6d0da531bd",
+  "submission_id": "sub_fc42c616ed484272aa4b99c2a1940c2b",
+  "rubric_id": "rub_b63e14aa9c1841158e9e75f81a4241a5",
+  "job": {
+    "id": "job_490236c18dde4feabcb822b37919c225",
+    "kind": "assessment",
+    "target_id": "sub_fc42c616ed484272aa4b99c2a1940c2b",
+    "status": "succeeded",
+    "attempts": 1,
+    "created_at": "2026-09-20T14:06:19.509373+00:00",
+    "updated_at": "2026-09-20T14:06:27.120343+00:00",
+    "error_code": null
+  },
+  "capabilities": {
+    "provider_id": "openrouter:nvidia/nemotron-3-nano-30b-a3b:rubric=nvidia/nemotron-3-nano-30b-a3b:feedback=nvidia/nemotron-3-nano-30b-a3b:v2",
+    "mode": "model",
+    "automated_assessment": true,
+    "ocr": false,
+    "extraction": "pdf_text_or_staff_transcript",
+    "max_upload_bytes": 15728640,
+    "max_pages": 40,
+    "human_review_required": true
+  },
+  "input_files": {
+    "questions": {
+      "filename": "discrete-math-problem.pdf",
+      "sha256": "e9841b160d9d984cb6e2f160f12ed2caea75609eb09327912ba533b87e15ce71"
+    },
+    "submission": {
+      "filename": "discrete-math-student-response.pdf",
+      "sha256": "6d2f4d18698cc7848f9ee76598cf8344d4f5a38de30aba538f0b99f929e219b3"
+    }
+  },
+  "comparison_files": {
+    "instructor_guide": {
+      "filename": "discrete-math-instructor-guide.pdf",
+      "sha256": "96300b86ce0ea1b421283a8f20a8f8522d6c732fc497dbfda91fb093789e9c68",
+      "sent_to_model": false
+    }
+  },
+  "content_sha256": "f6f12f7453f7ec6debae92e227193399a9779abf249ce43632d176ac20a7dbd3",
+  "model_input_scope": "Question PDF, public assignment, rubric and student PDF only. The instructor guide and manual reference score/diagnosis were not sent to the model.",
+  "manual_expectation": {
+    "score": 4,
+    "max_points": 10,
+    "criterion_scores": {
+      "base": 2,
+      "hypothesis": 2,
+      "extension": 0,
+      "algebra": 0
+    },
+    "source": "Authored instructor rubric; independent of the model result",
+    "note": "The expected score is recorded for comparison, never forced on model output."
+  },
+  "actual": {
+    "score": 4.0,
+    "max_points": 10.0,
+    "status": "estimated",
+    "provider_id": "openrouter:nvidia/nemotron-3-nano-30b-a3b:rubric=nvidia/nemotron-3-nano-30b-a3b:feedback=nvidia/nemotron-3-nano-30b-a3b:v2",
+    "mode": "model",
+    "input_sha256": "6d2f4d18698cc7848f9ee76598cf8344d4f5a38de30aba538f0b99f929e219b3",
+    "assessed_at": "2026-09-20T14:06:24.946725+00:00"
+  },
+  "human_review": "Not handed in, reviewed, or released; automated feedback only.",
+  "reproducibility": "Inputs and rubric are fixed; live model output may vary between runs."
+}
