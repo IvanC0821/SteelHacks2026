@@ -14,6 +14,7 @@ import {
 } from "./assessment";
 import { conflictSentence, criteriaFor, progressSentence, validateDraft } from "./review-state";
 import type { ReviewController } from "./useReview";
+import { CriterionExplanation } from "./CriterionExplanation";
 import "./RubricPane.css";
 
 export interface RubricPaneProps {
@@ -161,7 +162,7 @@ export function RubricPane({
           <p className="v-label-12 v-muted v-grade-pane__tally-help">
             {readOnly
               ? "Criteria show points available. The saved score is below."
-              : "Select criteria to fill the score below. Only the score and reason are saved."}
+              : "Select criteria to fill the score below. Criterion selections aren't saved."}
           </p>
           <ul className="v-grade-criteria">
             {criteria.map((criterion, index) => {
@@ -192,10 +193,15 @@ export function RubricPane({
                     </span>
                   </button>
                   {decision?.rationale ? (
-                    <details className="v-grade-criterion__why">
-                      <summary className="v-label-12">Why</summary>
-                      <p className="v-copy-14">{decision.rationale}</p>
-                    </details>
+                    <CriterionExplanation
+                      key={`${submission.id}:${criterion.id}`}
+                      criterionId={criterion.id}
+                      original={decision.rationale}
+                      correction={submission.review.criterion_explanations?.[criterion.id]?.text}
+                      isFixture={isFixture}
+                      readOnly={readOnly}
+                      controller={controller}
+                    />
                   ) : null}
                 </li>
               );

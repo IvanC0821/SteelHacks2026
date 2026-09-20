@@ -232,6 +232,28 @@
   color: var(--v-muted);
 }
 
+.v-grade-explanation__editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-8);
+  margin-top: var(--v-space-8);
+}
+
+.v-grade-explanation__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v-space-4);
+}
+
+.v-grade-explanation__text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.v-grade-explanation__original {
+  margin-top: var(--v-space-8);
+}
+
 /* score and reason */
 
 .v-grade-pane__decision {

@@ -1,4 +1,4 @@
-// The review controller: the reducer plus the four mutations, each sending the revision it
+// The review controller: the reducer plus review mutations, each sending the revision it
 // last saw. A 409 stale_review_reload reloads the paper and keeps the reviewer's typing.
 
 import { useCallback, useEffect, useReducer, useState } from "react";
@@ -13,7 +13,7 @@ import {
   type ReviewState,
 } from "./review-state";
 
-export type MutationKind = "save" | "complete" | "release" | "reopen";
+export type MutationKind = "save" | "explanation" | "complete" | "release" | "reopen";
 
 export interface SaveOutcome {
   ok: boolean;
@@ -35,6 +35,7 @@ export interface ReviewController {
   fillFromSuggestion: (questionId: string, metIds: string[]) => void;
   dismissConflict: () => void;
   saveQuestion: (questionId: string) => Promise<SaveOutcome>;
+  saveExplanation: (criterionId: string, text: string) => Promise<SaveOutcome>;
   complete: () => Promise<SaveOutcome>;
   release: () => Promise<SaveOutcome>;
   reopen: (reason: string) => Promise<SaveOutcome>;
@@ -114,6 +115,11 @@ export function useReview(
     return run("complete", (revision) => client.completeReview(submission.id, revision));
   }, [client, submission, run]);
 
+  const saveExplanation = useCallback(async (criterionId: string, text: string) => {
+    if (!submission) return { ok: false, stale: false, code: "no_submission" };
+    return run("explanation", (revision) => client.saveExplanation(submission.id, criterionId, revision, text));
+  }, [client, submission, run]);
+
   const release = useCallback(async () => {
     if (!submission) return { ok: false, stale: false, code: "no_submission" };
     return run("release", (revision) => client.releaseReview(submission.id, revision));
@@ -165,6 +171,7 @@ export function useReview(
     ),
     dismissConflict: useCallback(() => dispatch({ type: "dismissConflict" }), []),
     saveQuestion,
+    saveExplanation,
     complete,
     release,
     reopen,

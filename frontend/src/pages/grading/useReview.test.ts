@@ -12,6 +12,7 @@ function fake(overrides: Record<string, unknown>): VerityClient {
 function setup(options: {
   submission?: StaffSubmission;
   saveReview?: unknown;
+  saveExplanation?: unknown;
   completeReview?: unknown;
   releaseReview?: unknown;
   reopenReview?: unknown;
@@ -20,6 +21,7 @@ function setup(options: {
   const submission = options.submission ?? fx.submission();
   const client = fake({
     saveReview: options.saveReview ?? vi.fn(),
+    saveExplanation: options.saveExplanation ?? vi.fn(),
     completeReview: options.completeReview ?? vi.fn(),
     releaseReview: options.releaseReview ?? vi.fn(),
     reopenReview: options.reopenReview ?? vi.fn(),
@@ -31,6 +33,20 @@ function setup(options: {
 }
 
 describe("saving a question", () => {
+  it("saves a criterion explanation with the shared revision and keeps the score draft", async () => {
+    const review = fx.review({ revision: 1, criterion_explanations: {
+      "q1-ops": { text: "Checked labels", edited_by: "ta", edited_at: "2026-09-19T12:00:00Z" },
+    } });
+    const saveExplanation = vi.fn().mockResolvedValue(review);
+    const { hook, onReview } = setup({ saveExplanation });
+    act(() => hook.result.current.setScore("q1", "6"));
+    await act(async () => { await hook.result.current.saveExplanation("q1-ops", "Checked labels"); });
+    expect(saveExplanation).toHaveBeenCalledWith("sub_ben", "q1-ops", 0, "Checked labels");
+    expect(onReview).toHaveBeenCalledWith(review);
+    expect(hook.result.current.state.revision).toBe(1);
+    expect(hook.result.current.state.drafts.q1.score).toBe("6");
+  });
+
   it("sends the revision it last saw, with the saved questions merged in", async () => {
     const saveReview = vi.fn().mockResolvedValue(
       fx.review({ revision: 2, status: "in_progress", questions: { q1: { score: 5, reason: "a" }, q3: { score: 7, reason: "b" } } }),

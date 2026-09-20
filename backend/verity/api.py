@@ -13,6 +13,7 @@ from .schemas import (
     AssignmentInput,
     CourseInput,
     EnrollmentInput,
+    ExplanationInput,
     PageMap,
     ReopenInput,
     ReportInput,
@@ -216,6 +217,12 @@ def create_app(data_dir=None, provider=None, run_jobs=True):
     @app.put("/api/submissions/{submission_id}/review", tags=["review"])
     def save_review(submission_id: str, body: ReviewInput, user=Depends(current_user)):
         return service.save_review(user, submission_id, body)
+
+    @app.put("/api/submissions/{submission_id}/review/explanations/{criterion_id}", tags=["review"])
+    def save_explanation(
+        submission_id: str, criterion_id: str, body: ExplanationInput, user=Depends(current_user)
+    ):
+        return service.save_explanation(user, submission_id, criterion_id, body)
 
     @app.post("/api/submissions/{submission_id}/review/complete", tags=["review"])
     def complete_review(submission_id: str, body: RevisionInput, user=Depends(current_user)):

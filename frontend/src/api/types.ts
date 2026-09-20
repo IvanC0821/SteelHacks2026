@@ -165,6 +165,8 @@ export interface StaffReview {
   revision: number;
   status: ReviewStatus;
   questions: Record<string, ReviewQuestion>;
+  /** Staff-only corrections; the original assessment decisions remain unchanged. */
+  criterion_explanations?: Record<string, { text: string; edited_by: string; edited_at: string }>;
   /** omitted by the API until the review is completed */
   score?: number | null;
   updated_at?: string | null;

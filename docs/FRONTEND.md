@@ -50,6 +50,7 @@ There are no student solution/rationale fields to hide in CSS; the API removes t
 | Hand in | `POST /api/submissions/{id}/hand-in` |
 | TA final queue | `GET /api/assignments/{id}/submissions?final_only=true` |
 | Save question review | `PUT /api/submissions/{id}/review` with `{expected_revision,questions:{q1:{score,reason}}}` |
+| Edit a criterion explanation (TA or instructor) | `PUT /api/submissions/{id}/review/explanations/{criterion_id}` with `{expected_revision,text}` |
 | Finish whole paper | `POST /api/submissions/{id}/review/complete` with `{expected_revision}` |
 | Instructor release | `POST /api/submissions/{id}/review/release` with `{expected_revision}` |
 | Instructor reopen | `POST /api/submissions/{id}/review/reopen` with `{expected_revision,reason}` |
@@ -99,6 +100,12 @@ references requires publication to attach them to a new version. Past attempts k
 
 The grading screen uses the **final queue**, not the latest practice attempt. Show original PDF,
 mapped question, that attempt's rubric, optional automated decisions, and editable human score/reason.
+The grading rubric's **Why** section lets TAs and instructors save an explanation for that
+paper. Corrections live in the staff-only `review.criterion_explanations` map, with `text`,
+`edited_by` and `edited_at`. The original assessment rationale remains available. Editing an
+explanation does not change scores, mark a question reviewed, or update the assignment rubric.
+Completed/released reviews must be reopened by the instructor before editing.
+
 Each save returns a new review `revision`; send it as `expected_revision` next time. On
 `stale_review_reload`, reload and reconcile rather than retrying an overwrite. Completion requires
 all questions and no pending assessment job. TAs complete; instructors release/reopen.

@@ -762,6 +762,36 @@ class Service:
             self.store.audit(db, user["id"], "review.saved", s["id"], dict(review))
             return review
 
+    def save_explanation(self, user, submission_id, criterion_id, body):
+        with self.store.transaction() as db:
+            s, _, _ = self.submission(db, user, submission_id, staff=True)
+            review = s["review"]
+            if not s["final"]:
+                fail(409, "hand_in_required")
+            self.check_revision(review, body.expected_revision)
+            if review["status"] in {"completed", "released"}:
+                fail(409, "reopen_review_first")
+            decisions = (s["assessment"] or {}).get("decisions", [])
+            if criterion_id not in {d["criterion_id"] for d in decisions}:
+                fail(422, "unknown_criterion_decision")
+            text = body.text.strip()
+            if not text:
+                fail(422, "explanation_required")
+            edit = {"text": text, "edited_by": user["id"], "edited_at": now()}
+            # Corrections belong to the staff review. Keep provider output, scores and
+            # question-completion state intact, and use the shared review revision lock.
+            review.setdefault("criterion_explanations", {})[criterion_id] = edit
+            review.update(revision=review["revision"] + 1, updated_at=edit["edited_at"])
+            self.store.put(db, "submission", s)
+            self.store.audit(
+                db,
+                user["id"],
+                "review.explanation_saved",
+                s["id"],
+                {"criterion_id": criterion_id, **edit},
+            )
+            return review
+
     @staticmethod
     def check_revision(review, expected):
         if review["revision"] != expected:

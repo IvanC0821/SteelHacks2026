@@ -127,6 +127,10 @@ class RevisionInput(Input):
     expected_revision: int = Field(ge=0)
 
 
+class ExplanationInput(RevisionInput):
+    text: str = Field(min_length=1, max_length=2000)
+
+
 class ReopenInput(RevisionInput):
     reason: str = Field(min_length=1, max_length=2000)
 
