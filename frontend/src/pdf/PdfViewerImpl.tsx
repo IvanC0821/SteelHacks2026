@@ -49,7 +49,7 @@ interface Opened {
 const NO_SIZES: PageSize[] = [];
 
 /** Renders every page as a canvas in one vertical scroll on the canvas ground.
- *  Marks with a bbox get an outlined box and a pin at its top-left; marks without one get a pin in
+ *  Marks with a bbox highlight the measured region; marks without one get a pin in
  *  the page's margin gutter and a tinted page edge, never an invented coordinate. */
 export function PdfViewer({
   blob,

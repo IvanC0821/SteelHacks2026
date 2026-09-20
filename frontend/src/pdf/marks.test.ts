@@ -23,7 +23,7 @@ describe("marksByPage", () => {
 });
 
 describe("isUsableBbox", () => {
-  it("rejects null, which is what the current extraction always returns", () => {
+  it("rejects null for documents without measured regions", () => {
     expect(isUsableBbox(null)).toBe(false);
   });
 

@@ -1,0 +1,163 @@
+{
+  "id": "sub_505d532668d24fe68ecaa3dcb9a9a8cd",
+  "assignment_id": "asg_1f2cbec7f7d4420087df159f559675a5",
+  "student_id": "usr_792d5c8650a642e7978f0043dc1703f8",
+  "document_id": "doc_cef25bd68aea4315a14885f9bfe62917",
+  "version": 1,
+  "rubric_id": "rub_cbfd3c9f90ee4470ae33a4f6236da433",
+  "created_at": "2026-09-20T14:26:40.568065+00:00",
+  "mapping": {
+    "q1": [
+      1
+    ]
+  },
+  "sealed": true,
+  "final": false,
+  "handed_in_at": null,
+  "job_id": "job_824b2cee9d6d4e81bd5585b289d4f110",
+  "document": {
+    "id": "doc_cef25bd68aea4315a14885f9bfe62917",
+    "assignment_id": "asg_1f2cbec7f7d4420087df159f559675a5",
+    "kind": "submission",
+    "filename": "discrete-math-student-response.pdf",
+    "page_count": 1,
+    "sha256": "6d2f4d18698cc7848f9ee76598cf8344d4f5a38de30aba538f0b99f929e219b3",
+    "extraction": "pdf_text",
+    "has_unreadable_pages": false
+  },
+  "assessment": {
+    "score": 4.0,
+    "max_points": 10.0,
+    "status": "estimated",
+    "questions": [
+      {
+        "question_id": "q1",
+        "score": 4.0,
+        "max_points": 10.0,
+        "status": "estimated",
+        "flags": [
+          {
+            "id": "q1-flag-1",
+            "category": "logic",
+            "message": "Have you justified the transition from the assumed case to the next case?",
+            "anchors": [
+              {
+                "id": "anchor-1",
+                "page": 1,
+                "bbox": [
+                  0.11274509803921569,
+                  0.4977411616161616,
+                  0.29313725490196085,
+                  0.5122613636363637
+                ]
+              }
+            ],
+            "message_source": "model_selected"
+          },
+          {
+            "id": "q1-flag-2",
+            "category": "arithmetic",
+            "message": "Does this calculation follow from the line immediately before it?",
+            "anchors": [
+              {
+                "id": "anchor-1",
+                "page": 1,
+                "bbox": [
+                  0.11274509803921569,
+                  0.5532967171717171,
+                  0.23676470588235296,
+                  0.5678169191919192
+                ]
+              }
+            ],
+            "message_source": "model_selected"
+          }
+        ]
+      }
+    ],
+    "decisions": [
+      {
+        "criterion_id": "base",
+        "outcome": "met",
+        "evidence_ids": [
+          "p1-l6"
+        ],
+        "rationale": "Student correctly states the base case (n=1) and verifies 1 = 1^2 in p1-l6."
+      },
+      {
+        "criterion_id": "hypothesis",
+        "outcome": "met",
+        "evidence_ids": [
+          "p1-l8"
+        ],
+        "rationale": "Student explicitly writes the induction hypothesis for arbitrary k: 1+3+...+(2k-1)=k^2 in p1-l8."
+      },
+      {
+        "criterion_id": "extension",
+        "outcome": "not_met",
+        "evidence_ids": [
+          "p1-l12"
+        ],
+        "rationale": "Student adds the next term as (2k-1) instead of (2k+1), creating an invalid transition in the induction step."
+      },
+      {
+        "criterion_id": "algebra",
+        "outcome": "not_met",
+        "evidence_ids": [
+          "p1-l14"
+        ],
+        "rationale": "Student incorrectly simplifies k^2 + 2k - 1 to (k+1)^2, an invalid algebraic step."
+      }
+    ],
+    "provider_id": "openrouter:nvidia/nemotron-3-nano-30b-a3b:rubric=nvidia/nemotron-3-nano-30b-a3b:feedback=nvidia/nemotron-3-nano-30b-a3b:v3",
+    "mode": "model",
+    "assessed_at": "2026-09-20T14:26:51.614066+00:00",
+    "input_sha256": "6d2f4d18698cc7848f9ee76598cf8344d4f5a38de30aba538f0b99f929e219b3"
+  },
+  "review": {
+    "revision": 0,
+    "status": "not_started",
+    "questions": {}
+  },
+  "student_name": "Farah Aziz",
+  "rubric": {
+    "id": "rub_cbfd3c9f90ee4470ae33a4f6236da433",
+    "assignment_id": "asg_1f2cbec7f7d4420087df159f559675a5",
+    "version": 1,
+    "published_at": "2026-09-20T14:26:40.553907+00:00",
+    "criteria": [
+      {
+        "id": "base",
+        "question_id": "q1",
+        "description": "State n = 1 as the base case and verify that the left-hand side is 1 and equals 1^2.",
+        "points": 2.0,
+        "category": "justification"
+      },
+      {
+        "id": "hypothesis",
+        "question_id": "q1",
+        "description": "For an arbitrary integer k >= 1, assume 1 + 3 + ... + (2k - 1) = k^2 as the induction hypothesis.",
+        "points": 2.0,
+        "category": "logic"
+      },
+      {
+        "id": "extension",
+        "question_id": "q1",
+        "description": "Express the sum of the first k + 1 odd numbers as the first k terms plus the next term, 2(k + 1) - 1 = 2k + 1, and apply the induction hypothesis to the first k terms.",
+        "points": 3.0,
+        "category": "logic"
+      },
+      {
+        "id": "algebra",
+        "question_id": "q1",
+        "description": "Use valid algebra to obtain k^2 + 2k + 1 = (k + 1)^2 in the induction step and conclude that the claim holds for every integer n >= 1 by induction.",
+        "points": 3.0,
+        "category": "arithmetic"
+      }
+    ],
+    "instructor_notes": "Score each criterion as met (full credit) or not met (zero credit); do not award partial credit within a criterion. Evaluate the student's submitted work independently against each criterion. A correct induction step adds 2(k + 1) - 1 = 2k + 1 to the first k terms and uses k^2 + 2k + 1 = (k + 1)^2. A stated induction conclusion earns no separate points and does not repair an invalid transition or equality.",
+    "reference_ids": [
+      "doc_5a8f70bff3064f019f08ca8cc29dcf6f"
+    ]
+  }
+}

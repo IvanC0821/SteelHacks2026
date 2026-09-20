@@ -1,0 +1,41 @@
+{
+  "submission_id": "sub_505d532668d24fe68ecaa3dcb9a9a8cd",
+  "input_sha256": "6d2f4d18698cc7848f9ee76598cf8344d4f5a38de30aba538f0b99f929e219b3",
+  "coordinate_system": "Normalized visible page, [left, top, right, bottom], top-left origin",
+  "findings": [
+    {
+      "criterion_id": "extension",
+      "outcome": "not_met",
+      "evidence": [
+        {
+          "id": "p1-l12",
+          "page": 1,
+          "text": "= k^2 + (2k - 1)",
+          "bbox": [
+            0.11274509803921569,
+            0.4977411616161616,
+            0.29313725490196085,
+            0.5122613636363637
+          ]
+        }
+      ]
+    },
+    {
+      "criterion_id": "algebra",
+      "outcome": "not_met",
+      "evidence": [
+        {
+          "id": "p1-l14",
+          "page": 1,
+          "text": "= (k + 1)^2",
+          "bbox": [
+            0.11274509803921569,
+            0.5532967171717171,
+            0.23676470588235296,
+            0.5678169191919192
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+# Preserve PDF bytes and show generated documents as binary changes.
+*.pdf binary

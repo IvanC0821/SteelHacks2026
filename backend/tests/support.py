@@ -128,7 +128,7 @@ class StubProvider:
                     "outcome": "uncertain"
                     if match == "unreadable.pdf"
                     else ("not_met" if c["id"] == "c3" and match == "attempt-1.pdf" else "met"),
-                    "evidence_ids": ["p1"],
+                    "evidence_ids": [context["document"]["blocks"][0]["id"]],
                     "rationale": (
                         "Test-only uncertain outcome."
                         if match == "unreadable.pdf"

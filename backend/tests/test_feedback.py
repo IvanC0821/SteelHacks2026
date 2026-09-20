@@ -74,6 +74,47 @@ def test_generated_student_feedback_uses_public_context_and_reaches_student(h):
     assert flag["anchors"]
 
 
+def test_error_line_geometry_reaches_student_and_coaching_without_other_lines(h):
+    from .support import make_pdf
+
+    cited = []
+    coaching = []
+
+    def assess(context):
+        mistake = next(b for b in context["document"]["blocks"] if b["text"] == "3 + 5 = 9")
+        cited.append(mistake)
+        return {
+            "decisions": [
+                {
+                    "criterion_id": criterion["id"],
+                    "outcome": "not_met" if criterion["id"] == "c3" else "met",
+                    "evidence_ids": [mistake["id"]],
+                    "rationale": "The final calculation is incorrect.",
+                }
+                for criterion in context["rubric"]["criteria"]
+            ]
+        }
+
+    def generate(context):
+        coaching.extend(context["findings"])
+        return {"items": [{"id": context["findings"][0]["id"], "hint_key": "arithmetic"}]}
+
+    h.app.state.service.provider.assess = assess
+    h.app.state.service.provider.generate_feedback = generate
+    submission = h.upload(content=make_pdf([["Practice work", "1 + 1 = 2", "3 + 5 = 9"]]))
+    h.call(
+        "PUT",
+        f"/submissions/{submission['id']}/mapping",
+        "student",
+        json={"questions": {"q1": [1]}},
+    )
+    assert h.assess(submission)["status"] == "succeeded"
+    flag = h.sub(submission)["assessment"]["questions"][0]["flags"][0]
+    assert cited[0]["bbox"] is not None
+    assert flag["anchors"] == [{"id": "anchor-1", "page": 1, "bbox": cited[0]["bbox"]}]
+    assert coaching[0]["evidence"] == [{"page": 1, "text": "3 + 5 = 9"}]
+
+
 @pytest.mark.parametrize(
     "failure", ["exception", "unknown", "empty", "duplicate", "too_long", "answer", "fake_quote"]
 )

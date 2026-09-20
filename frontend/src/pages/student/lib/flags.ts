@@ -71,8 +71,8 @@ export interface FlagMark {
   title: string;
 }
 
-/** One viewer mark per anchor. Extraction is page-level today, so bbox is usually null: the
- *  viewer then draws the numbered circle in that page's gutter instead of inventing a region.
+/** One viewer mark per anchor. Measured text regions point to the cited lines; when bbox is
+ *  null, the viewer draws the numbered circle in that page's gutter instead of inventing a region.
  *  Every student mark is hint-toned: a practice finding is not a deduction and must not read
  *  as points already lost. */
 export function flagMarks(flags: NumberedFlag[], selectedFlagId?: string | null): FlagMark[] {

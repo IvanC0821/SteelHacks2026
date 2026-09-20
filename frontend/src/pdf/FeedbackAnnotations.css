@@ -7,13 +7,18 @@
 }
 .v-feedback-annotations__region {
   position: absolute;
-  border: 1px solid #dfac2680;
-  background: #f7ca4318;
-  border-radius: 3px;
+  box-sizing: border-box;
+  border: 1px solid #dfac2690;
+  border-bottom: 2px solid #c69215;
+  background: #f7ca4330;
+  border-radius: 2px;
 }
-.v-feedback-annotations__region.is-active { border-color: #bd8d12; background: #f7ca4328; }
-.v-feedback-annotations__connector { position: absolute; inset: 0; overflow: visible; z-index: 2; }
-.v-feedback-annotations__connector path { fill: none; stroke: #bd8d12; stroke-width: 2; }
+.v-feedback-annotations__region.is-active { border-color: #a67608; background: #f7ca4348; }
+.v-feedback-annotations__leaders { position: absolute; inset: 0; overflow: visible; z-index: 2; }
+.v-feedback-annotations__pointer,
+.v-feedback-annotations__connector { fill: none; stroke: #a67608; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.v-feedback-annotations__pointer.is-active { stroke: #78530c; stroke-width: 2; }
+.v-feedback-annotations__connector { stroke-dasharray: 3 3; }
 .v-feedback-annotations__pin {
   position: absolute;
   z-index: 3;

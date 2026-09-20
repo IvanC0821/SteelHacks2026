@@ -17,8 +17,12 @@ That call receives only public question text and student evidence, never private
 criteria, or staff rationales. Uncertain findings keep clarification guidance. Failed or malformed
 feedback generation preserves the reviewed templates and does not discard assessment results.
 Student hints appear in the panel and linked yellow PDF annotation cards.
+The assessment selects the specific erroneous text lines; measured PDF coordinates place the
+yellow highlight and numbered arrow directly beside those lines. Clicking a pin opens its hint.
 
-Only OPENROUTER_PARSING_MODEL remains reserved. PDFs still use embedded-text extraction.
+Only OPENROUTER_PARSING_MODEL remains reserved. PDFs use embedded-text extraction with measured
+line positions; this does not add handwriting OCR. Existing sealed attempts retain their original
+coordinates, so upload a new attempt to use the improved extraction.
 The configured vision model is Nemotron Nano VL, not Nemotron Parse.
 
 Run in PowerShell from the repository root:

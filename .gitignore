@@ -12,6 +12,7 @@ dist/
 /demo/
 /presentation/
 /pitch/
+/tmp/
 
 # frontend
 frontend/node_modules/
