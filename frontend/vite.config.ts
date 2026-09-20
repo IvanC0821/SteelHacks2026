@@ -1,10 +1,11 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { demoSession } from "./tools/demo-session.ts";
 
 // CORS on the backend allows http://localhost:5173, so open the app at localhost, not 127.0.0.1.
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), demoSession()],
   server: { port: 5173, strictPort: true, host: "localhost" },
   build: {
     rollupOptions: {
@@ -24,6 +25,6 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
-    include: ["src/**/*.test.{ts,tsx}"],
+    include: ["src/**/*.test.{ts,tsx}", "tools/**/*.test.ts"],
   },
 });

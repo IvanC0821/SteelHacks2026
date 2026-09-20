@@ -15,8 +15,12 @@ Follow the root README's install, server and local identity commands. API defaul
 Allowed frontend origins default to `http://localhost:3000` and `http://localhost:5173`; override
 `VERITY_CORS_ORIGINS` with comma-separated exact origins if needed. No wildcard credentials.
 
-Use the current identity's bearer token on every `/api` call. For local development, paste a token
-printed by `verity.cli` into a session setup screen or inject it in a local server session.
+Use the current identity's bearer token on every `/api` call. The local Vite demo reads the
+ignored `.dev/session.json` through loopback-only server middleware and offers a Student /
+Instructor / TA dropdown, so users do not paste tokens. Switching validates the selected
+account, remounts the workspace, and opens that account's course. The shared staff overview
+uses the single feedback-by-question graph. Backend role permissions are unchanged.
+Without the demo configuration, the existing token setup remains available.
 Do not embed instructor/TA tokens in a student bundle or commit local credentials. The production
 authentication UX is a separate integration; the backend currently provisions expiring local tokens.
 

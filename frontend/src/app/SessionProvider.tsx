@@ -7,6 +7,8 @@ import { SessionContext, type SessionValue } from "./session-context";
 import { SessionSetup } from "./SessionSetup";
 import { Landing } from "../pages/landing";
 import { Spinner } from "../components/Spinner";
+import { demoViews, demoSession, type DemoOption, type DemoView } from "../api/demo";
+import { DemoSetup } from "./DemoSetup";
 
 interface Loaded {
   user: User;
@@ -24,7 +26,14 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(() => loadSession());
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [views, setViews] = useState<DemoOption[] | null>(null);
   const timers = useRef<number[]>([]);
+
+  useEffect(() => {
+    let live = true;
+    void demoViews().then((options) => { if (live) setViews(options); });
+    return () => { live = false; };
+  }, []);
 
   useEffect(
     () => () => {
@@ -112,6 +121,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [load, navigate],
   );
 
+  const switchView = useCallback(async (view: DemoView) => {
+    const next = await demoSession(view);
+    const result = await load(next);
+    if ((view === "student") !== (result.user.role === "student")) throw new Error("Wrong demo identity");
+    saveSession(next);
+    setSession(next);
+    setLoaded(result);
+    setMessage(null);
+    navigate(result.courses[0] ? `/c/${result.courses[0].id}` : "/", { replace: true });
+  }, [load, navigate]);
+
   const value: SessionValue | null = useMemo(
     () =>
       loaded
@@ -122,12 +142,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             client: loaded.client,
             signOut,
             refresh,
+            demo: views?.length ? { views, switchView } : undefined,
           }
         : null,
-    [loaded, signOut, refresh],
+    [loaded, signOut, refresh, views, switchView],
   );
 
-  if (booting) {
+  if (booting || views === null) {
     return (
       <div className="v-session-boot">
         <Spinner size={20} label="Checking your session" />
@@ -138,12 +159,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   if (!value) {
     // "/" is the signed-out landing page; every other path needs an identity first.
     if (location.pathname === "/") return <Landing />;
+    if (views.length) return <DemoSetup views={views} onContinue={switchView} />;
     return <SessionSetup message={message} onContinue={onContinue} />;
   }
 
   return (
     <SessionContext.Provider value={value}>
-      <ExpiryWatch onExpired={onExpired}>{children}</ExpiryWatch>
+      <ExpiryWatch key={value.user.id} onExpired={onExpired}>{children}</ExpiryWatch>
     </SessionContext.Provider>
   );
 }

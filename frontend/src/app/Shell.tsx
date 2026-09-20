@@ -12,10 +12,11 @@ import { useAssignments, usePrimaryCourse } from "./data";
 import { allowsRole, resolveHandle, wrongRoleSentence } from "./route-meta";
 import type { Assignment, Role } from "../api/types";
 import "./Shell.css";
+import { ViewSwitcher } from "./ViewSwitcher";
 
 /** Only workspace routes carry a collapse choice; content routes always show the full rail. */
 const COLLAPSE_KEY = "verity.rail.workspace-expanded";
-const ROLE_WORD: Record<Role, string> = { student: "Student", ta: "TA", instructor: "Instructor" };
+const ROLE_WORD: Record<Role, string> = { student: "Student", ta: "Instructor / TA", instructor: "Instructor / TA" };
 
 function readExpanded(): boolean {
   try {
@@ -29,7 +30,7 @@ function readExpanded(): boolean {
  *  strip so the paper gets the width; the toggle's choice persists. Below 760px the rail becomes a
  *  drawer behind a 52px header's menu button. */
 export function Shell() {
-  const { user, signOut } = useSession();
+  const { user, signOut, demo } = useSession();
   const course = usePrimaryCourse();
   const assignments = useAssignments(course?.id);
   const handle = resolveHandle(useMatches());
@@ -63,6 +64,7 @@ export function Shell() {
     roleWord: ROLE_WORD[user.role],
     showStatus: user.role !== "student",
     onSignOut: signOut,
+    demoAvailable: !!demo,
   };
 
   const denied = !allowsRole(handle, user.role);
@@ -116,6 +118,7 @@ interface RailContentProps {
   roleWord: string;
   showStatus: boolean;
   onSignOut: () => void;
+  demoAvailable: boolean;
   onToggle?: () => void;
 }
 
@@ -129,6 +132,7 @@ function RailContent({
   roleWord,
   showStatus,
   onSignOut,
+  demoAvailable,
   onToggle,
 }: RailContentProps) {
   return (
@@ -187,7 +191,12 @@ function RailContent({
       </div>
 
       <div className="v-rail__footer">
-        {collapsed ? (
+        {demoAvailable ? (
+          <>
+            {!collapsed ? <p className="v-label-12 v-muted v-rail__identity">{userName}</p> : null}
+            <ViewSwitcher collapsed={collapsed} />
+          </>
+        ) : collapsed ? (
           <Button
             variant="quiet"
             icon={LogOut}

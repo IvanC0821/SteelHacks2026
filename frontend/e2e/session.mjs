@@ -10,6 +10,8 @@ const browser = await chromium.launch();
 try {
   {
     const { page, consoleErrors } = await openPage(browser, {});
+    // The token flow remains the fallback outside local demo mode.
+    await page.route("**/__verity_demo/views", (route) => route.fulfill({ json: { available: false } }));
     await page.goto(`${BASE_URL}/session`, { waitUntil: "networkidle" });
     await page.getByLabel("Access token").waitFor({ state: "visible", timeout: 10000 });
     await page.getByRole("button", { name: "Continue" }).waitFor({ state: "visible" });
@@ -20,6 +22,7 @@ try {
   const { session, file } = identity("Sam Reyes");
   {
     const { page, consoleErrors } = await openPage(browser, {});
+    await page.route("**/__verity_demo/views", (route) => route.fulfill({ json: { available: false } }));
     await page.goto(`${BASE_URL}/session`, { waitUntil: "networkidle" });
     await page.getByLabel("Access token").fill(session.token);
     await page.getByRole("button", { name: "Continue" }).click();

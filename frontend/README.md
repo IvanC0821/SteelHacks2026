@@ -26,9 +26,16 @@ Open **`http://localhost:5173`** — not `127.0.0.1`. The backend's CORS allow-l
 
 ## Seed fictional data
 
-The app has no signup and no role switcher; every identity is a bearer token issued by the backend.
-`frontend/.dev/session.json` (gitignored) holds one token per fictional person and is the source
-those tokens come from for local development. To create or refresh it:
+The local demo opens without copying tokens. Choose **Student** or **Instructor / TA** on
+`/session`, then switch views using **View as** at the bottom of the sidebar (inside navigation
+on phones). The combined staff view uses the simple feedback-by-question graph and the
+instructor account's controls. Backend TA/instructor permissions remain distinct.
+
+`frontend/.dev/session.json` (gitignored) holds the existing demo accounts. The Vite development
+server reads it at request time; credentials are not embedded in source or the built assets.
+The switcher is loopback-only, absent from production builds, and can be disabled locally with
+`VERITY_DEMO=0 npm run dev`. Without a local demo file, the normal token setup is available.
+To create or refresh the fictional local accounts:
 
 ```sh
 frontend/tools/reseed.sh
@@ -41,8 +48,9 @@ id. Re-running it creates a fresh course each time; the previous one stays in th
 it rewrites `.dev/session.json`, re-run it whenever you need a clean course, and re-read the file
 at run time rather than caching ids — other tooling may reseed too.
 
-Paste a token from `.dev/session.json` into the app's session-setup screen to sign in as that
-person. Identities: **Dana Whitfield** (instructor), **Sam Reyes** (TA), and six students —
+The dropdown uses **Dana Whitfield** for Instructor / TA and **Farah Aziz** for Student.
+Other identities remain available through the token setup with demo mode disabled or through
+the screenshot/test helpers: **Sam Reyes** (TA), and students
 **Amara Okafor** (a released final), **Ben Castellano**, **Chloe Nguyen** (two attempts, final not
 reviewed), **Dev Patel**, **Elena Petrova** (one attempt, not handed in), **Farah Aziz** (two
 attempts, not handed in).

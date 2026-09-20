@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import type { VerityClient } from "../api/client";
 import type { Capabilities, Course, User } from "../api/types";
+import type { DemoOption, DemoView } from "../api/demo";
 
 export interface SessionValue {
   /** the current identity, always present inside the Shell */
@@ -13,6 +14,10 @@ export interface SessionValue {
   signOut: () => void;
   /** refetches me/capabilities/courses, e.g. after a course is created */
   refresh: () => void;
+  demo?: {
+    views: DemoOption[];
+    switchView: (view: DemoView) => Promise<void>;
+  };
 }
 
 export const SessionContext = createContext<SessionValue | null>(null);
