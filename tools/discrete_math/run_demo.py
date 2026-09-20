@@ -14,6 +14,7 @@ import hashlib
 import json
 import os
 import re
+import sqlite3
 import sys
 import time
 from contextlib import ExitStack
@@ -261,6 +262,39 @@ def export_run(session, output, capabilities, job, staff, student):
     write_artifact(output / "run.json", run, session)
 
 
+def export_locations(session, output, assessment):
+    """Publish the exact student lines cited from this job's immutable input snapshot."""
+    database = Path(session["data_dir"]) / "verity.sqlite3"
+    with sqlite3.connect(database.as_uri() + "?mode=ro", uri=True) as db:
+        row = db.execute(
+            "SELECT data FROM objects WHERE kind = 'job' AND id = ?", (session["job_id"],)
+        ).fetchone()
+    if row is None:
+        raise DemoError("Cannot locate the original job snapshot for annotation evidence")
+    document = json.loads(row[0])["context"]["document"]
+    if document["sha256"] != assessment["input_sha256"]:
+        raise DemoError("Annotation evidence does not match the assessed PDF")
+    blocks = {block["id"]: block for block in document["blocks"]}
+    write_artifact(
+        output / "error-locations.json",
+        {
+            "submission_id": session["submission_id"],
+            "input_sha256": document["sha256"],
+            "coordinate_system": "Normalized visible page, [left, top, right, bottom], top-left origin",
+            "findings": [
+                {
+                    "criterion_id": decision["criterion_id"],
+                    "outcome": decision["outcome"],
+                    "evidence": [blocks[block_id] for block_id in decision["evidence_ids"]],
+                }
+                for decision in assessment["decisions"]
+                if decision["outcome"] != "met"
+            ],
+        },
+        session,
+    )
+
+
 def finish_run(session, output):
     if session.get("demo") != DEMO or not session.get("submission_id"):
         raise DemoError("The saved session has no discrete math submission to resume")
@@ -304,6 +338,7 @@ def finish_run(session, output):
             raise DemoError("A successful real-model assessment was not present")
         if assessment["input_sha256"] != session["input_files"]["submission"]["sha256"]:
             raise DemoError("Assessment input hash does not match the uploaded student PDF")
+        export_locations(session, output, assessment)
         print(
             f"Real model assessment succeeded: {assessment['score']}/{assessment['max_points']} "
             f"({assessment['status']}). Manual expectation: "

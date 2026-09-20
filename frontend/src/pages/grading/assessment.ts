@@ -51,8 +51,8 @@ export const sharedCategoryTone = flagTone;
 
 /**
  * One mark per anchor, numbered from 1 in the order of `flags[]` so the pin on the paper and the
- * chip in the panel carry the same number and the same ink. The seeded extraction is page-level,
- * so bbox is null and the viewer places the pin in the page gutter.
+ * chip in the panel carry the same number and the same ink. Measured regions target cited text;
+ * when no region is available, the viewer places the pin in the page gutter.
  */
 export function marksForQuestion(
   submissionId: string,

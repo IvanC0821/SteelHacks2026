@@ -1,11 +1,15 @@
 {
-  "checked_at": "2026-09-20T14:10:18.034Z",
+  "checked_at": "2026-09-20T14:29:11.309Z",
   "checks": [
     {
       "view": "student-feedback",
       "pdf_visible": true,
       "console_errors": 0,
-      "screenshot": "student-feedback.png"
+      "screenshot": "student-feedback.png",
+      "error_regions": 2,
+      "text_positions_verified": true,
+      "zoom_verified": true,
+      "pointer_interaction_verified": true
     },
     {
       "view": "instructor-rubric",

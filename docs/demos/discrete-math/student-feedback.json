@@ -1,11 +1,11 @@
 {
-  "id": "sub_fc42c616ed484272aa4b99c2a1940c2b",
-  "assignment_id": "asg_ae01165be4274e9bacd90c6d0da531bd",
-  "student_id": "usr_1bfa081cabeb46e981c4d19f363c31b8",
-  "document_id": "doc_2374f7df065c4b1fb02d0df613fbfb3a",
+  "id": "sub_505d532668d24fe68ecaa3dcb9a9a8cd",
+  "assignment_id": "asg_1f2cbec7f7d4420087df159f559675a5",
+  "student_id": "usr_792d5c8650a642e7978f0043dc1703f8",
+  "document_id": "doc_cef25bd68aea4315a14885f9bfe62917",
   "version": 1,
-  "rubric_id": "rub_b63e14aa9c1841158e9e75f81a4241a5",
-  "created_at": "2026-09-20T14:06:19.503903+00:00",
+  "rubric_id": "rub_cbfd3c9f90ee4470ae33a4f6236da433",
+  "created_at": "2026-09-20T14:26:40.568065+00:00",
   "mapping": {
     "q1": [
       1
@@ -14,10 +14,10 @@
   "sealed": true,
   "final": false,
   "handed_in_at": null,
-  "job_id": "job_490236c18dde4feabcb822b37919c225",
+  "job_id": "job_824b2cee9d6d4e81bd5585b289d4f110",
   "document": {
-    "id": "doc_2374f7df065c4b1fb02d0df613fbfb3a",
-    "assignment_id": "asg_ae01165be4274e9bacd90c6d0da531bd",
+    "id": "doc_cef25bd68aea4315a14885f9bfe62917",
+    "assignment_id": "asg_1f2cbec7f7d4420087df159f559675a5",
     "kind": "submission",
     "filename": "discrete-math-student-response.pdf",
     "page_count": 1,
@@ -44,7 +44,12 @@
               {
                 "id": "anchor-1",
                 "page": 1,
-                "bbox": null
+                "bbox": [
+                  0.11274509803921569,
+                  0.4977411616161616,
+                  0.29313725490196085,
+                  0.5122613636363637
+                ]
               }
             ],
             "message_source": "model_selected"
@@ -57,7 +62,12 @@
               {
                 "id": "anchor-1",
                 "page": 1,
-                "bbox": null
+                "bbox": [
+                  0.11274509803921569,
+                  0.5532967171717171,
+                  0.23676470588235296,
+                  0.5678169191919192
+                ]
               }
             ],
             "message_source": "model_selected"
@@ -65,9 +75,9 @@
         ]
       }
     ],
-    "provider_id": "openrouter:nvidia/nemotron-3-nano-30b-a3b:rubric=nvidia/nemotron-3-nano-30b-a3b:feedback=nvidia/nemotron-3-nano-30b-a3b:v2",
+    "provider_id": "openrouter:nvidia/nemotron-3-nano-30b-a3b:rubric=nvidia/nemotron-3-nano-30b-a3b:feedback=nvidia/nemotron-3-nano-30b-a3b:v3",
     "mode": "model",
-    "assessed_at": "2026-09-20T14:06:24.946725+00:00"
+    "assessed_at": "2026-09-20T14:26:51.614066+00:00"
   },
   "review": {
     "status": "not_started",

@@ -29,7 +29,7 @@ class OpenRouterProvider:
             raise ValueError("Timeout must be between 0 and 300 seconds")
         if not 1 <= self.max_tokens <= 32768:
             raise ValueError("Token limit must be between 1 and 32768")
-        self.id = f"openrouter:{self.assessment_model}:rubric={self.rubric_model}:feedback={self.feedback_model}:v2"
+        self.id = f"openrouter:{self.assessment_model}:rubric={self.rubric_model}:feedback={self.feedback_model}:v3"
 
     def _generate(self, model, instruction, context, schema):
         payload = {
@@ -90,8 +90,31 @@ class OpenRouterProvider:
             "Return exactly one decision per rubric criterion. Cite existing document block IDs "
             "only from allowed_student_evidence_by_criterion for that criterion. "
             "NEVER cite block IDs from private references or invent page IDs such as p1. "
-            "Copy the allowed IDs exactly, including their prefix. Use uncertain for unreadable "
-            "or insufficient evidence. Rationale is a concise staff-facing explanation. "
+            "Copy the allowed IDs exactly, including their prefix. Document blocks may be "
+            "individual PDF lines with measured bounding boxes. Their evidence_ids become "
+            "the highlighted locations on the student's PDF. For each not_met decision, "
+            "cite the smallest set of student lines containing the actual error: normally "
+            "the single incorrect expression, equality, inference, or claim. Read surrounding "
+            "lines for context, but do not cite correct preceding work, section headings, "
+            "or every line in a proof merely to identify its general section. When an error "
+            "is a transition, cite the incorrect resulting line; include an adjacent line "
+            "only when both are essential to locate the error. For an equality chain split "
+            "across lines, check each equality against the expression immediately before it. "
+            "Locate the first invalid transition relevant to the criterion and cite the line "
+            "that introduces its newly asserted right-hand side after '='. A preceding line "
+            "that validly simplifies the student's earlier expression is not itself an "
+            "algebra error, even if that earlier expression arose from a separate logical "
+            "mistake. Do not move an algebra finding backward onto that valid simplification. "
+            "For example, distinguish an "
+            "incorrect expression extending an induction sum from a later false algebraic "
+            "equality, and cite the line containing each respective error for its criterion. "
+            "For missing work, cite the closest relevant student line or section and explain "
+            "the omission in the rationale; do not pretend a correct line is itself erroneous. "
+            "If only page-level evidence exists, use its supplied ID. Never invent coordinates "
+            "or extra evidence IDs to make a location more precise. Apply the same minimal "
+            "relevant evidence selection to met and uncertain decisions. Use uncertain for "
+            "unreadable or insufficient evidence. Rationale is a concise staff-facing explanation "
+            "of the specific cited error, omission, or evidence. "
             "Do not invent evidence or compute a total score.",
             assessment_context,
             ProviderAssessment,

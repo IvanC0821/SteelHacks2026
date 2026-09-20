@@ -95,8 +95,9 @@ PYTHONPATH=backend:. .venv/bin/python -m scripts.export_contract
   [OpenRouter adapter](docs/OPENROUTER.md) makes paid model calls when configured.
   Custom providers use `VERITY_PROVIDER_FACTORY=your_module:create_provider`;
   see [the contract](docs/MODEL.md).
-- Embedded PDF text extraction is available; handwriting OCR is not. Staff can add a sourced
-  transcript before assessment. No exact annotation boxes are invented from page-only extraction.
+- Embedded PDF text extraction measures line positions so feedback can point to the cited error
+  on the paper. Handwriting OCR is not available; staff can add a sourced transcript before
+  assessment. Documents without reliable coordinates retain page-level feedback.
 - Explicit hand-in before the deadline. No automatic deadline finalization or replacement of an
   existing final. Later practice uploads remain separate from the handed-in paper.
 - Local hackathon backend: no production identity provider, rate limiter, hostile-PDF sandbox,
@@ -104,5 +105,5 @@ PYTHONPATH=backend:. .venv/bin/python -m scripts.export_contract
 - The [frontend](frontend/README.md) provides student feedback, rubric editing, and staff review.
   [The API handoff](docs/FRONTEND.md) describes routes and states.
 
-Text extraction behavior follows [pypdf's documented limits](https://pypdf.readthedocs.io/en/stable/user/extract-text.html).
+PDF validation uses pypdf, and text positions use [pdfplumber](https://github.com/jsvine/pdfplumber).
 API tests use [FastAPI's TestClient workflow](https://fastapi.tiangolo.com/tutorial/testing/).

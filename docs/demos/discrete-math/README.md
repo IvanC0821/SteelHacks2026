@@ -29,15 +29,17 @@ The student received these answer-free hints:
 
 > Does this calculation follow from the line immediately before it?
 
-The original uploaded PDF, extracted page text, published rubric, asynchronous job, validated
+The original uploaded PDF, extracted text lines, published rubric, asynchronous job, validated
 criterion decisions, and student feedback all passed through the application. The backend
 computed the score from the model's criterion decisions. The instructor guide and manual score
 were excluded from the model inputs. The question and student PDFs were uploaded; the rubric
 was authored and published through the API.
 
 This remains a practice submission: no hand-in, human review, or grade release was simulated.
-The typed PDF uses embedded-text extraction, so feedback has page anchors, not invented boxes
-around individual lines. This one example demonstrates the workflow; it does not measure general
+The typed PDF uses measured text-line positions. Numbered arrows point to the incorrect extension
+and algebra lines, and yellow highlights show exactly which evidence the model cited. Clicking a
+pin opens the corresponding hint beside the error. Documents without measured positions retain
+page-level feedback. This one example demonstrates the workflow; it does not measure general
 model accuracy. Live model outputs can vary on another run.
 
 ## Recorded app views and evidence
@@ -46,6 +48,10 @@ The student view shows the submitted paper and its two feedback cards:
 
 ![Student feedback with the original paper](student-feedback.png)
 
+Selecting a marker opens its hint next to the highlighted error:
+
+![A feedback marker pointing directly at the incorrect induction step](error-detail.png)
+
 The instructor view shows the published rubric used for the attempt:
 
 ![Instructor's published rubric](instructor-rubric.png)
@@ -53,7 +59,9 @@ The instructor view shows the published rubric used for the attempt:
 - [Run provenance](run.json): provider identity, timestamps, job outcome, input hashes, and comparison.
 - [Staff assessment](staff-assessment.json): validated decisions, evidence references, and rationales.
 - [Student feedback](student-feedback.json): the student's actual API response.
-- [Browser checks](browser-check.json): rendered PDF, visible hints, published rubric, and console checks.
+- [Error locations](error-locations.json): cited student lines and their measured page coordinates.
+- [Browser checks](browser-check.json): error highlights compared with PDF.js text positions,
+  pointer interaction, zoom alignment, visible hints, published rubric, and console checks.
 
 These exports contain fictional work and no login tokens. Local IDs describe the recorded run;
 a fresh run creates new IDs. The provider was `nvidia/nemotron-3-nano-30b-a3b` through the
