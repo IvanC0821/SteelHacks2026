@@ -158,6 +158,11 @@ export function RubricPane({
               </Button>
             ) : null}
           </div>
+          <p className="v-label-12 v-muted v-grade-pane__tally-help">
+            {readOnly
+              ? "Criteria show points available. The saved score is below."
+              : "Select criteria to fill the score below. Only the score and reason are saved."}
+          </p>
           <ul className="v-grade-criteria">
             {criteria.map((criterion, index) => {
               const decision = decisions.get(criterion.id);
@@ -182,7 +187,8 @@ export function RubricPane({
                       </span>
                     </span>
                     <span className="v-grade-criterion__points">
-                      <Score value={criterion.points} delta size="sm" />
+                      <Score value={criterion.points} delta={ticked} size="sm" />
+                      <span className="v-label-12 v-muted">{ticked ? "In tally" : "Available"}</span>
                     </span>
                   </button>
                   {decision?.rationale ? (

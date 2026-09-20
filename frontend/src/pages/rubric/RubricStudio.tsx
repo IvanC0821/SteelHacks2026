@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type CSSProperties } from "react";
 import { useParams } from "react-router-dom";
 import { FileText, Sparkles } from "lucide-react";
 import { PageHeader } from "../../app/PageHeader";
@@ -32,6 +32,7 @@ import { saveDraft } from "./save";
 import { SetupDrawer } from "./SetupDrawer";
 import { setupSteps } from "./steps";
 import { Versions } from "./Versions";
+import { EditorDivider } from "./EditorDivider";
 import "./rubric.css";
 
 /** The header's Publish rubric button. The guided setup's third step points focus here instead
@@ -63,6 +64,9 @@ export function RubricStudio() {
   const [setupOpen, setSetupOpen] = useState(false);
   const [paperOpen, setPaperOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const [editorWidth, setEditorWidth] = useState(480);
+  const [collapsedQuestions, setCollapsedQuestions] = useState<Set<string>>(new Set());
+  const panesRef = useRef<HTMLDivElement>(null);
 
   const canEdit = user.role === "instructor";
   const loadedFor = useRef<string | null>(null);
@@ -73,6 +77,8 @@ export function RubricStudio() {
     dispatch({ type: "load", draft: detail.rubric_draft ?? null, revision: detail.draft_revision ?? 0 });
     setSavedAt(null);
     setSaveError(null);
+    setCollapsedQuestions(new Set());
+    setPage(1);
   }, [detail]);
 
   const questions = detail?.questions ?? [];
@@ -123,6 +129,7 @@ export function RubricStudio() {
 
   // --- generated draft ----------------------------------------------------
   const onGenerated = useCallback((loaded: AssignmentDetail) => {
+    setCollapsedQuestions(new Set());
     dispatch({
       type: "load",
       draft: loaded.rubric_draft ?? null,
@@ -210,7 +217,25 @@ export function RubricStudio() {
   const addCriterion = (questionId: string) => {
     const question = questions.find((q) => q.id === questionId);
     if (!question) return;
+    setCollapsedQuestions((current) => {
+      const next = new Set(current);
+      next.delete(questionId);
+      return next;
+    });
     dispatch({ type: "add", questionId, points: suggestedPoints(state.criteria, question) });
+  };
+
+  const jumpToQuestion = (questionId: string) => {
+    setCollapsedQuestions((current) => {
+      const next = new Set(current);
+      next.delete(questionId);
+      return next;
+    });
+    requestAnimationFrame(() => {
+      const target = document.getElementById(`card-${questionId}`);
+      target?.scrollIntoView({ block: "start" });
+      target?.focus({ preventScroll: true });
+    });
   };
 
   const saveLine = saving
@@ -276,7 +301,12 @@ export function RubricStudio() {
         </Notice>
       ) : null}
 
-      <div className={`v-rubric__panes ${paperOpen ? "is-paper-open" : ""}`}>
+      <div
+        ref={panesRef}
+        className={`v-rubric__panes${paperOpen ? " is-paper-open" : ""}${paperDocument ? "" : " v-rubric__panes--setup"}`}
+        style={{ "--v-rubric-editor-width": `${editorWidth}px` } as CSSProperties}
+      >
+        {paperDocument ? <>
         <section className="v-rubric__paper" aria-label="Reference document">
           <div className="v-rubric__paper-bar">
             <p className="v-label-12">
@@ -285,7 +315,7 @@ export function RubricStudio() {
                 : "No reference attached"}
             </p>
             <Button variant="quiet" className="v-rubric__paper-toggle" onClick={() => setPaperOpen((was) => !was)}>
-              {paperOpen ? "Hide solution" : "Show solution"}
+              {paperOpen ? "Hide reference" : "Show reference"}
             </Button>
           </div>
           {pdf.blob ? (
@@ -303,7 +333,7 @@ export function RubricStudio() {
           ) : (
             <div className="v-rubric__paper-empty">
               <EmptyState
-                title="Add the instructor solution"
+                title="Reference unavailable"
                 icon={FileText}
                 action={
                   canEdit ? (
@@ -320,8 +350,28 @@ export function RubricStudio() {
             </div>
           )}
         </section>
+        <EditorDivider containerRef={panesRef} width={editorWidth} onWidthChange={setEditorWidth} />
+        </> : null}
 
-        <aside className="v-rubric__editor" aria-label="Rubric draft">
+        <aside id="rubric-editor" className="v-rubric__editor" aria-label="Rubric draft">
+          <div className="v-rubric__question-nav">
+            <label className="v-label-14" htmlFor="rubric-question-jump">Question</label>
+            <select
+              id="rubric-question-jump"
+              className="v-rubric__select"
+              value=""
+              onChange={(event) => jumpToQuestion(event.target.value)}
+            >
+              <option value="" disabled>Jump to a question</option>
+              {questions.map((question) => <option key={question.id} value={question.id}>{question.title}</option>)}
+            </select>
+            <Button
+              variant="quiet"
+              onClick={() => setCollapsedQuestions(collapsedQuestions.size === questions.length ? new Set() : new Set(questions.map((question) => question.id)))}
+            >
+              {collapsedQuestions.size === questions.length ? "Expand all" : "Collapse all"}
+            </Button>
+          </div>
           <div className="v-rubric__editor-scroll">
           {guided ? (
             <section className="v-rubric__guide">
@@ -401,6 +451,13 @@ export function RubricStudio() {
                 question={question}
                 criteria={criteriaFor(state.criteria, question.id)}
                 canEdit={canEdit}
+                expanded={!collapsedQuestions.has(question.id)}
+                onToggle={() => setCollapsedQuestions((current) => {
+                  const next = new Set(current);
+                  if (next.has(question.id)) next.delete(question.id);
+                  else next.add(question.id);
+                  return next;
+                })}
                 onAdd={() => addCriterion(question.id)}
                 onUpdate={(id, patch: Partial<Criterion>) => dispatch({ type: "update", id, patch })}
                 onRemove={(id) => dispatch({ type: "remove", id })}

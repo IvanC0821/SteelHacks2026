@@ -66,7 +66,7 @@ describe("criterion tally fills the score field", () => {
     expect(state.drafts.q1.tally).toEqual(["q1-arith"]);
   });
 
-  it("keeps the field editable: a typed score overrides the tally", () => {
+  it("clears the tally when a typed score overrides it, so the next selection starts fresh", () => {
     let state = initialReviewState(fx.submission(), fx.questions);
     state = reviewReducer(state, {
       type: "toggleCriterion",
@@ -77,7 +77,41 @@ describe("criterion tally fills the score field", () => {
     });
     state = reviewReducer(state, { type: "setScore", questionId: "q1", value: "7.5" });
     expect(state.drafts.q1.score).toBe("7.5");
-    expect(state.drafts.q1.tally).toEqual(["q1-ops"]);
+    expect(state.drafts.q1.tally).toEqual([]);
+
+    state = reviewReducer(state, {
+      type: "toggleCriterion",
+      questionId: "q1",
+      criterionId: "q1-vector",
+      criteria: q1Criteria,
+      maxPoints: 8,
+    });
+    expect(state.drafts.q1.score).toBe("2");
+    expect(state.drafts.q1.tally).toEqual(["q1-vector"]);
+  });
+
+  it("clearing a suggested score resets only that question's tally and preserves its reason", () => {
+    let state = initialReviewState(fx.submission(), fx.questions);
+    state = reviewReducer(state, {
+      type: "fillFromSuggestion",
+      questionId: "q1",
+      criteria: q1Criteria,
+      metIds: ["q1-ops", "q1-arith"],
+      maxPoints: 8,
+    });
+    state = reviewReducer(state, { type: "setReason", questionId: "q1", value: "Checking the calculation." });
+    state = reviewReducer(state, {
+      type: "toggleCriterion",
+      questionId: "q2",
+      criterionId: "q2-rank",
+      criteria: criteriaFor(fx.criteria, "q2"),
+      maxPoints: 6,
+    });
+
+    state = reviewReducer(state, { type: "setScore", questionId: "q1", value: "" });
+
+    expect(state.drafts.q1).toEqual({ score: "", reason: "Checking the calculation.", tally: [] });
+    expect(state.drafts.q2).toEqual({ score: "2", reason: "", tally: ["q2-rank"] });
   });
 
   it("fills from the automated suggestion as one explicit action", () => {

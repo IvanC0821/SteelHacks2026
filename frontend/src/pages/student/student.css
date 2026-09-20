@@ -356,6 +356,32 @@
 
 /* --- feedback ------------------------------------------------------------- */
 
+.v-student-next {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-12);
+}
+
+.v-student-next h2,
+.v-student-next p,
+.v-student-total p {
+  margin: 0;
+}
+
+.v-student-next__questions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--v-space-8);
+}
+
+.v-student-next__questions .v-button {
+  white-space: normal;
+  text-align: left;
+  min-height: var(--v-control-lg);
+  height: auto;
+}
+
 .v-student-total {
   align-self: stretch;
   display: flex;
@@ -370,6 +396,39 @@
 
 .v-student-total .v-label-12 {
   color: var(--v-muted);
+}
+
+.v-student-total__line {
+  align-self: stretch;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--v-space-8);
+}
+
+.v-student-comparison {
+  align-self: stretch;
+  padding: var(--v-space-12) 0;
+  border-top: 1px solid var(--v-line);
+  border-bottom: 1px solid var(--v-line);
+}
+
+.v-student-comparison summary {
+  cursor: pointer;
+  padding: var(--v-space-4) 0;
+}
+
+.v-student-comparison ul {
+  list-style: none;
+  padding: 0;
+}
+
+.v-student-comparison li + li {
+  margin-top: var(--v-space-12);
+}
+
+.v-student-comparison li p {
+  margin: var(--v-space-4) 0 0;
 }
 
 /* The released final is the one green thing in this pane; the shared success Notice carries the
@@ -502,6 +561,11 @@
   min-width: 0;
 }
 
+.v-student-flag__location {
+  grid-column: 1 / -1;
+  color: var(--v-muted);
+}
+
 .v-student-flag__page {
   color: var(--v-muted);
   white-space: nowrap;
@@ -611,29 +675,28 @@
     position: relative;
   }
 
+  .v-student-workspace--sheet .v-student-workspace__paper {
+    padding-bottom: calc(2 * var(--v-control-lg) + var(--v-space-24) + 1px);
+  }
+
   .v-student-workspace--sheet .v-student-workspace__pane {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    max-height: 72dvh;
+    max-height: min(72dvh, 100%);
     border-left: 0;
     border-top: 1px solid var(--v-line);
     border-radius: var(--v-radius-8) var(--v-radius-8) 0 0;
     box-shadow: var(--v-shadow-float);
-    transition: transform var(--v-motion-panel) var(--v-ease);
   }
 
-  .v-student-sheet {
-    transform: translateY(calc(100% - var(--v-control-lg)));
-  }
-
-  .v-student-sheet.is-open {
-    transform: translateY(0);
+  .v-student-sheet:not(.is-open) .v-student-pane__body {
+    display: none;
   }
 
   .v-student-sheet .v-student-pane__body {
-    max-height: calc(72dvh - var(--v-control-lg));
+    max-height: calc(72dvh - 2 * var(--v-control-lg) - var(--v-space-24));
   }
 
   .v-student-workspace .v-student-sheet__handle {
@@ -643,6 +706,7 @@
     gap: var(--v-space-8);
     width: 100%;
     min-height: var(--v-control-lg);
+    flex-shrink: 0;
     padding: var(--v-space-8) var(--v-space-16);
     background: var(--v-panel-strong);
     border: 0;
@@ -687,6 +751,11 @@
     padding: var(--v-space-12) var(--v-space-16);
     border-top: 1px solid var(--v-line);
     background: var(--v-panel);
+    flex-shrink: 0;
+  }
+
+  .v-student-sheet__actions .v-button {
+    flex: 1;
   }
 
   .v-student-page {

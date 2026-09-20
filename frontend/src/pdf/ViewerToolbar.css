@@ -1,14 +1,14 @@
 .v-viewer-toolbar {
   flex: none;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--v-space-16);
-  height: var(--v-header-row);
+  min-height: var(--v-header-row);
   padding: 0 var(--v-space-8);
   border-bottom: var(--v-border-hairline);
   background: var(--v-surface);
-  overflow-x: auto;
-  scrollbar-width: none;
+  row-gap: var(--v-space-4);
 }
 
 @media (max-width: 760px) {
@@ -19,8 +19,26 @@
 
 .v-viewer-toolbar__group {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: var(--v-space-2);
+}
+
+@container pdf (max-width: 600px) {
+  .v-viewer-toolbar {
+    gap: var(--v-space-4);
+  }
+
+  .v-viewer-toolbar__zoom-controls {
+    order: 3;
+    flex-basis: 100%;
+    justify-content: center;
+    border-top: var(--v-border-hairline);
+  }
+
+  .v-viewer-toolbar__toggle .v-kbd {
+    display: none;
+  }
 }
 
 .v-viewer-toolbar__count {

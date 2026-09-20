@@ -10,6 +10,7 @@ import {
   Notice,
   Score,
   Spinner,
+  flagLabel,
   useToast,
 } from "../../components";
 import { PageHeader, useAssignment, useCapabilities, useClient, useSubmission, useSubmissions } from "../../app";
@@ -28,6 +29,7 @@ import {
 } from "./lib/attempts";
 import { flagIdFromMark, flagMarks, flagsForQuestion, numberFlags } from "./lib/flags";
 import { idleJob, isRunning, jobReducer } from "./lib/job";
+import { compareFeedback, needsAttention } from "./lib/feedback";
 import "./student.css";
 
 type ReportKind = "help" | "incorrect_feedback";
@@ -57,6 +59,8 @@ export function Feedback() {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const cardRefs = useRef<Record<string, HTMLLIElement | null>>({});
+  const questionRefs = useRef<Record<string, HTMLElement | null>>({});
+  const [feedbackTarget, setFeedbackTarget] = useState<{ kind: "flag" | "question"; id: string } | null>(null);
 
   const attempts = sortedAttempts((siblings.data ?? []) as StudentSubmission[]);
   const questions = useMemo(() => assignment.data?.questions ?? [], [assignment.data]);
@@ -66,6 +70,30 @@ export function Feedback() {
   const dueAt = assignment.data?.due_at ?? null;
   const released = attempt?.review.status === "released";
   const canCheck = capabilities.mode !== "unconfigured" && capabilities.automated_assessment;
+  const attention = assessment?.questions.filter(needsAttention) ?? [];
+  const hasFinal = Boolean(attempt?.final || attempts.some((other) => other.final));
+  const uploadsOpen = uploadGate(dueAt).allowed;
+  const revisionPrimary = attention.length > 0 && !hasFinal && uploadsOpen;
+  const previous = attempt ? attempts.find((other) => other.version < attempt.version) : undefined;
+  const changes = attempt && previous ? compareFeedback(attempt, previous) : null;
+  const attentionLabel = attention.length === 1 ? "1 question to revisit" : `${attention.length} questions to revisit`;
+
+  useEffect(() => {
+    if (!feedbackTarget) return;
+    const node = feedbackTarget.kind === "flag"
+      ? cardRefs.current[feedbackTarget.id]?.querySelector<HTMLButtonElement>("button")
+      : questionRefs.current[feedbackTarget.id];
+    // Run after the sheet has opened so a paper pin also reveals its feedback on a phone.
+    node?.scrollIntoView({ block: "nearest" });
+    node?.focus({ preventScroll: true });
+  }, [feedbackTarget]);
+
+  useEffect(() => {
+    setSelected(null);
+    setPage(1);
+    setFeedbackTarget(null);
+    setSheetOpen(false);
+  }, [submissionId]);
 
   // poll the job the backend already started for this attempt, then refetch the submission
   useEffect(() => {
@@ -141,13 +169,25 @@ export function Feedback() {
 
   function pickFlag(flagId: string, flagPage: number) {
     setSelected(flagId);
-    setPage(flagPage);
+    if (flagPage !== Number.MAX_SAFE_INTEGER) setPage(flagPage);
   }
 
   function onMarkSelect(markKey: string) {
     const flagId = flagIdFromMark(markKey);
     setSelected(flagId);
-    cardRefs.current[flagId]?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    setSheetOpen(true);
+    setFeedbackTarget({ kind: "flag", id: flagId });
+  }
+
+  function revisit(questionId: string) {
+    const first = flags.find((entry) => entry.questionId === questionId);
+    if (first) pickFlag(first.flag.id, first.page);
+    else {
+      setSelected(null);
+      const firstPage = attempt?.mapping?.[questionId]?.[0];
+      if (firstPage) setPage(firstPage);
+    }
+    setFeedbackTarget({ kind: "question", id: questionId });
   }
 
   const title = assignment.data
@@ -187,6 +227,7 @@ export function Feedback() {
           <div className="v-student-header-actions v-student-feedback-actions">
             <RevisionButton
               assignmentId={attempt.assignment_id}
+              variant={revisionPrimary ? "primary" : "secondary"}
               size="md"
               disabledReason={
                 uploadGate(dueAt).allowed ? null : "The due date has passed, so uploads are closed"
@@ -194,6 +235,7 @@ export function Feedback() {
             />
             <HandInButton
               submission={attempt}
+              variant={revisionPrimary ? "secondary" : "primary"}
               attempts={attempts.length ? attempts : [attempt]}
               dueAt={dueAt}
               onDone={() => {
@@ -220,7 +262,7 @@ export function Feedback() {
 
   const pane = (
     <>
-      <div className="v-student-pane__body">
+      <div className="v-student-pane__body" id="student-feedback-body">
         {attempt?.final ? (
           <Chip tone="teal">{`Handed in ${stamp(attempt.handed_in_at)}`}</Chip>
         ) : null}
@@ -256,26 +298,76 @@ export function Feedback() {
 
         {assessment ? (
           <>
+            <section className="v-student-next" aria-label="What to revisit">
+              <h2 className="v-heading-20">{attention.length ? attentionLabel : "No flags in this check"}</h2>
+              <p className="v-copy-14 v-student-pane__muted">
+                {attention.length
+                  ? hasFinal
+                    ? "Use these prompts to revisit your reasoning. Your handed-in attempt stays the same."
+                    : uploadsOpen
+                      ? "Revisit your reasoning, then upload a revision when you're ready. You can still hand in with flags."
+                      : "Uploads are closed. Revisit these questions to prepare for your next assignment, or ask for help below."
+                  : hasFinal
+                    ? "A check can miss mistakes. Review your reasoning alongside any feedback from staff."
+                    : uploadsOpen
+                      ? "Read through your work and the assignment requirements before handing in. A check can miss mistakes."
+                      : "Uploads are closed. A check can miss mistakes, so review your reasoning alongside the assignment requirements."}
+              </p>
+              {attention.length ? (
+                <div className="v-student-next__questions" aria-label="Jump to question feedback">
+                  {attention.map((question) => (
+                    <Button key={question.question_id} variant="secondary" onClick={() => revisit(question.question_id)}>
+                      {questions.find((q) => q.id === question.question_id)?.title ?? question.question_id}
+                    </Button>
+                  ))}
+                </div>
+              ) : null}
+            </section>
+
             <section className="v-student-total">
-              <p className="v-label-12">Your estimate</p>
-              <Score
-                value={assessment.score}
-                max={assessment.max_points}
-                estimated={assessment.score !== null}
-                size="lg"
-                nullLabel="Needs review"
-              />
+              <div className="v-student-total__line">
+                <p className="v-label-14">Your estimate</p>
+                <Score value={assessment.score} max={assessment.max_points} size="sm" nullLabel="Needs review" />
+              </div>
               {assessment.score === null ? (
                 <p className="v-copy-14 v-student-pane__muted">
-                  Needs review: a staff member will look at part of this paper.
+                  {attempt?.final
+                    ? released
+                      ? "The automated check could not score part of this work reliably. Your instructor's final score is shown above."
+                      : "Part of this work could not be scored reliably. Staff will review your handed-in paper."
+                    : `Part of this work could not be scored reliably. Check that your writing and steps are clear, or ask for help below.${!hasFinal && uploadsOpen ? " Hand in when you're ready for staff review." : ""}`}
                 </p>
               ) : (
                 <p className="v-copy-14 v-student-pane__muted">
-                  An estimate from your rubric, not a grade. A staff member reviews every paper.
+                  {released ? "Automated estimate. Your instructor's final score is shown above." : "Based on the assignment rubric. Staff decide the final score after you hand in."}
                 </p>
               )}
               {assessment.mode === "fixture" ? <Chip tone="fixture" /> : null}
             </section>
+
+            {previous ? (
+              <details className="v-student-comparison">
+                <summary className="v-label-14">{`Compare with attempt ${previous.version}`}</summary>
+                {changes ? (
+                  <>
+                    <p className="v-copy-14 v-student-pane__muted">Same rubric. These are changes in flagged categories, not proof that an answer is correct.</p>
+                    <ul>
+                      {changes.map((change) => (
+                        <li key={change.questionId} className="v-copy-14">
+                          <span className="v-label-14">{questions.find((q) => q.id === change.questionId)?.title ?? change.questionId}</span>
+                          {change.still.length ? <p>{`Still flagged: ${change.still.map(flagLabel).join(", ")}`}</p> : null}
+                          {change.added.length ? <p>{`Newly flagged: ${change.added.map(flagLabel).join(", ")}`}</p> : null}
+                          {change.absent.length ? <p>{`No longer flagged: ${change.absent.map(flagLabel).join(", ")}`}</p> : null}
+                          {change.uncertain ? <p className="v-student-pane__muted">One check needs review, so improvement is uncertain.</p> : null}
+                          {!change.uncertain && !change.still.length && !change.added.length && !change.absent.length ? <p>No flags in either check.</p> : null}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : <p className="v-copy-14 v-student-pane__muted">Comparison needs two completed checks using the same rubric, questions and checking system.</p>}
+                <Button variant="quiet" onClick={() => navigate(`/s/${previous.id}`)}>{`View attempt ${previous.version}`}</Button>
+              </details>
+            ) : null}
 
             <ul className="v-student-findings">
               {assessment.questions.map((question) => (
@@ -309,7 +401,7 @@ export function Feedback() {
     const rows = flagsForQuestion(flags, question.question_id);
     const finalScore = released ? attempt?.review.questions?.[question.question_id]?.score ?? null : null;
     return (
-      <section className="v-student-finding">
+      <section className="v-student-finding" tabIndex={-1} ref={(node) => { questionRefs.current[question.question_id] = node; }}>
         <header className="v-student-finding__head">
           <h3 className="v-heading-14">{meta?.title ?? question.question_id}</h3>
           <div className="v-student-finding__scores">
@@ -327,7 +419,7 @@ export function Feedback() {
         </header>
 
         {rows.length === 0 ? (
-          <p className="v-copy-14 v-student-pane__muted">No flags on this question.</p>
+          <p className="v-copy-14 v-student-pane__muted">{needsAttention(question) ? "This question needs review. Check that every step is readable, or ask for help." : "No flags on this question."}</p>
         ) : (
           <ul className="v-student-flags">
             {rows.map((entry) => (
@@ -346,8 +438,9 @@ export function Feedback() {
                   <Chip tone="hint" number={entry.number}>
                     {entry.categoryLabel}
                   </Chip>
-                  <span className="v-label-12 v-student-flag__page">{`Page ${entry.page}`}</span>
+                  <span className="v-label-12 v-student-flag__page">{entry.anchors.length ? `Page ${entry.page}` : "Question feedback"}</span>
                   <span className="v-copy-14 v-student-flag__message">{entry.flag.message}</span>
+                  {entry.anchors.length && entry.anchors.every((anchor) => !anchor.bbox) ? <span className="v-copy-12 v-student-flag__location">Page location only. Check the relevant steps on this page.</span> : null}
                 </button>
               </li>
             ))}
@@ -410,17 +503,15 @@ export function Feedback() {
             type="button"
             className="v-student-sheet__handle"
             aria-expanded={sheetOpen}
+            aria-controls="student-feedback-body"
             onClick={() => setSheetOpen((open) => !open)}
           >
             <span className="v-label-14">
               {assessment
-                ? `${released ? "Final" : "Estimated"} ${scoreLine(
-                    released ? attempt?.review.score ?? null : assessment.score,
-                    assessment.max_points,
-                  )}`
+                ? `Feedback · ${attention.length ? attentionLabel : "No flags"}`
                 : isRunning(job)
-                  ? "Checking your work…"
-                  : "Not checked yet"}
+                  ? "Feedback · Checking your work…"
+                  : "Feedback · Not checked yet"}
             </span>
             <Icon glyph={ChevronDown} size={16} />
           </button>
@@ -429,6 +520,7 @@ export function Feedback() {
             <div className="v-student-sheet__actions">
               <RevisionButton
                 assignmentId={attempt.assignment_id}
+                variant={revisionPrimary ? "primary" : "secondary"}
                 size="lg"
                 disabledReason={
                   uploadGate(dueAt).allowed ? null : "The due date has passed, so uploads are closed"
@@ -436,6 +528,7 @@ export function Feedback() {
               />
               <HandInButton
                 submission={attempt}
+                variant={revisionPrimary ? "secondary" : "primary"}
                 attempts={attempts.length ? attempts : [attempt]}
                 dueAt={dueAt}
                 onDone={() => {

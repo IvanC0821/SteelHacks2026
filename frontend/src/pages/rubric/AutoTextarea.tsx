@@ -18,6 +18,21 @@ export function AutoTextarea({ value, onValueChange, minRows = 2, className, ...
     node.style.height = `${node.scrollHeight}px`;
   }, [value]);
 
+  useLayoutEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    let previousWidth = node.getBoundingClientRect().width;
+    const observer = new ResizeObserver(() => {
+      const width = node.getBoundingClientRect().width;
+      if (width === previousWidth) return;
+      previousWidth = width;
+      node.style.height = "auto";
+      node.style.height = `${node.scrollHeight}px`;
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <textarea
       {...rest}

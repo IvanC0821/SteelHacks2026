@@ -166,7 +166,8 @@ export function reviewReducer(state: ReviewState, action: ReviewAction): ReviewS
 
     case "setScore": {
       const draft = state.drafts[action.questionId] ?? emptyDraft();
-      return { ...state, drafts: { ...state.drafts, [action.questionId]: { ...draft, score: action.value } } };
+      // A manually entered score is no longer represented by the local criterion tally.
+      return { ...state, drafts: { ...state.drafts, [action.questionId]: { ...draft, score: action.value, tally: [] } } };
     }
 
     case "setReason": {

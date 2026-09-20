@@ -26,7 +26,7 @@ function stepZoom(current: number, direction: 1 | -1): number {
   return STEPS[next];
 }
 
-/** One 52px row above the paper. The zoom read-out shows "Fit" until the reader overrides it. */
+/** Wraps controls in narrow paper panes. The zoom read-out shows "Fit" until overridden. */
 export function ViewerToolbar({
   page,
   pageCount,
@@ -41,7 +41,7 @@ export function ViewerToolbar({
 
   return (
     <div className="v-viewer-toolbar">
-      <div className="v-viewer-toolbar__group">
+      <div className="v-viewer-toolbar__group v-viewer-toolbar__pages">
         <Button
           variant="quiet"
           icon={ChevronLeft}
@@ -65,7 +65,7 @@ export function ViewerToolbar({
         />
       </div>
 
-      <div className="v-viewer-toolbar__group">
+      <div className="v-viewer-toolbar__group v-viewer-toolbar__zoom-controls">
         <Button
           variant="quiet"
           icon={Minus}
