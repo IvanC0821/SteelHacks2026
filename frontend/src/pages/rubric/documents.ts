@@ -1,4 +1,4 @@
-// The setup strip and the upload drawer. Reference documents come back in store order, so the
+// The reference picker and upload drawer. Documents come back in store order, so the
 // latest of a kind is the last one. The upload control refuses what the API would refuse.
 
 import type { Capabilities, DocumentMeta, DocumentKind } from "../../api/types";
@@ -23,27 +23,19 @@ export function latestOfKind(documents: DocumentMeta[], kind: ReferenceKind): Do
   return list.length > 0 ? list[list.length - 1] : null;
 }
 
-export interface SetupChip {
-  kind: ReferenceKind;
-  label: string;
-  /** the filename and page count, or null when nothing is attached */
-  detail: string | null;
-  count: number;
+/** Current solution first, then assignment and every available example. No empty categories. */
+export function referenceDocuments(documents: DocumentMeta[]): DocumentMeta[] {
+  return [
+    latestOfKind(documents, "solution"),
+    latestOfKind(documents, "questions"),
+    ...ofKind(documents, "graded_example"),
+  ].filter((document): document is DocumentMeta => document !== null);
 }
 
-/** One chip per reference kind: filename and pages, or nothing yet. */
-export function setupChips(documents: DocumentMeta[]): SetupChip[] {
-  return REFERENCE_KINDS.map((kind) => {
-    const list = ofKind(documents, kind);
-    const latest = list.length > 0 ? list[list.length - 1] : null;
-    const label = kind === "graded_example" ? `Graded examples (${list.length})` : KIND_LABELS[kind];
-    return {
-      kind,
-      label,
-      count: list.length,
-      detail: latest ? `${latest.filename} · ${pageCount(latest.page_count)}` : null,
-    };
-  });
+export function referenceLabel(document: DocumentMeta): string {
+  const label = document.kind === "solution" ? "Instructor solution"
+    : document.kind === "questions" ? "Blank assignment" : "Graded example";
+  return `${label} — ${document.filename}`;
 }
 
 export function pageCount(pages: number): string {

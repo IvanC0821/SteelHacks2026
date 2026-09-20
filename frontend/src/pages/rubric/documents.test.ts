@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Capabilities, DocumentKind, DocumentMeta } from "../../api/types";
-import { formatBytes, latestOfKind, setupChips, uploadError, uploadFailureMessage } from "./documents";
+import { formatBytes, latestOfKind, referenceDocuments, referenceLabel, uploadError, uploadFailureMessage } from "./documents";
 
 function doc(id: string, kind: DocumentKind, filename: string, page_count: number): DocumentMeta {
   return {
@@ -26,31 +26,28 @@ const capabilities: Capabilities = {
   human_review_required: true,
 };
 
-describe("setup strip", () => {
-  it("shows the filename and page count of each kind", () => {
-    const chips = setupChips([doc("d1", "questions", "homework-1.pdf", 1), doc("d2", "solution", "solution.pdf", 4)]);
-    expect(chips.map((c) => c.label)).toEqual(["Blank assignment", "Instructor solution", "Graded examples (0)"]);
-    expect(chips[0].detail).toBe("homework-1.pdf · 1 page");
-    expect(chips[1].detail).toBe("solution.pdf · 4 pages");
-    expect(chips[2].detail).toBeNull();
+describe("reference picker", () => {
+  it("defaults to the solution and omits empty categories", () => {
+    const references = referenceDocuments([doc("d1", "questions", "homework-1.pdf", 1), doc("d2", "solution", "solution.pdf", 4)]);
+    expect(references.map(referenceLabel)).toEqual(["Instructor solution — solution.pdf", "Blank assignment — homework-1.pdf"]);
   });
 
-  it("counts graded examples and shows the latest", () => {
-    const chips = setupChips([doc("d1", "graded_example", "a.pdf", 2), doc("d2", "graded_example", "b.pdf", 3)]);
-    expect(chips[2].label).toBe("Graded examples (2)");
-    expect(chips[2].detail).toBe("b.pdf · 3 pages");
-    expect(chips[2].count).toBe(2);
+  it("makes every graded example independently selectable", () => {
+    const references = referenceDocuments([doc("d1", "graded_example", "a.pdf", 2), doc("d2", "graded_example", "b.pdf", 3)]);
+    expect(references.map((document) => document.id)).toEqual(["d1", "d2"]);
+    expect(references.map(referenceLabel)).toEqual(["Graded example — a.pdf", "Graded example — b.pdf"]);
   });
 
   it("ignores student submissions", () => {
-    const chips = setupChips([doc("d9", "submission", "attempt.pdf", 3)]);
-    expect(chips.every((c) => c.detail === null)).toBe(true);
+    expect(referenceDocuments([doc("d9", "submission", "attempt.pdf", 3)])).toEqual([]);
     expect(latestOfKind([doc("d9", "submission", "attempt.pdf", 3)], "solution")).toBeNull();
   });
 
   it("takes the last upload of a kind as the current one", () => {
-    const docs = [doc("d1", "solution", "old.pdf", 2), doc("d2", "solution", "new.pdf", 4)];
+    const docs = [doc("d1", "solution", "old.pdf", 2), doc("d2", "solution", "new.pdf", 4), doc("d3", "questions", "homework.pdf", 1)];
     expect(latestOfKind(docs, "solution")?.filename).toBe("new.pdf");
+    expect(referenceDocuments(docs).map((document) => document.id)).toEqual(["d2", "d3"]);
+    expect(referenceDocuments(docs.filter((document) => document.kind !== "solution"))[0].id).toBe("d3");
   });
 });
 

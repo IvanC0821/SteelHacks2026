@@ -25,45 +25,15 @@
 .v-rubric__strip {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: var(--v-space-16);
   padding: var(--v-space-8) var(--v-space-16);
   border-bottom: 1px solid var(--v-line);
   background: var(--v-panel);
 }
 
-.v-rubric__chips {
-  display: flex;
-  align-items: center;
-  gap: var(--v-space-8);
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: thin;
-}
-
-.v-rubric__chip {
-  display: flex;
-  align-items: center;
-  gap: var(--v-space-8);
-  min-height: 32px;
-  padding: var(--v-space-4) var(--v-space-12);
-  border: 1px solid var(--v-line-strong);
-  border-radius: var(--v-radius-round);
-  background: var(--v-surface);
-  color: var(--v-ink);
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background var(--v-motion-state) var(--v-ease);
-}
-
-.v-rubric__chip:hover {
-  background: var(--v-hover);
-}
-
-.v-rubric__chip-detail {
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.v-rubric__manage-references {
+  margin-right: auto;
 }
 
 .v-rubric__banner {
@@ -219,15 +189,23 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--v-space-8);
-  padding: var(--v-space-4) var(--v-space-12);
+  flex-wrap: wrap;
+  padding: var(--v-space-8) var(--v-space-12);
   border-bottom: 1px solid var(--v-line);
   background: var(--v-panel);
 }
 
-.v-rubric__paper-bar .v-label-12 {
-  overflow: hidden;
+.v-rubric__reference-picker {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--v-space-12);
+  min-width: 0;
+}
+
+.v-rubric__reference-picker .v-rubric__select {
+  min-height: var(--v-control-lg);
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .v-rubric__paper-toggle {
@@ -731,7 +709,7 @@
   .v-rubric__panes.is-paper-open .v-rubric__paper .v-rubric__viewer {
     display: flex;
     flex: none;
-    height: min(38dvh, 340px);
+    height: min(32dvh, 280px);
   }
 
   .v-rubric__panes.is-paper-open .v-rubric__paper .v-rubric__paper-empty {
@@ -740,6 +718,11 @@
 
   .v-rubric__paper-toggle {
     display: inline-flex;
+    margin-left: auto;
+  }
+
+  .v-rubric__reference-picker {
+    flex-basis: 100%;
   }
 
   .v-rubric__editor {

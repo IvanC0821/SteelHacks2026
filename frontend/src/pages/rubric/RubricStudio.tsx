@@ -7,7 +7,6 @@ import { useSession } from "../../app/session-context";
 import { Button } from "../../components/Button";
 import { Chip } from "../../components/Chip";
 import { EmptyState } from "../../components/EmptyState";
-import { Icon } from "../../components/Icon";
 import { Notice } from "../../components/Notice";
 import { Spinner } from "../../components/Spinner";
 import { useToast } from "../../components/toast-context";
@@ -16,7 +15,7 @@ import { usePdfBlob } from "../../pdf/usePdfBlob";
 import { ApiError } from "../../api/client";
 import type { AssignmentDetail, Criterion } from "../../api/types";
 import { AUTOSAVE_DELAY, createDebounce, savedAtLabel } from "./autosave";
-import { latestOfKind, setupChips } from "./documents";
+import { latestOfKind, referenceDocuments, referenceLabel } from "./documents";
 import {
   criteriaFor,
   draftReducer,
@@ -63,6 +62,7 @@ export function RubricStudio() {
   const [publishError, setPublishError] = useState<string | null>(null);
   const [setupOpen, setSetupOpen] = useState(false);
   const [paperOpen, setPaperOpen] = useState(false);
+  const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [editorWidth, setEditorWidth] = useState(480);
   const [collapsedQuestions, setCollapsedQuestions] = useState<Set<string>>(new Set());
@@ -79,6 +79,8 @@ export function RubricStudio() {
     setSavedAt(null);
     setSaveError(null);
     setCollapsedQuestions(new Set());
+    setSelectedReferenceId(null);
+    setPaperOpen(false);
     setPage(1);
   }, [detail]);
 
@@ -187,8 +189,11 @@ export function RubricStudio() {
 
   // --- the paper ----------------------------------------------------------
   const solution = latestOfKind(documents, "solution");
-  const paperDocument = solution ?? latestOfKind(documents, "questions");
+  const references = useMemo(() => referenceDocuments(documents), [documents]);
+  const paperDocument = references.find((document) => document.id === selectedReferenceId) ?? references[0] ?? null;
   const pdf = usePdfBlob(client, paperDocument?.id ?? null);
+
+  useEffect(() => { setPage(1); }, [paperDocument?.id]);
 
   if (assignment.loading && !detail) {
     return (
@@ -210,7 +215,6 @@ export function RubricStudio() {
     );
   }
 
-  const chips = setupChips(documents);
   const steps = setupSteps(detail);
   const guided = documents.length === 0 && state.criteria.length === 0;
   const generateReason = generateDisabledReason(capabilities, solution !== null);
@@ -276,23 +280,11 @@ export function RubricStudio() {
       />
 
       <div className="v-rubric__strip">
-        <div className="v-rubric__chips">
-          {chips.map((chip) => (
-            <button
-              key={chip.kind}
-              type="button"
-              className="v-rubric__chip"
-              onClick={() => setSetupOpen(true)}
-              aria-label={`${chip.label}: ${chip.detail ?? (canManageReferences ? "add" : "nothing attached")}. Open assignment setup`}
-            >
-              <Icon glyph={FileText} size={16} />
-              <span className="v-label-14">{chip.label}</span>
-              <span className="v-label-12 v-rubric__chip-detail">
-                {chip.detail ?? (canManageReferences ? "Add" : "None")}
-              </span>
-            </button>
-          ))}
-        </div>
+        {canManageReferences ? (
+          <Button variant="quiet" icon={FileText} className="v-rubric__manage-references" onClick={() => setSetupOpen(true)}>
+            Manage references
+          </Button>
+        ) : null}
         <Versions rubrics={rubrics} questions={questions} />
       </div>
 
@@ -310,12 +302,23 @@ export function RubricStudio() {
         {paperDocument ? <>
         <section className="v-rubric__paper" aria-label="Reference document">
           <div className="v-rubric__paper-bar">
-            <p className="v-label-12">
-              {paperDocument
-                ? `${solution ? "Instructor solution" : "Blank assignment"} · ${paperDocument.filename}`
-                : "No reference attached"}
-            </p>
-            <Button variant="quiet" className="v-rubric__paper-toggle" onClick={() => setPaperOpen((was) => !was)}>
+            <div className="v-rubric__reference-picker">
+              <label htmlFor="rubric-reference" className="v-label-14">Reference</label>
+              <select
+                id="rubric-reference"
+                className="v-rubric__select"
+                value={paperDocument.id}
+                title={referenceLabel(paperDocument)}
+                onChange={(event) => {
+                  setSelectedReferenceId(event.target.value);
+                  setPage(1);
+                  setPaperOpen(true);
+                }}
+              >
+                {references.map((document) => <option key={document.id} value={document.id}>{referenceLabel(document)}</option>)}
+              </select>
+            </div>
+            <Button variant="quiet" className="v-rubric__paper-toggle" aria-expanded={paperOpen} onClick={() => setPaperOpen((was) => !was)}>
               {paperOpen ? "Hide reference" : "Show reference"}
             </Button>
           </div>
@@ -337,7 +340,7 @@ export function RubricStudio() {
                 title="Reference unavailable"
                 icon={FileText}
                 action={
-                  canEdit ? (
+                  canManageReferences ? (
                     <Button variant="secondary" onClick={() => setSetupOpen(true)}>
                       Open setup
                     </Button>
@@ -345,7 +348,7 @@ export function RubricStudio() {
                 }
               >
                 {pdf.error
-                  ? "That document could not be loaded. Open setup to check what is attached."
+                  ? "That document could not be loaded. Choose another reference or refresh to try again."
                   : "The rubric is written against the solution, which stays private to staff."}
               </EmptyState>
             </div>
@@ -384,7 +387,9 @@ export function RubricStudio() {
                     <div className="v-rubric__step-text">
                       <p className="v-heading-14">{step.title}</p>
                       <p className="v-copy-14">{step.sentence}</p>
-                      {!canEdit ? null : step.id === "publish" && blockers.length > 0 ? (
+                      {step.id === "solution" && !canManageReferences ? (
+                        <p className="v-label-12 v-muted">Ask your instructor to attach the solution.</p>
+                      ) : !canEdit ? null : step.id === "publish" && blockers.length > 0 ? (
                         // Not a disabled button: the header already carries Publish rubric with
                         // its own gate, and a second control reading the same name would give a
                         // screen reader two identical buttons. The step states the reason instead.
@@ -510,7 +515,7 @@ export function RubricStudio() {
         </aside>
       </div>
 
-      <SetupDrawer
+      {canManageReferences ? <SetupDrawer
         open={setupOpen}
         onClose={() => setSetupOpen(false)}
         client={client}
@@ -519,7 +524,7 @@ export function RubricStudio() {
         capabilities={capabilities}
         canUpload={canManageReferences}
         onUploaded={assignment.refetch}
-      />
+      /> : null}
     </div>
   );
 }
