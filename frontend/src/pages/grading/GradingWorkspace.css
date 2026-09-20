@@ -1,0 +1,113 @@
+.v-grade {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr var(--v-panel-width);
+}
+
+.v-grade__paper {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--v-canvas);
+}
+
+.v-grade__paper > .v-pdf {
+  flex: 1;
+  min-height: 0;
+}
+
+.v-grade__pane {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.v-grade__center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--v-space-24);
+}
+
+.v-grade__header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-8);
+}
+
+/* the keyboard sheet */
+
+.v-grade__keys {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--v-space-8);
+}
+
+.v-grade__keys li {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: var(--v-space-12);
+}
+
+.v-grade__keycaps {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--v-space-4);
+}
+
+/* the phone grabber is hidden on the desktop layout */
+
+.v-grade__grabber {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .v-grade {
+    grid-template-columns: 1fr;
+    grid-template-rows: 60% 1fr;
+  }
+
+  .v-grade__pane {
+    border-top: 1px solid var(--v-line);
+    background: var(--v-panel);
+  }
+
+  .v-grade__grabber {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--v-space-8);
+    width: 100%;
+    min-height: var(--v-control-lg);
+    padding: 0 var(--v-space-12);
+    border: 0;
+    border-bottom: 1px solid var(--v-line);
+    background: var(--v-panel-strong);
+    color: var(--v-ink);
+    font: inherit;
+    font-size: var(--v-text-14);
+    line-height: var(--v-lead-14);
+    cursor: pointer;
+  }
+
+  /* expanded, the sheet covers the paper but never the header row with the primary action */
+  .v-grade__pane.is-open {
+    position: absolute;
+    inset: 0;
+    z-index: var(--v-z-sticky);
+    box-shadow: var(--v-shadow-float);
+  }
+
+  .v-grade__keys li {
+    grid-template-columns: 96px 1fr;
+  }
+}

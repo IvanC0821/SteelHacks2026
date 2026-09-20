@@ -579,9 +579,10 @@
 
 /* --- phone-only controls -------------------------------------------------- */
 
-.v-sheet__handle,
-.v-sheet__actions,
-.v-pane__actions {
+/* scoped to the student workspace root so the names cannot leak into other pages */
+.v-workspace .v-sheet__handle,
+.v-workspace .v-sheet__actions,
+.v-workspace .v-pane__actions {
   display: none;
 }
 
@@ -636,7 +637,7 @@
     max-height: calc(72dvh - var(--v-control-lg));
   }
 
-  .v-sheet__handle {
+  .v-workspace .v-sheet__handle {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -670,16 +671,16 @@
     display: none;
   }
 
-  .v-pane__actions {
+  .v-workspace .v-pane__actions {
     display: flex;
     gap: var(--v-space-8);
   }
 
-  .v-pane__actions .v-button {
+  .v-workspace .v-pane__actions .v-button {
     flex: 1;
   }
 
-  .v-sheet__actions {
+  .v-workspace .v-sheet__actions {
     display: flex;
     gap: var(--v-space-8);
     position: sticky;

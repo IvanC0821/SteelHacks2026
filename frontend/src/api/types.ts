@@ -165,11 +165,12 @@ export interface StaffReview {
   revision: number;
   status: ReviewStatus;
   questions: Record<string, ReviewQuestion>;
-  score: number | null;
-  updated_at: string | null;
-  reviewer_id: string | null;
-  completed_at: string | null;
-  released_at: string | null;
+  /** omitted by the API until the review is completed */
+  score?: number | null;
+  updated_at?: string | null;
+  reviewer_id?: string | null;
+  completed_at?: string | null;
+  released_at?: string | null;
   reopen_reason?: string;
 }
 
