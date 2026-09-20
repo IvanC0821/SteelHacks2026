@@ -20,22 +20,14 @@ class Category(StrEnum):
 
 
 HINTS = {
-    "needs_review": "This part could not be checked confidently. Make sure your intermediate "
-    "steps are visible, and ask a TA to review it before treating it as a mistake.",
-    "arithmetic": "Compare each calculation with the line before it. Check signs, fractions, "
-    "and whether you applied the operation to every affected term.",
-    "logic": "Find the step where you draw a new conclusion. What fact makes it follow from "
-    "the previous line, and does that fact apply here?",
-    "notation": "Compare your symbols and final answer format with the assignment's "
-    "requirements. Make clear what each symbol represents.",
-    "presentation": "Look at the transitions between steps. Add the labels or intermediate "
-    "work a reader needs to follow your method.",
-    "justification": "Find any claim you state without explaining it. Name the rule you used "
-    "and explain why its conditions hold here.",
-    "unsupported_method": "Compare your method with the methods allowed for this assignment. "
-    "If you used a different valid approach, ask a TA whether it is accepted.",
-    "unreadable": "This part could not be read reliably. Check that the whole page and its "
-    "symbols are visible, and ask a TA to review the original before changing your reasoning.",
+    "needs_review": "Could you ask a TA to check this step before changing your argument?",
+    "arithmetic": "Does this calculation follow from the line immediately before it?",
+    "logic": "Which assumption makes this conclusion follow from the previous step?",
+    "notation": "Is the meaning of each symbol consistent with how you introduced it?",
+    "presentation": "Can a reader follow the missing transition between these steps?",
+    "justification": "What justifies the transition between these two claims?",
+    "unsupported_method": "Does your approach meet the methods permitted by the assignment?",
+    "unreadable": "Could you make this part of your work clearer for a TA to read?",
 }
 
 
@@ -156,3 +148,12 @@ class ReportInput(Input):
 class ResolveReport(Input):
     status: str = Field(pattern="^(resolved|dismissed)$")
     staff_note: str = Field(min_length=1, max_length=2000)
+
+
+class StudentFeedbackItem(Input):
+    id: str = Field(min_length=1, max_length=100)
+    hint_key: str = Field(min_length=1, max_length=60)
+
+
+class StudentFeedback(Input):
+    items: list[StudentFeedbackItem] = Field(max_length=300)

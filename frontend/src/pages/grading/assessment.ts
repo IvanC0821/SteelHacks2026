@@ -68,6 +68,8 @@ export function marksForQuestion(
         page: anchor.page,
         bbox: anchor.bbox,
         label: index + 1,
+        message: flag.message,
+        title: categoryLabel(flag.category),
         tone: categoryTone(flag.category),
         selected: flag.id === selectedFlagId,
       });

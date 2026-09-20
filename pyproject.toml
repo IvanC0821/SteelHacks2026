@@ -9,6 +9,7 @@ dependencies = [
   "pydantic>=2.10,<3",
   "python-multipart>=0.0.20,<1",
   "pypdf>=6,<7",
+  "httpx>=0.28,<1",
 ]
 
 [dependency-groups]

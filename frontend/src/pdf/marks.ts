@@ -11,6 +11,9 @@ export interface Mark {
   label: string | number;
   tone: MarkTone;
   selected?: boolean;
+  /** Student-safe feedback displayed in the linked annotation card. */
+  message?: string;
+  title?: string;
 }
 
 /** Groups marks by page once, so each page renders only its own pins. */

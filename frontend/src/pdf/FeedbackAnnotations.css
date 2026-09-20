@@ -1,0 +1,60 @@
+.v-feedback-annotations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --annotation-ink: #78530c;
+  --annotation-yellow: #f7ca43;
+}
+.v-feedback-annotations__region {
+  position: absolute;
+  border: 1px solid #dfac2680;
+  background: #f7ca4318;
+  border-radius: 3px;
+}
+.v-feedback-annotations__region.is-active { border-color: #bd8d12; background: #f7ca4328; }
+.v-feedback-annotations__connector { position: absolute; inset: 0; overflow: visible; z-index: 2; }
+.v-feedback-annotations__connector path { fill: none; stroke: #bd8d12; stroke-width: 2; }
+.v-feedback-annotations__pin {
+  position: absolute;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border: 1px solid #b5870c;
+  border-radius: 50%;
+  background: var(--annotation-yellow);
+  color: #3f2c04;
+  font: 600 12px/1 var(--v-font-sans);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 1px 4px #0002;
+}
+.v-feedback-annotations__pin::before { content: ""; position: absolute; inset: -10px; border-radius: 50%; }
+.v-feedback-annotations__pin:hover, .v-feedback-annotations__pin.is-active { background: #ffda65; box-shadow: 0 0 0 4px #f7ca4338; }
+.v-feedback-annotations__pin:focus-visible, .v-feedback-annotations__card button:focus-visible { outline: 2px solid #70500b; outline-offset: 4px; }
+.v-feedback-annotations__card {
+  position: absolute;
+  z-index: 4;
+  pointer-events: auto;
+  overflow: auto;
+  box-sizing: border-box;
+  border: 1px solid #d9b34e;
+  border-top: 3px solid var(--annotation-yellow);
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #fffbea;
+  color: #392e17;
+  box-shadow: 0 5px 18px #392e1726;
+  font: 13px/1.55 var(--v-font-sans);
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+.v-feedback-annotations__card header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.v-feedback-annotations__eyebrow { color: var(--annotation-ink); font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.v-feedback-annotations__card button { flex: none; width: 32px; height: 32px; margin: -5px -7px -5px 0; border: 0; border-radius: 4px; background: transparent; color: var(--annotation-ink); font-size: 23px; cursor: pointer; }
+.v-feedback-annotations__card button:hover { background: #f7ca4333; }
+.v-feedback-annotations__card strong { display: block; font-size: 14px; }
+.v-feedback-annotations__card p { margin: 7px 0 10px; white-space: pre-wrap; }
+.v-feedback-annotations__card footer { border-top: 1px solid #d9b34e60; padding-top: 8px; font-size: 11px; color: #705b30; }

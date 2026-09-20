@@ -37,6 +37,8 @@ def load_provider():
         return UnconfiguredProvider()
     module, factory = factory_path.split(":", 1)
     provider = getattr(importlib.import_module(module), factory)()
+    if isinstance(provider, UnconfiguredProvider):
+        return provider
     if provider.mode not in {"model", "fixture"} or not provider.id:
         raise ValueError("Provider must declare id and mode")
     return provider

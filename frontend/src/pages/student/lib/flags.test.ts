@@ -114,8 +114,8 @@ describe("viewer marks", () => {
     );
     const marks = flagMarks(numbered, "q1-flag-1");
     expect(marks).toEqual([
-      { id: "q1:q1-flag-1:anchor-1", page: 1, bbox: null, label: 1, tone: "hint", selected: true },
-      { id: "q1:q1-flag-1:anchor-2", page: 2, bbox: null, label: 1, tone: "hint", selected: true },
+      { id: "q1:q1-flag-1:anchor-1", page: 1, bbox: null, label: 1, tone: "hint", selected: true, message: "message for q1-flag-1", title: "Arithmetic" },
+      { id: "q1:q1-flag-1:anchor-2", page: 2, bbox: null, label: 1, tone: "hint", selected: true, message: "message for q1-flag-1", title: "Arithmetic" },
     ]);
     expect(flagIdFromMark(marks[0].id)).toBe("q1-flag-1");
   });

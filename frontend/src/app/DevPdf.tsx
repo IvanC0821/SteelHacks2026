@@ -70,6 +70,8 @@ export function DevPdf() {
             page: anchor.page,
             bbox: anchor.bbox,
             label: n,
+            message: flag.message,
+            title: flagLabel(flag.category),
             tone: flagTone(flag.category),
             selected: selected === `${submission.id}:${question.question_id}:${flag.id}:${anchor.id}`,
           });

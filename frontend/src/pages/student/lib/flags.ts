@@ -67,6 +67,8 @@ export interface FlagMark {
   label: number;
   tone: "hint";
   selected?: boolean;
+  message: string;
+  title: string;
 }
 
 /** One viewer mark per anchor. Extraction is page-level today, so bbox is usually null: the
@@ -80,6 +82,8 @@ export function flagMarks(flags: NumberedFlag[], selectedFlagId?: string | null)
       page: anchor.page,
       bbox: anchor.bbox,
       label: entry.number,
+      message: entry.flag.message,
+      title: entry.categoryLabel,
       tone: "hint" as const,
       selected: selectedFlagId === entry.flag.id,
     })),

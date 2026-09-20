@@ -5,6 +5,7 @@ import { ViewerToolbar } from "./ViewerToolbar";
 import { Spinner } from "../components/Spinner";
 import { Notice } from "../components/Notice";
 import "./PdfViewer.css";
+import { FeedbackAnnotations } from "./FeedbackAnnotations";
 
 export interface PdfViewerProps {
   blob: Blob;
@@ -274,8 +275,9 @@ function PdfPage({ doc, number, size, scale, marks, onMarkSelect, register }: Pd
     };
   }, [doc, number, scale, near]);
 
-  const gutter = marks.filter((mark) => !isUsableBbox(mark.bbox));
-  const boxed = marks.filter((mark) => isUsableBbox(mark.bbox));
+  const annotations = marks.filter((mark) => Boolean(mark.message));
+  const gutter = marks.filter((mark) => !mark.message && !isUsableBbox(mark.bbox));
+  const boxed = marks.filter((mark) => !mark.message && isUsableBbox(mark.bbox));
   const edge = TONE_ORDER.find((tone) => marks.some((mark) => mark.tone === tone));
 
   return (
@@ -298,6 +300,7 @@ function PdfPage({ doc, number, size, scale, marks, onMarkSelect, register }: Pd
         style={{ width, height }}
       >
         <canvas ref={canvasRef} className="v-pdf-page__canvas" aria-label={`Page ${number}`} role="img" />
+        <FeedbackAnnotations marks={annotations} width={width} height={height} onMarkSelect={onMarkSelect} />
         {boxed.map((mark) => {
           const [left, top, right, bottom] = mark.bbox as [number, number, number, number];
           return (

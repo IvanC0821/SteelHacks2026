@@ -1,0 +1,28 @@
+"""Reviewed, answer-free, single-sentence nudges selectable by the coaching model."""
+
+NUDGES = {
+    "general": "Which definition or assumption supports this step?",
+    "arithmetic": "Does this calculation follow from the line immediately before it?",
+    "quantifiers": "Does your argument respect the order and scope of the quantifiers?",
+    "universal": "Does your example justify the claim for every case in the statement?",
+    "existence": "Have you justified that the object you rely on actually exists?",
+    "implication": "Are you using the implication in the direction the statement permits?",
+    "both_directions": "Have you justified each direction required by the statement?",
+    "assumptions": "Are you assuming anything that the problem has not given you?",
+    "circular": "Does this step rely on the conclusion you are trying to prove?",
+    "cases": "Have you checked that your cases cover every possibility?",
+    "boundary": "Does your reasoning still apply at the boundary of the allowed domain?",
+    "negation": "Does your negation preserve the meaning of every part of the original statement?",
+    "induction_base": "Have you checked the starting case required by your argument?",
+    "induction_assumption": "Are you using the induction hypothesis only where it is justified?",
+    "induction_step": "Have you justified the transition from the assumed case to the next case?",
+    "sets": "Does the membership claim at this step follow from the set's definition?",
+    "counting": "Could your counting include the same object more than once?",
+    "coverage": "Could any valid objects be missing from your count?",
+    "relation": "Have you checked the required property for arbitrary elements?",
+    "notation": "Is the meaning of each symbol consistent with how you introduced it?",
+    "justification": "What justifies the transition between these two claims?",
+    "presentation": "Can a reader follow the missing transition between these steps?",
+    "conclusion": "Does your final sentence establish the full claim in the question?",
+    "review": "Could you ask a TA to check this step before changing your argument?",
+}

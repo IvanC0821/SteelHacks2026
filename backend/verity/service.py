@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from pydantic import ValidationError
 
 from .documents import inspect_pdf
-from .feedback import student_hint
+from .feedback import generate_student_feedback, safe_feedback_view, student_hint
 from .provider import ProviderUnavailable
 from .schemas import ProviderAssessment, RubricInput
 from .store import new_id, now
@@ -391,7 +391,7 @@ class Service:
         result["document"] = self.document_view(
             required(self.store, db, "document", s["document_id"])
         )
-        assessment = s["assessment"]
+        assessment = safe_feedback_view(s["assessment"])
         if role != "student":
             result["assessment"] = assessment
             result["review"] = s["review"]
@@ -695,6 +695,7 @@ class Service:
         try:
             if j["kind"] == "assessment":
                 result = self.validate_assessment(context, self.provider.assess(context))
+                generate_student_feedback(self.provider, context, result)
             else:
                 result = self.validate_rubric(
                     context["assignment"], self.provider.draft_rubric(context)

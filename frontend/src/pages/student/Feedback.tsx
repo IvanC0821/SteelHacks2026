@@ -177,8 +177,7 @@ export function Feedback() {
   function onMarkSelect(markKey: string) {
     const flagId = flagIdFromMark(markKey);
     setSelected(flagId);
-    setSheetOpen(true);
-    setFeedbackTarget({ kind: "flag", id: flagId });
+    setSheetOpen(false);
   }
 
   function revisit(questionId: string) {
