@@ -30,6 +30,7 @@ import {
 import { flagIdFromMark, flagMarks, flagsForQuestion, numberFlags } from "./lib/flags";
 import { idleJob, isRunning, jobReducer } from "./lib/job";
 import { compareFeedback, needsAttention } from "./lib/feedback";
+import { useLiveRefresh } from "../../app/data";
 import "./student.css";
 
 type ReportKind = "help" | "incorrect_feedback";
@@ -48,6 +49,7 @@ export function Feedback() {
   const assignment = useAssignment(attempt?.assignment_id);
   const siblings = useSubmissions(attempt?.assignment_id);
   const pdf = usePdfBlob(client, attempt?.document_id ?? null);
+  useLiveRefresh(submission.refetch, Boolean(attempt?.final));
 
   const [job, dispatch] = useReducer(jobReducer, idleJob);
   const [pollToken, setPollToken] = useState(0);
@@ -271,6 +273,22 @@ export function Feedback() {
           <Notice tone="success" className="v-student-pane__final">
             {`Final score ${scoreLine(attempt.review.score ?? null, assessment?.max_points ?? 0)}, released by your instructor`}
           </Notice>
+        ) : null}
+
+        {Object.keys(attempt?.review.comments ?? {}).length > 0 ? (
+          <section className="v-student-comments" aria-label="Staff feedback" aria-live="polite">
+            <h2 className="v-heading-20">Staff feedback</h2>
+            {questions.map((question) => {
+              const comment = attempt?.review.comments?.[question.id];
+              return comment ? (
+                <article className="v-student-finding" key={question.id}>
+                  <h3 className="v-heading-16">{question.title}</h3>
+                  <p className="v-copy-14 v-student-comment__text">{comment.text}</p>
+                  <p className="v-label-12 v-student-pane__muted">{comment.author_name} · {stamp(comment.updated_at)}</p>
+                </article>
+              ) : null;
+            })}
+          </section>
         ) : null}
 
         {isRunning(job) ? (
@@ -512,7 +530,9 @@ export function Feedback() {
             onClick={() => setSheetOpen((open) => !open)}
           >
             <span className="v-label-14">
-              {assessment
+              {Object.keys(attempt?.review.comments ?? {}).length
+                ? "Feedback · Staff comments"
+                : assessment
                 ? `Feedback · ${attention.length ? attentionLabel : "No flags"}`
                 : isRunning(job)
                   ? "Feedback · Checking your work…"

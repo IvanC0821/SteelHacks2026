@@ -13,7 +13,7 @@ import {
   type ReviewState,
 } from "./review-state";
 
-export type MutationKind = "save" | "explanation" | "complete" | "release" | "reopen";
+export type MutationKind = "save" | "explanation" | "comment" | "complete" | "release" | "reopen";
 
 export interface SaveOutcome {
   ok: boolean;
@@ -36,6 +36,7 @@ export interface ReviewController {
   dismissConflict: () => void;
   saveQuestion: (questionId: string) => Promise<SaveOutcome>;
   saveExplanation: (criterionId: string, text: string) => Promise<SaveOutcome>;
+  saveStudentComment: (questionId: string, text: string) => Promise<SaveOutcome>;
   complete: () => Promise<SaveOutcome>;
   release: () => Promise<SaveOutcome>;
   reopen: (reason: string) => Promise<SaveOutcome>;
@@ -137,6 +138,10 @@ export function useReview(
     state,
     busy,
     error,
+    saveStudentComment: useCallback(async (questionId: string, text: string) => {
+      if (!submission) return { ok: false, stale: false, code: "no_submission" };
+      return run("comment", (revision) => client.saveStudentComment(submission.id, questionId, revision, text));
+    }, [client, submission, run]),
     setScore: useCallback((questionId, value) => dispatch({ type: "setScore", questionId, value }), []),
     setReason: useCallback((questionId, value) => dispatch({ type: "setReason", questionId, value }), []),
     toggleCriterion: useCallback(

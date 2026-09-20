@@ -803,3 +803,12 @@
     transition: none;
   }
 }
+.v-student-comment__text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.v-student-comments {
+  display: grid;
+  gap: 12px;
+}

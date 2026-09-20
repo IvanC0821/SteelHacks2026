@@ -139,6 +139,10 @@ class ExplanationInput(RevisionInput):
     text: str = Field(min_length=1, max_length=2000)
 
 
+class StudentCommentInput(RevisionInput):
+    text: str = Field(max_length=4000)
+
+
 class ReopenInput(RevisionInput):
     reason: str = Field(min_length=1, max_length=2000)
 

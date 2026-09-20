@@ -21,6 +21,7 @@ from .schemas import (
     ReviewInput,
     RevisionInput,
     RubricInput,
+    StudentCommentInput,
     Transcript,
 )
 from .service import Service, fail
@@ -223,6 +224,12 @@ def create_app(data_dir=None, provider=None, run_jobs=True):
         submission_id: str, criterion_id: str, body: ExplanationInput, user=Depends(current_user)
     ):
         return service.save_explanation(user, submission_id, criterion_id, body)
+
+    @app.put("/api/submissions/{submission_id}/review/comments/{question_id}", tags=["review"])
+    def save_student_comment(
+        submission_id: str, question_id: str, body: StudentCommentInput, user=Depends(current_user)
+    ):
+        return service.save_student_comment(user, submission_id, question_id, body)
 
     @app.post("/api/submissions/{submission_id}/review/complete", tags=["review"])
     def complete_review(submission_id: str, body: RevisionInput, user=Depends(current_user)):

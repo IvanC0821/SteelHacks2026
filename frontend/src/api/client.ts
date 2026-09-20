@@ -229,6 +229,12 @@ export class VerityClient {
       text,
     });
   }
+  saveStudentComment(submissionId: string, questionId: string, expectedRevision: number, text: string): Promise<StaffSubmission["review"]> {
+    return this.request("PUT", `/submissions/${submissionId}/review/comments/${encodeURIComponent(questionId)}`, {
+      expected_revision: expectedRevision, text,
+    });
+  }
+
   completeReview(submissionId: string, expectedRevision: number): Promise<StaffSubmission["review"]> {
     return this.request("POST", `/submissions/${submissionId}/review/complete`, {
       expected_revision: expectedRevision,

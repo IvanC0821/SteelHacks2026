@@ -416,6 +416,14 @@ class Service:
             )
             review = s["review"]
             result["review"] = {"status": review["status"]}
+            result["review"]["comments"] = {
+                q: {
+                    "text": comment["text"],
+                    "author_name": required(self.store, db, "user", comment["edited_by"])["name"],
+                    "updated_at": comment["edited_at"],
+                }
+                for q, comment in review.get("student_comments", {}).items()
+            }
             if review["status"] == "released":
                 result["review"]["questions"] = {
                     q: {"score": v["score"]} for q, v in review["questions"].items()
@@ -790,6 +798,39 @@ class Service:
                 "review.explanation_saved",
                 s["id"],
                 {"criterion_id": criterion_id, **edit},
+            )
+            return review
+
+    def save_student_comment(self, user, submission_id, question_id, body):
+        with self.store.transaction() as db:
+            s, a, _ = self.submission(db, user, submission_id, staff=True)
+            review = s["review"]
+            if not s["final"]:
+                fail(409, "hand_in_required")
+            self.check_revision(review, body.expected_revision)
+            if question_id not in {q["id"] for q in a["questions"]}:
+                fail(422, "unknown_question")
+            text = body.text.strip()
+            edited_at = now()
+            comments = review.setdefault("student_comments", {})
+            if text:
+                comments[question_id] = {
+                    "text": text,
+                    "edited_by": user["id"],
+                    "edited_at": edited_at,
+                }
+            else:
+                comments.pop(question_id, None)
+            # Student comments are shared on save, independently of grade release.
+            # Never copy private review reasons or criterion explanations into them.
+            review.update(revision=review["revision"] + 1, updated_at=edited_at)
+            self.store.put(db, "submission", s)
+            self.store.audit(
+                db,
+                user["id"],
+                "review.student_comment_saved",
+                s["id"],
+                {"question_id": question_id, "text": text, "edited_at": edited_at},
             )
             return review
 

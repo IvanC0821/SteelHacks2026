@@ -34,8 +34,10 @@ Later practice uploads are allowed before the deadline; they cannot replace the 
 Deadlines prevent new uploads, mapping changes and assessments. There is no automatic
 deadline hand-in in this version. Every final paper enters the TA queue. Staff save
 question scores and private reasons, then complete the whole-paper review. Releasing
-the completed review makes final scores available to the student. No staff free text
-is exposed to students in this build.
+the completed review makes final scores available to the student. The separate Comment to
+student field is shared immediately on save, including after grade release. It can be edited
+or removed without changing scores. Private grading reasons and criterion explanations stay
+private. Student feedback refreshes while open and when the tab regains focus.
 
 ## Boundaries
 
@@ -51,7 +53,8 @@ is exposed to students in this build.
 - The model proposes one outcome per allowed criterion: met, not_met, uncertain.
   Code validates coverage, categories, evidence and computes scores. Uncertain scores
   stay null. Raw provider exceptions/output are never reflected to students.
-- Student wording comes from fixed category templates. Staff-only output may contain
+- Automated student wording comes from reviewed coaching templates. Explicitly shared staff
+  comments are shown separately, with the author's roster name. Staff-only output may contain
   model rationales and approved rubric text; treat all document/model text as untrusted.
 - Durable assessment and rubric-draft jobs use queued/running/succeeded/failed states.
   Duplicate starts return the existing job. Failed jobs are explicitly retried. Interrupted

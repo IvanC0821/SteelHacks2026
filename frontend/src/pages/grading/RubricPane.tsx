@@ -15,6 +15,7 @@ import {
 import { conflictSentence, criteriaFor, progressSentence, validateDraft } from "./review-state";
 import type { ReviewController } from "./useReview";
 import { CriterionExplanation } from "./CriterionExplanation";
+import { StudentComment } from "./StudentComment";
 import "./RubricPane.css";
 
 export interface RubricPaneProps {
@@ -146,6 +147,14 @@ export function RubricPane({
           )}
         </section>
 
+        <StudentComment
+          key={`${submission.id}:${question.id}`}
+          questionId={question.id}
+          studentName={submission.student_name}
+          savedText={submission.review.student_comments?.[question.id]?.text ?? ""}
+          controller={controller}
+        />
+
         {!submission.assessment ? (
           <Notice tone="info">No automated estimate for this paper.</Notice>
         ) : null}
@@ -231,6 +240,7 @@ export function RubricPane({
             onChange={(value) => controller.setReason(question.id, value)}
             disabled={readOnly}
             placeholder="Private to staff"
+            hint="Private grading note. Use Comment to student above to share feedback."
             error={showErrors ? (validity.reason ?? undefined) : undefined}
           />
         </section>

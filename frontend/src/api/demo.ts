@@ -1,7 +1,8 @@
 import type { Session } from "./session";
 
 export type DemoView = "student" | "staff";
-export interface DemoOption { id: DemoView; label: string; userId: string }
+export interface DemoAccount { userId: string; name: string; courseId: string }
+export interface DemoOption { id: DemoView; label: string; userId: string; accounts?: DemoAccount[] }
 
 export async function demoViews(): Promise<DemoOption[]> {
   if (!import.meta.env.DEV) return [];
@@ -13,8 +14,10 @@ export async function demoViews(): Promise<DemoOption[]> {
   } catch { return []; }
 }
 
-export async function demoSession(view: DemoView): Promise<Session> {
-  const response = await fetch(`/__verity_demo/session?view=${view}`, { cache: "no-store" });
+export async function demoSession(view: DemoView, studentId?: string): Promise<Session> {
+  const query = new URLSearchParams({ view });
+  if (studentId) query.set("studentId", studentId);
+  const response = await fetch(`/__verity_demo/session?${query}`, { cache: "no-store" });
   if (!response.ok) throw new Error("Demo account unavailable");
   const data = await response.json();
   if (typeof data.token !== "string" || typeof data.api !== "string") throw new Error("Demo account unavailable");

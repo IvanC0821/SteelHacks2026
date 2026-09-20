@@ -9,7 +9,17 @@ const SESSION_FILE = fileURLToPath(new URL("../.dev/session.json", import.meta.u
 
 interface Seed {
   api: string;
+  course_id: string;
   users: Record<string, { id: string; role: string; token: string }>;
+}
+
+interface RosterMember { id: string; name: string; role: string }
+
+export function studentAccounts(seed: Seed, roster: RosterMember[]) {
+  const local = new Map(Object.values(seed.users).map((user) => [user.id, user]));
+  return roster.filter((member) => member.role === "student" && local.get(member.id)?.role === "student" && local.get(member.id)?.token)
+    .map((member) => ({ userId: member.id, name: member.name, courseId: seed.course_id }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export function localRequest(host: string | undefined, origin: string | undefined, address: string | undefined): boolean {
@@ -42,20 +52,30 @@ export function demoSession(): Plugin {
           const seed = JSON.parse(await readFile(SESSION_FILE, "utf8")) as Seed;
           const api = new URL(seed.api);
           if (api.protocol !== "http:" || !LOOPBACK.has(api.hostname)) return send(200, { available: false });
-          const student = seed.users["Farah Aziz"];
           const staff = seed.users["Dana Whitfield"];
-          if (student?.role !== "student" || staff?.role !== "instructor" || !student.token || !staff.token) {
+          if (staff?.role !== "instructor" || !staff.token || !seed.course_id) {
             return send(200, { available: false });
           }
+          const rosterResponse = await fetch(`${seed.api}/api/courses/${encodeURIComponent(seed.course_id)}/members`, {
+            headers: { Authorization: `Bearer ${staff.token}` }, signal: AbortSignal.timeout(5000),
+          });
+          if (!rosterResponse.ok) return send(200, { available: false });
+          const roster = await rosterResponse.json() as RosterMember[];
+          const accounts = studentAccounts(seed, roster);
+          const defaultStudent = accounts.find((account) => account.userId === seed.users["Farah Aziz"]?.id) ?? accounts[0];
+          if (!defaultStudent) return send(200, { available: false });
           const url = new URL(req.url ?? "/", "http://localhost");
           if (url.pathname === "/views") {
             return send(200, { available: true, views: [
-              { id: "student", label: "Student", userId: student.id },
+              { id: "student", label: "Student", userId: defaultStudent.userId, accounts },
               { id: "staff", label: "Instructor / TA", userId: staff.id },
             ] });
           }
           if (url.pathname === "/session") {
             const view = url.searchParams.get("view");
+            const studentId = url.searchParams.get("studentId") ?? defaultStudent.userId;
+            const student = accounts.some((account) => account.userId === studentId)
+              ? Object.values(seed.users).find((user) => user.id === studentId) : null;
             const identity = view === "student" ? student : view === "staff" ? staff : null;
             if (!identity) return send(400, { available: false });
             return send(200, { token: identity.token, api: seed.api });

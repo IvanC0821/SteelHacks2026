@@ -335,3 +335,7 @@
   margin: var(--v-space-8) 0 0;
   color: var(--v-muted);
 }
+.v-grade-student-comment {
+  display: grid;
+  gap: 12px;
+}

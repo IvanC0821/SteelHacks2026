@@ -18,8 +18,15 @@ try {
   assert(foreign.status === 403, "Reject foreign-origin session requests");
   const invalid = await fetch(`${BASE_URL}/__verity_demo/session?view=admin`);
   assert(invalid.status === 400, "Only known views are allowed");
+  const unknownStudent = await fetch(`${BASE_URL}/__verity_demo/session?view=student&studentId=not-in-class`);
+  assert(unknownStudent.status === 400, "Unknown students cannot be selected");
+  const staff = identity("Dana Whitfield");
+  const roster = await apiGet(staff.session.token, file.api, `/courses/${file.course_id}/members`);
+  const students = data.views.find((view) => view.id === "student").accounts;
+  assert(students.length > 1, "Named student selection is available");
+  assert(students.every((student) => roster.some((member) => member.id === student.userId && member.name === student.name && member.role === "student")), "Demo names match the current class roster by ID");
 
-  const { page, context, consoleErrors } = await openPage(browser);
+  const { page, context, consoleErrors, failedRequests } = await openPage(browser);
   await page.goto(`${BASE_URL}/session`, { waitUntil: "networkidle" });
   assert(await page.getByLabel("Access token").count() === 0, "Demo has no token prompt");
   await page.getByRole("combobox", { name: "View as" }).selectOption("staff");
@@ -51,6 +58,26 @@ try {
 
   await picker.selectOption("staff");
   await page.getByText("Dana Whitfield", { exact: true }).waitFor();
+  const queue = await apiGet(staff.session.token, file.api, `/assignments/${file.assignment_id}/submissions?final_only=true`);
+  const paper = queue.find((item) => item.student_id !== data.views.find((view) => view.id === "student").userId);
+  await page.goto(`${BASE_URL}/a/${file.assignment_id}/grade/${paper.id}`, { waitUntil: "networkidle" });
+  await picker.selectOption("student");
+  await page.waitForURL(`${BASE_URL}/s/${paper.id}`);
+  let stored = await page.evaluate(() => JSON.parse(localStorage.getItem("verity.session")));
+  let current = await apiGet(stored.token, stored.api, "/me");
+  assert(current.id === paper.student_id && current.name === paper.student_name, "Switching from grading opens that paper's student");
+  await picker.selectOption("staff");
+  await page.waitForURL(`${BASE_URL}/a/${file.assignment_id}/grade/${paper.id}`);
+  await picker.selectOption("student");
+  await page.waitForURL(`${BASE_URL}/s/${paper.id}`);
+  const otherStudent = students.find((student) => student.userId !== paper.student_id);
+  await page.getByRole("combobox", { name: "Student", exact: true }).selectOption(otherStudent.userId);
+  await page.waitForURL(/\/c\//);
+  stored = await page.evaluate(() => JSON.parse(localStorage.getItem("verity.session")));
+  current = await apiGet(stored.token, stored.api, "/me");
+  assert(current.id === otherStudent.userId && current.name === otherStudent.name, "Named student selection opens the matching account");
+  await picker.selectOption("staff");
+  await page.getByText("Dana Whitfield", { exact: true }).waitFor();
   await page.goto(`${BASE_URL}/a/${file.assignment_id}/rubric`, { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Manage references" }).waitFor();
   assert(await page.getByRole("combobox", { name: "View as" }).isVisible(), "Dropdown works on collapsed workspace rail");
@@ -72,7 +99,7 @@ try {
     await page.getByRole("dialog").waitFor({ state: "hidden" });
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), "No phone overflow");
   }
-  assert(consoleErrors.filter((error) => !error.includes("503")).length === 0, consoleErrors.join("; "));
+  assert(consoleErrors.filter((error) => !error.includes("503")).length === 0, [...consoleErrors, ...failedRequests].join("; "));
   await context.close();
   console.log("PASS views.mjs: tokenless entry, shared chart, switch/failure/reload, collapsed rail, mobile and origin guard");
 } finally { await browser.close(); }

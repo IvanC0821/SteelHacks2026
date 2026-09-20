@@ -48,9 +48,11 @@ id. Re-running it creates a fresh course each time; the previous one stays in th
 it rewrites `.dev/session.json`, re-run it whenever you need a clean course, and re-read the file
 at run time rather than caching ids — other tooling may reseed too.
 
-The dropdown uses **Dana Whitfield** for Instructor / TA and **Farah Aziz** for Student.
-Other identities remain available through the token setup with demo mode disabled or through
-the screenshot/test helpers: **Sam Reyes** (TA), and students
+The dropdown uses **Dana Whitfield** for Instructor / TA and defaults to **Farah Aziz** for
+Student. The named Student selector uses the current class roster and offers each locally
+configured student account. Switching from a graded paper opens the actual owner of that
+paper and preserves the paper; switching back returns to grading. **Sam Reyes** (TA) remains
+available through the token setup with demo mode disabled or screenshot/test helpers. Students:
 **Amara Okafor** (a released final), **Ben Castellano**, **Chloe Nguyen** (two attempts, final not
 reviewed), **Dev Patel**, **Elena Petrova** (one attempt, not handed in), **Farah Aziz** (two
 attempts, not handed in).

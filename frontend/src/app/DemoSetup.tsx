@@ -6,9 +6,11 @@ import "./SessionSetup.css";
 
 export function DemoSetup({ views, onContinue }: {
   views: DemoOption[];
-  onContinue: (view: DemoView) => Promise<void>;
+  onContinue: (view: DemoView, studentId?: string) => Promise<void>;
 }) {
   const [view, setView] = useState<DemoView>("student");
+  const students = views.find((option) => option.id === "student");
+  const [studentId, setStudentId] = useState(students?.userId);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   return (
@@ -20,13 +22,18 @@ export function DemoSetup({ views, onContinue }: {
         <form className="v-setup__form" onSubmit={async (event) => {
           event.preventDefault();
           setBusy(true); setError(null);
-          try { await onContinue(view); }
+          try { await onContinue(view, view === "student" ? studentId : undefined); }
           catch { setError("This view could not be opened. Check that the local demo is running and try again."); }
           finally { setBusy(false); }
         }}>
           <Field as="select" label="View as" value={view} onChange={(value) => setView(value as DemoView)} disabled={busy}>
             {views.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
           </Field>
+          {view === "student" && students?.accounts?.length ? (
+            <Field as="select" label="Student" value={studentId ?? ""} onChange={setStudentId} disabled={busy}>
+              {students.accounts.map((account) => <option key={account.userId} value={account.userId}>{account.name}</option>)}
+            </Field>
+          ) : null}
           <Button type="submit" variant="primary" size="lg" busy={busy}>Open workspace</Button>
         </form>
       </div>

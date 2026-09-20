@@ -30,6 +30,7 @@ import {
   uploadGate,
 } from "./lib/attempts";
 import { uploadFailure } from "./lib/upload";
+import { useLiveRefresh } from "../../app/data";
 import "./student.css";
 
 const UNCONFIGURED =
@@ -53,6 +54,7 @@ export function AssignmentPage() {
   const attempts = sortedAttempts((submissions.data ?? []) as StudentSubmission[]);
   const latest = latestAttempt(attempts);
   const handed = finalAttempt(attempts);
+  useLiveRefresh(submissions.refetch, Boolean(handed));
   const dueAt = assignment.data?.due_at ?? null;
   const gate = uploadGate(dueAt);
   const blankDoc = assignment.data?.documents.find((d) => d.kind === "questions") ?? null;
@@ -235,6 +237,9 @@ export function AssignmentPage() {
                 {handed ? (
                   <div className="v-student-final">
                     <Chip tone="teal">{`Handed in ${stamp(handed.handed_in_at)}`}</Chip>
+                    {Object.keys(handed.review.comments ?? {}).length ? (
+                      <Button variant="secondary" onClick={() => navigate(`/s/${handed.id}`)}>Read staff feedback</Button>
+                    ) : null}
                     {handed.review.status === "released" ? (
                       <div className="v-student-final__score">
                         <p className="v-label-12">Final score</p>

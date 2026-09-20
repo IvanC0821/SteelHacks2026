@@ -12,6 +12,22 @@ export interface Resource<T> {
   refetch: () => void;
 }
 
+/** Keep student comments and released grades current across separate staff/student tabs. */
+export function useLiveRefresh(refetch: () => void, enabled: boolean) {
+  useEffect(() => {
+    if (!enabled) return;
+    const refresh = () => { if (document.visibilityState !== "hidden") refetch(); };
+    const timer = window.setInterval(refresh, 5000);
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [refetch, enabled]);
+}
+
 /** The one fetch-with-refetch hook the page tasks share. Pass `null` to hold off.
  *  `deps` should list anything the fetcher closes over besides the key. */
 export function useResource<T>(

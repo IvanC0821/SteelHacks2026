@@ -1,6 +1,22 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { localRequest } from "./demo-session";
+import { localRequest, studentAccounts } from "./demo-session";
+
+describe("demo student identities", () => {
+  it("uses canonical roster names and excludes accounts outside the class", () => {
+    const accounts = studentAccounts({ api: "http://127.0.0.1:8026", course_id: "current-class", users: {
+      "Old name": { id: "enrolled", role: "student", token: "test-only" },
+      "Other class": { id: "outsider", role: "student", token: "test-only" },
+      "Staff": { id: "staff", role: "instructor", token: "test-only" },
+    } }, [
+      { id: "enrolled", name: "Current roster name", role: "student" },
+      { id: "unprovisioned", name: "No demo account", role: "student" },
+      { id: "staff", name: "Staff", role: "instructor" },
+    ]);
+    expect(accounts).toEqual([{ userId: "enrolled", name: "Current roster name", courseId: "current-class" }]);
+    expect(JSON.stringify(accounts)).not.toContain("test-only");
+  });
+});
 
 describe("local demo access boundary", () => {
   it("accepts loopback requests from the same origin", () => {

@@ -18,7 +18,10 @@ Allowed frontend origins default to `http://localhost:3000` and `http://localhos
 Use the current identity's bearer token on every `/api` call. The local Vite demo reads the
 ignored `.dev/session.json` through loopback-only server middleware and offers a Student /
 Instructor / TA dropdown, so users do not paste tokens. Switching validates the selected
-account, remounts the workspace, and opens that account's course. The shared staff overview
+account and remounts the workspace. Switching from a graded paper opens that same paper as
+its actual student; switching back returns to that paper's grading view. A named Student
+selector lists local accounts enrolled in the current class, using live roster names and IDs.
+Other switches open the selected account's course. The shared staff overview
 uses the single feedback-by-question graph. Backend role permissions are unchanged.
 Without the demo configuration, the existing token setup remains available.
 Do not embed instructor/TA tokens in a student bundle or commit local credentials. The production
@@ -55,6 +58,7 @@ There are no student solution/rationale fields to hide in CSS; the API removes t
 | TA final queue | `GET /api/assignments/{id}/submissions?final_only=true` |
 | Save question review | `PUT /api/submissions/{id}/review` with `{expected_revision,questions:{q1:{score,reason}}}` |
 | Edit a criterion explanation (TA or instructor) | `PUT /api/submissions/{id}/review/explanations/{criterion_id}` with `{expected_revision,text}` |
+| Share/edit/remove a student comment (TA or instructor) | `PUT /api/submissions/{id}/review/comments/{question_id}` with `{expected_revision,text}`; empty text removes |
 | Finish whole paper | `POST /api/submissions/{id}/review/complete` with `{expected_revision}` |
 | Instructor release | `POST /api/submissions/{id}/review/release` with `{expected_revision}` |
 | Instructor reopen | `POST /api/submissions/{id}/review/reopen` with `{expected_revision,reason}` |
@@ -113,6 +117,14 @@ Completed/released reviews must be reopened by the instructor before editing.
 Each save returns a new review `revision`; send it as `expected_revision` next time. On
 `stale_review_reload`, reload and reconcile rather than retrying an overwrite. Completion requires
 all questions and no pending assessment job. TAs complete; instructors release/reopen.
+
+**Comment to student** is separate from the private Reason and Why fields. It is visible to the
+paper's owner immediately after save, without completing or releasing grades. Hand-in is required;
+comments may still be edited after completion/release without reopening grades. Staff responses
+store them in `review.student_comments`; student responses expose only `review.comments` with
+`text`, canonical `author_name` and `updated_at`. Empty text removes the comment. Comments share
+the review revision lock and are audited. They never modify scores, completion state or model
+decisions. Student paper/assignment views refresh every five seconds while visible and on focus.
 
 Staff reasons remain private. Student reports include no private resolution note. Resolution never
 changes a score automatically. Corrections do not propagate into other papers or model weights.

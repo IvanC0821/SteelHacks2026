@@ -13,6 +13,7 @@ function setup(options: {
   submission?: StaffSubmission;
   saveReview?: unknown;
   saveExplanation?: unknown;
+  saveStudentComment?: unknown;
   completeReview?: unknown;
   releaseReview?: unknown;
   reopenReview?: unknown;
@@ -22,6 +23,7 @@ function setup(options: {
   const client = fake({
     saveReview: options.saveReview ?? vi.fn(),
     saveExplanation: options.saveExplanation ?? vi.fn(),
+    saveStudentComment: options.saveStudentComment ?? vi.fn(),
     completeReview: options.completeReview ?? vi.fn(),
     releaseReview: options.releaseReview ?? vi.fn(),
     reopenReview: options.reopenReview ?? vi.fn(),
@@ -33,6 +35,20 @@ function setup(options: {
 }
 
 describe("saving a question", () => {
+  it("shares a comment independently of score drafts and keeps the revision current", async () => {
+    const review = fx.review({ revision: 1, student_comments: {
+      q1: { text: "Check signs", edited_by: "ta", edited_at: "2026-09-19T12:00:00Z" },
+    } });
+    const saveStudentComment = vi.fn().mockResolvedValue(review);
+    const { hook, onReview } = setup({ saveStudentComment });
+    act(() => hook.result.current.setScore("q1", "6"));
+    await act(async () => { await hook.result.current.saveStudentComment("q1", "Check signs"); });
+    expect(saveStudentComment).toHaveBeenCalledWith("sub_ben", "q1", 0, "Check signs");
+    expect(onReview).toHaveBeenCalledWith(review);
+    expect(hook.result.current.state.revision).toBe(1);
+    expect(hook.result.current.state.drafts.q1.score).toBe("6");
+    expect(hook.result.current.state.saved).toEqual({});
+  });
   it("saves a criterion explanation with the shared revision and keeps the score draft", async () => {
     const review = fx.review({ revision: 1, criterion_explanations: {
       "q1-ops": { text: "Checked labels", edited_by: "ta", edited_at: "2026-09-19T12:00:00Z" },

@@ -16,7 +16,7 @@ export interface SessionValue {
   refresh: () => void;
   demo?: {
     views: DemoOption[];
-    switchView: (view: DemoView) => Promise<void>;
+    switchView: (view: DemoView, studentId?: string) => Promise<void>;
   };
 }
 

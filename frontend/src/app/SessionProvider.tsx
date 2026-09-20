@@ -27,6 +27,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [views, setViews] = useState<DemoOption[] | null>(null);
+  const [switchDestination, setSwitchDestination] = useState<{ userId: string; path: string } | null>(null);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
@@ -121,16 +122,34 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [load, navigate],
   );
 
-  const switchView = useCallback(async (view: DemoView) => {
-    const next = await demoSession(view);
+  const switchView = useCallback(async (view: DemoView, studentId?: string) => {
+    let destination: string | null = null;
+    let targetStudentId = studentId;
+    const paperId = location.pathname.match(/^\/a\/[^/]+\/grade\/([^/]+)$/)?.[1]
+      ?? location.pathname.match(/^\/s\/([^/]+)$/)?.[1];
+    if (loaded && paperId && !studentId) {
+      const paper = await loaded.client.submission(paperId);
+      targetStudentId = paper.student_id;
+      destination = view === "student" ? `/s/${paper.id}`
+        : paper.final ? `/a/${paper.assignment_id}/grade/${paper.id}` : `/a/${paper.assignment_id}/overview`;
+    }
+    const account = views?.find((option) => option.id === "student")?.accounts?.find((item) => item.userId === targetStudentId);
+    if (view === "student" && targetStudentId && !account) throw new Error("Student is not in this demo class");
+    const next = await demoSession(view, view === "student" ? targetStudentId : undefined);
     const result = await load(next);
     if ((view === "student") !== (result.user.role === "student")) throw new Error("Wrong demo identity");
+    if (view === "student" && targetStudentId && result.user.id !== targetStudentId) throw new Error("Wrong student identity");
+    if (account && !result.courses.some((course) => course.id === account.courseId)) throw new Error("Wrong demo class");
+    const nextPath = destination ?? (result.courses[0] ? `/c/${result.courses[0].id}` : "/");
+    // Keep the new account from mounting on the previous student's route while the
+    // router commits navigation. Failed account validation still leaves the old view intact.
+    setSwitchDestination({ userId: result.user.id, path: nextPath });
     saveSession(next);
     setSession(next);
     setLoaded(result);
     setMessage(null);
-    navigate(result.courses[0] ? `/c/${result.courses[0].id}` : "/", { replace: true });
-  }, [load, navigate]);
+    navigate(nextPath, { replace: true });
+  }, [load, navigate, loaded, location.pathname, views]);
 
   const value: SessionValue | null = useMemo(
     () =>
@@ -148,7 +167,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [loaded, signOut, refresh, views, switchView],
   );
 
-  if (booting || views === null) {
+  if (switchDestination && loaded?.user.id === switchDestination.userId && location.pathname === switchDestination.path) {
+    setSwitchDestination(null);
+  }
+
+  if (booting || views === null || (switchDestination &&
+    (loaded?.user.id !== switchDestination.userId || location.pathname !== switchDestination.path))) {
     return (
       <div className="v-session-boot">
         <Spinner size={20} label="Checking your session" />

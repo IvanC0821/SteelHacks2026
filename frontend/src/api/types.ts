@@ -167,6 +167,8 @@ export interface StaffReview {
   questions: Record<string, ReviewQuestion>;
   /** Staff-only corrections; the original assessment decisions remain unchanged. */
   criterion_explanations?: Record<string, { text: string; edited_by: string; edited_at: string }>;
+  /** Shared with this student on save, independently of final score release. */
+  student_comments?: Record<string, { text: string; edited_by: string; edited_at: string }>;
   /** omitted by the API until the review is completed */
   score?: number | null;
   updated_at?: string | null;
@@ -178,6 +180,7 @@ export interface StaffReview {
 
 export interface StudentReview {
   status: ReviewStatus;
+  comments?: Record<string, { text: string; author_name: string; updated_at: string }>;
   /** present only when status === "released" */
   questions?: Record<string, { score: number }>;
   score?: number | null;
