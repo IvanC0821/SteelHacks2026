@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Flag, Question, StudentAssessment } from "../../../api/types";
-import { categoryLabel, flagIdFromMark, flagMarks, flagsForQuestion, numberFlags } from "./flags";
+import { flagLabel } from "../../../components";
+import { flagIdFromMark, flagMarks, flagsForQuestion, numberFlags } from "./flags";
 
 const questions: Question[] = [
   { id: "q1", title: "Solve the system", prompt: "", max_points: 8 },
@@ -85,7 +86,7 @@ describe("flag numbering", () => {
     );
     expect(first.questionTitle).toBe("Solve the system");
     expect(first.categoryLabel).toBe("Unsupported method");
-    expect(categoryLabel("needs_review")).toBe("Needs review");
+    expect(flagLabel("needs_review")).toBe("Needs review");
   });
 
   it("is empty when nothing has been checked yet", () => {

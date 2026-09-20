@@ -159,22 +159,22 @@ export function Feedback() {
       title={title}
       left={
         attempts.length > 1 && attempt ? (
-          <details className="v-versions">
-            <summary className="v-versions__summary v-label-14">
+          <details className="v-student-versions">
+            <summary className="v-student-versions__summary v-label-14">
               {attemptLabel(attempt, attempts)}
               <Icon glyph={ChevronDown} size={16} />
             </summary>
-            <ul className="v-versions__list">
+            <ul className="v-student-versions__list">
               {attempts.map((other) => (
                 <li key={other.id}>
                   <button
                     type="button"
-                    className={`v-versions__item${other.id === attempt.id ? " is-active" : ""}`}
+                    className={`v-student-versions__item${other.id === attempt.id ? " is-active" : ""}`}
                     aria-current={other.id === attempt.id}
                     onClick={() => navigate(`/s/${other.id}`)}
                   >
                     <span className="v-label-14">{attemptLabel(other, attempts)}</span>
-                    <span className="v-copy-14 v-versions__meta">{stamp(other.created_at)}</span>
+                    <span className="v-copy-14 v-student-versions__meta">{stamp(other.created_at)}</span>
                   </button>
                 </li>
               ))}
@@ -184,7 +184,7 @@ export function Feedback() {
       }
       right={
         attempt ? (
-          <div className="v-student-header-actions v-feedback-actions">
+          <div className="v-student-header-actions v-student-feedback-actions">
             <RevisionButton
               assignmentId={attempt.assignment_id}
               size="md"
@@ -220,22 +220,22 @@ export function Feedback() {
 
   const pane = (
     <>
-      <div className="v-pane__body">
+      <div className="v-student-pane__body">
         {attempt?.final ? (
           <Chip tone="teal">{`Handed in ${stamp(attempt.handed_in_at)}`}</Chip>
         ) : null}
 
         {released && attempt ? (
-          <Notice tone="info" className="v-final-notice">
+          <Notice tone="success" className="v-student-pane__final">
             {`Final score ${scoreLine(attempt.review.score ?? null, assessment?.max_points ?? 0)}, released by your instructor`}
           </Notice>
         ) : null}
 
         {isRunning(job) ? (
-          <div className="v-pane__running" role="status">
+          <div className="v-student-pane__running" role="status">
             <Spinner size={20} />
             <p className="v-copy-16">Checking your work…</p>
-            <p className="v-copy-14 v-pane__muted">Your paper is here while the check runs.</p>
+            <p className="v-copy-14 v-student-pane__muted">Your paper is here while the check runs.</p>
           </div>
         ) : null}
 
@@ -256,7 +256,7 @@ export function Feedback() {
 
         {assessment ? (
           <>
-            <section className="v-total">
+            <section className="v-student-total">
               <p className="v-label-12">Your estimate</p>
               <Score
                 value={assessment.score}
@@ -266,18 +266,18 @@ export function Feedback() {
                 nullLabel="Needs review"
               />
               {assessment.score === null ? (
-                <p className="v-copy-14 v-pane__muted">
+                <p className="v-copy-14 v-student-pane__muted">
                   Needs review: a staff member will look at part of this paper.
                 </p>
               ) : (
-                <p className="v-copy-14 v-pane__muted">
+                <p className="v-copy-14 v-student-pane__muted">
                   An estimate from your rubric, not a grade. A staff member reviews every paper.
                 </p>
               )}
               {assessment.mode === "fixture" ? <Chip tone="fixture" /> : null}
             </section>
 
-            <ul className="v-findings">
+            <ul className="v-student-findings">
               {assessment.questions.map((question) => (
                 <li key={question.question_id}>
                   {renderQuestion(question)}
@@ -286,9 +286,9 @@ export function Feedback() {
             </ul>
           </>
         ) : !isRunning(job) && job.phase !== "failed" ? (
-          <div className="v-pane__empty">
+          <div className="v-student-pane__empty">
             <p className="v-heading-16">Not checked yet</p>
-            <p className="v-copy-14 v-pane__muted">
+            <p className="v-copy-14 v-student-pane__muted">
               {canCheck
                 ? "Check your work to see broad flags on your pages."
                 : "Automated assessment is not connected yet. You can still hand in for staff review."}
@@ -309,16 +309,16 @@ export function Feedback() {
     const rows = flagsForQuestion(flags, question.question_id);
     const finalScore = released ? attempt?.review.questions?.[question.question_id]?.score ?? null : null;
     return (
-      <section className="v-finding">
-        <header className="v-finding__head">
+      <section className="v-student-finding">
+        <header className="v-student-finding__head">
           <h3 className="v-heading-14">{meta?.title ?? question.question_id}</h3>
-          <div className="v-finding__scores">
-            <span className="v-finding__score">
+          <div className="v-student-finding__scores">
+            <span className="v-student-finding__score">
               <span className="v-label-12">Estimated</span>
               <Score value={question.score} max={question.max_points} nullLabel="Needs review" />
             </span>
             {released ? (
-              <span className="v-finding__score v-finding__score--final">
+              <span className="v-student-finding__score v-student-finding__score--final">
                 <span className="v-label-12">Final</span>
                 <Score value={finalScore} max={question.max_points} nullLabel="Not scored" />
               </span>
@@ -327,9 +327,9 @@ export function Feedback() {
         </header>
 
         {rows.length === 0 ? (
-          <p className="v-copy-14 v-pane__muted">No flags on this question.</p>
+          <p className="v-copy-14 v-student-pane__muted">No flags on this question.</p>
         ) : (
-          <ul className="v-flags">
+          <ul className="v-student-flags">
             {rows.map((entry) => (
               <li
                 key={entry.flag.id}
@@ -339,22 +339,22 @@ export function Feedback() {
               >
                 <button
                   type="button"
-                  className={`v-flag${selected === entry.flag.id ? " is-selected" : ""}`}
+                  className={`v-student-flag${selected === entry.flag.id ? " is-selected" : ""}`}
                   aria-current={selected === entry.flag.id}
                   onClick={() => pickFlag(entry.flag.id, entry.page)}
                 >
                   <Chip tone="hint" number={entry.number}>
                     {entry.categoryLabel}
                   </Chip>
-                  <span className="v-label-12 v-flag__page">{`Page ${entry.page}`}</span>
-                  <span className="v-copy-14 v-flag__message">{entry.flag.message}</span>
+                  <span className="v-label-12 v-student-flag__page">{`Page ${entry.page}`}</span>
+                  <span className="v-copy-14 v-student-flag__message">{entry.flag.message}</span>
                 </button>
               </li>
             ))}
           </ul>
         )}
 
-        <div className="v-finding__actions">
+        <div className="v-student-finding__actions">
           <Button
             variant="quiet"
             onClick={() => {
@@ -381,10 +381,10 @@ export function Feedback() {
   return (
     <>
       {header}
-      <div className="v-workspace v-workspace--sheet">
-        <div className="v-workspace__paper">
+      <div className="v-student-workspace v-student-workspace--sheet">
+        <div className="v-student-workspace__paper">
           {pdf.error ? (
-            <div className="v-workspace__state">
+            <div className="v-student-workspace__state">
               <Notice tone="error">{`Your PDF could not be fetched (${pdf.error}).`}</Notice>
             </div>
           ) : pdf.blob ? (
@@ -399,16 +399,16 @@ export function Feedback() {
               label="Your paper"
             />
           ) : (
-            <div className="v-workspace__state">
+            <div className="v-student-workspace__state">
               <Spinner size={20} label="Loading your paper" />
             </div>
           )}
         </div>
 
-        <aside className={`v-workspace__pane v-sheet${sheetOpen ? " is-open" : ""}`} aria-label="Feedback">
+        <aside className={`v-student-workspace__pane v-student-sheet${sheetOpen ? " is-open" : ""}`} aria-label="Feedback">
           <button
             type="button"
-            className="v-sheet__handle"
+            className="v-student-sheet__handle"
             aria-expanded={sheetOpen}
             onClick={() => setSheetOpen((open) => !open)}
           >
@@ -426,7 +426,7 @@ export function Feedback() {
           </button>
           {pane}
           {attempt ? (
-            <div className="v-sheet__actions">
+            <div className="v-student-sheet__actions">
               <RevisionButton
                 assignmentId={attempt.assignment_id}
                 size="lg"

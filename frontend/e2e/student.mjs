@@ -66,7 +66,7 @@ try {
   }
   await page.getByText("Your estimate").waitFor({ state: "visible", timeout: 30000 });
   await page.getByText("Test fixture").first().waitFor({ state: "visible", timeout: 5000 });
-  const findings = page.locator(".v-finding");
+  const findings = page.locator(".v-student-finding");
   await findings.first().waitFor({ state: "visible", timeout: 10000 });
   const findingCount = await findings.count();
   assert(findingCount === questionIds.length, `expected ${questionIds.length} findings, got ${findingCount}`);

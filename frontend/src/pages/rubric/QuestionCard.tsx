@@ -1,10 +1,10 @@
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "../../components/Button";
 import { Score } from "../../components/Score";
+import { formatPoints } from "../../components/score-format";
 import type { Category, Criterion, Question } from "../../api/types";
 import { AutoTextarea } from "./AutoTextarea";
 import { CATEGORIES, CATEGORY_LABELS, pointsAssigned, pointsBalance } from "./draft";
-import { formatPoints } from "./publish-gate";
 
 export interface QuestionCardProps {
   question: Question;
@@ -89,7 +89,9 @@ export function QuestionCard({ question, criteria, canEdit, onAdd, onUpdate, onR
           {formatPoints(assigned)} of {formatPoints(question.max_points)} points assigned
         </p>
         {canEdit ? (
-          <Button variant="quiet" icon={Plus} onClick={onAdd}>
+          // One of these per question card, so the visible label needs the question behind it to
+          // stay a distinct accessible name. The visible text stays the start of that name.
+          <Button variant="quiet" icon={Plus} aria-label={`Add criterion to ${question.title}`} onClick={onAdd}>
             Add criterion
           </Button>
         ) : null}

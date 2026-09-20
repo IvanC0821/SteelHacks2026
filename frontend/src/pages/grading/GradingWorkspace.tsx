@@ -39,11 +39,34 @@ export function GradingWorkspace() {
   const job = useAssessmentJob(client, paper?.job_id ?? null);
   const pdf = usePdfBlob(client, paper?.document_id ?? null);
 
-  const [selectedQuestionId, setSelectedQuestionId] = useState("");
-  const [selectedFlagId, setSelectedFlagId] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
+  // A new paper, or the questions landing, resets the selection: first question, page 1, nothing
+  // selected. Derived during render from the key rather than reset in an effect, so the workspace
+  // never paints one frame of the previous paper's selection.
+  const selectionKey = `${submissionId ?? ""}|${questions.map((q) => q.id).join(",")}`;
+  const [storedSelection, setStoredSelection] = useState<Selection>(() =>
+    freshSelection(selectionKey, questions),
+  );
+  const selection =
+    storedSelection.key === selectionKey ? storedSelection : freshSelection(selectionKey, questions);
+
+  const patchSelection = useCallback(
+    (change: Partial<Omit<Selection, "key">>) => {
+      setStoredSelection((prev) => ({
+        ...(prev.key === selectionKey ? prev : freshSelection(selectionKey, questions)),
+        ...change,
+      }));
+    },
+    [selectionKey, questions],
+  );
+
+  const selectedQuestionId = selection.questionId;
+  const selectedFlagId = selection.flagId;
+  const page = selection.page;
+  const showErrors = selection.showErrors;
+  const setSelectedFlagId = useCallback((flagId: string | null) => patchSelection({ flagId }), [patchSelection]);
+  const setPage = useCallback((next: number) => patchSelection({ page: next }), [patchSelection]);
+
   const [hideMarks, setHideMarks] = useState(false);
-  const [showErrors, setShowErrors] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [releaseOpen, setReleaseOpen] = useState(false);
   const [reopenOpen, setReopenOpen] = useState(false);
@@ -52,14 +75,6 @@ export function GradingWorkspace() {
 
   const controller = useReview(client, paper ?? null, questions, submission.reload, submission.applyReview);
   const { state } = controller;
-
-  // A new paper: back to the first question, page 1, nothing selected.
-  useEffect(() => {
-    setSelectedQuestionId(questions[0]?.id ?? "");
-    setSelectedFlagId(null);
-    setShowErrors(false);
-    setPage(1);
-  }, [submissionId, questions]);
 
   const currentQuestion = questions.find((q) => q.id === selectedQuestionId) ?? questions[0] ?? null;
   const header = paper
@@ -84,27 +99,25 @@ export function GradingWorkspace() {
       if (!currentQuestion) return;
       const index = questions.findIndex((q) => q.id === currentQuestion.id);
       const next = questions[index + delta];
-      if (next) {
-        setSelectedQuestionId(next.id);
-        setSelectedFlagId(null);
-        setShowErrors(false);
-      }
+      if (next) patchSelection({ questionId: next.id, flagId: null, showErrors: false });
     },
-    [currentQuestion, questions],
+    [currentQuestion, patchSelection, questions],
   );
 
   const saveAndNext = useCallback(async () => {
     if (!currentQuestion || !paper) return;
-    setShowErrors(true);
+    patchSelection({ showErrors: true });
     const outcome = await controller.saveQuestion(currentQuestion.id);
     if (outcome.ok) {
-      setShowErrors(false);
+      // Clear before stepping: on the last question there is nothing to step to, and the fields
+      // should still come out of their error state now that the save went through.
+      patchSelection({ showErrors: false });
       stepQuestion(1);
       void queue.reload();
     } else if (outcome.code && !outcome.stale && outcome.code !== "invalid_input") {
       toast({ message: `The save failed (${outcome.code}). Nothing was overwritten.`, tone: "error" });
     }
-  }, [controller, currentQuestion, paper, queue, stepQuestion, toast]);
+  }, [controller, currentQuestion, paper, patchSelection, queue, stepQuestion, toast]);
 
   // The keyboard map. "h" belongs to the viewer, which binds it itself.
   useEffect(() => {
@@ -277,11 +290,7 @@ export function GradingWorkspace() {
               submission={paper}
               questions={questions}
               selectedQuestionId={currentQuestion?.id ?? ""}
-              onSelectQuestion={(id) => {
-                setSelectedQuestionId(id);
-                setSelectedFlagId(null);
-                setShowErrors(false);
-              }}
+              onSelectQuestion={(id) => patchSelection({ questionId: id, flagId: null, showErrors: false })}
               controller={controller}
               readOnly={header?.readOnly ?? false}
               selectedFlagId={selectedFlagId}
@@ -382,4 +391,19 @@ export function GradingWorkspace() {
       </Dialog>
     </>
   );
+}
+
+/** Everything about the workspace that belongs to one paper: which question is open, which flag
+ *  is picked, which page the viewer shows and whether the fields are showing their errors yet. */
+interface Selection {
+  /** the paper and its question ids; a change means a different paper or a late-arriving rubric */
+  key: string;
+  questionId: string;
+  flagId: string | null;
+  showErrors: boolean;
+  page: number;
+}
+
+function freshSelection(key: string, questions: { id: string }[]): Selection {
+  return { key, questionId: questions[0]?.id ?? "", flagId: null, showErrors: false, page: 1 };
 }

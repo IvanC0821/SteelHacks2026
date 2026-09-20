@@ -74,7 +74,7 @@ export function NewAssignment() {
   };
 
   return (
-    <div className="v-new">
+    <div className="v-rubric-new">
       <PageHeader
         title="New assignment"
         subtitle={course?.name}
@@ -85,14 +85,14 @@ export function NewAssignment() {
         }
       />
 
-      <div className="v-new__body v-measure">
+      <div className="v-rubric-new__body v-measure">
         {formErrors.length > 0 ? (
           <Notice tone="error">
             {formErrors.length === 1 ? formErrors[0] : formErrors.join(". ")}
           </Notice>
         ) : null}
 
-        <div className="v-new__top">
+        <div className="v-rubric-new__top">
           <Field
             label="Title"
             value={title}
@@ -101,7 +101,7 @@ export function NewAssignment() {
             placeholder="Homework 3"
             autoFocus
           />
-          <div className="v-new__due">
+          <div className="v-rubric-new__due">
             <Field label="Due date" type="date" value={date} onChange={setDate} hint="Optional" />
             <Field
               label="Time"
@@ -114,22 +114,22 @@ export function NewAssignment() {
           </div>
         </div>
 
-        <section className="v-new__questions" aria-label="Questions">
-          <header className="v-new__questions-head">
+        <section className="v-rubric-new__questions" aria-label="Questions">
+          <header className="v-rubric-new__questions-head">
             <h2 className="v-heading-16">Questions</h2>
             <p className="v-label-12">
               Total <Score value={totalPoints(state.rows)} size="sm" /> points
             </p>
           </header>
 
-          <ol className="v-new__rows">
+          <ol className="v-rubric-new__rows">
             {state.rows.map((row, index) => {
               const errors = errorFor(row.key);
               return (
-                <li key={row.key} className="v-new__row">
-                  <div className="v-new__row-head">
-                    <span className="v-new__row-number v-label-12">{index + 1}</span>
-                    <div className="v-new__row-move">
+                <li key={row.key} className="v-rubric-new__row">
+                  <div className="v-rubric-new__row-head">
+                    <span className="v-rubric-new__row-number v-label-12">{index + 1}</span>
+                    <div className="v-rubric-new__row-move">
                       <Button
                         variant="quiet"
                         icon={ArrowUp}
@@ -160,13 +160,13 @@ export function NewAssignment() {
                     </div>
                   </div>
 
-                  <div className="v-new__row-grid">
+                  <div className="v-rubric-new__row-grid">
                     <Field
                       label="ID"
                       value={row.id}
                       onChange={(value) => dispatch({ type: "field", key: row.key, field: "id", value })}
                       error={errors.id}
-                      className="v-new__field-id"
+                      className="v-rubric-new__field-id"
                     />
                     <Field
                       label="Title"
@@ -174,7 +174,7 @@ export function NewAssignment() {
                       onChange={(value) => dispatch({ type: "field", key: row.key, field: "title", value })}
                       error={errors.title}
                       placeholder="Solve the system"
-                      className="v-new__field-title"
+                      className="v-rubric-new__field-title"
                     />
                     <Field
                       label="Points"
@@ -182,11 +182,11 @@ export function NewAssignment() {
                       value={row.points}
                       onChange={(value) => dispatch({ type: "field", key: row.key, field: "points", value })}
                       error={errors.points}
-                      className="v-new__field-points"
+                      className="v-rubric-new__field-points"
                     />
                   </div>
 
-                  <div className="v-new__prompt">
+                  <div className="v-rubric-new__prompt">
                     <label className="v-label-14" htmlFor={`prompt-${row.key}`}>
                       Prompt
                     </label>
@@ -204,7 +204,7 @@ export function NewAssignment() {
             })}
           </ol>
 
-          <div className="v-new__add">
+          <div className="v-rubric-new__add">
             <Button variant="secondary" icon={Plus} onClick={() => dispatch({ type: "add" })}>
               Add question
             </Button>

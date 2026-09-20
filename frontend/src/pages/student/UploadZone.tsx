@@ -46,9 +46,9 @@ export function UploadZone({
   }
 
   return (
-    <div className={["v-upload", className ?? ""].filter(Boolean).join(" ")}>
+    <div className={["v-student-upload", className ?? ""].filter(Boolean).join(" ")}>
       <div
-        className={`v-upload__zone${over ? " is-over" : ""}${disabled ? " is-disabled" : ""}`}
+        className={`v-student-upload__zone${over ? " is-over" : ""}${disabled ? " is-disabled" : ""}`}
         onDragOver={(event) => {
           event.preventDefault();
           if (!disabled) setOver(true);
@@ -56,9 +56,9 @@ export function UploadZone({
         onDragLeave={() => setOver(false)}
         onDrop={onDrop}
       >
-        <Icon glyph={UploadCloud} size={20} className="v-upload__glyph" />
-        <p className="v-copy-16 v-upload__label">{disabledReason ?? label}</p>
-        <p className="v-copy-14 v-upload__hint">{uploadHint(capabilities)}</p>
+        <Icon glyph={UploadCloud} size={20} className="v-student-upload__glyph" />
+        <p className="v-copy-16 v-student-upload__label">{disabledReason ?? label}</p>
+        <p className="v-copy-14 v-student-upload__hint">{uploadHint(capabilities)}</p>
         <Button
           variant="primary"
           size="lg"
@@ -70,7 +70,7 @@ export function UploadZone({
           Choose a PDF
         </Button>
         {busy ? (
-          <p className="v-copy-14 v-upload__busy" role="status">
+          <p className="v-copy-14 v-student-upload__busy" role="status">
             <Spinner size={16} /> Uploading your PDF
           </p>
         ) : null}
@@ -88,7 +88,7 @@ export function UploadZone({
         />
       </div>
       {local || failure ? (
-        <Notice tone="error" className="v-upload__error">
+        <Notice tone="error" className="v-student-upload__error">
           {local ?? failure}
         </Notice>
       ) : null}

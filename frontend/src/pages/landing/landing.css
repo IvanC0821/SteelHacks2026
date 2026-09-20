@@ -1,6 +1,6 @@
 /* The signed-out page. One column on the white ground, left aligned, nothing floating. */
 
-.v-landing {
+.v-landing-page {
   min-height: 100dvh;
   display: flex;
   align-items: center;
@@ -9,14 +9,14 @@
 }
 
 /* `/?preview=landing`: the same page lifted over the shell, so it can be reviewed while signed in */
-.v-landing--preview {
+.v-landing-page--preview {
   position: fixed;
   inset: 0;
   z-index: var(--v-z-dialog);
   overflow: auto;
 }
 
-.v-landing__inner {
+.v-landing-inner {
   width: 100%;
   max-width: 640px;
   padding: var(--v-space-48) var(--v-space-24);
@@ -26,12 +26,12 @@
   gap: var(--v-space-24);
 }
 
-.v-landing__line {
+.v-landing-line {
   max-width: 34em;
   margin: 0;
 }
 
-.v-landing__columns {
+.v-landing-columns {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -41,18 +41,18 @@
   border-bottom: var(--v-border-hairline);
 }
 
-.v-landing__steps h2 {
+.v-landing-steps h2 {
   margin-bottom: var(--v-space-12);
 }
 
-.v-landing__step {
+.v-landing-step {
   display: flex;
   align-items: baseline;
   gap: var(--v-space-8);
   padding: var(--v-space-4) 0;
 }
 
-.v-landing__step-n {
+.v-landing-step-num {
   flex: none;
   width: 1.1em;
   color: var(--v-teal-600);
@@ -60,7 +60,7 @@
   line-height: var(--v-lead-16-prose);
 }
 
-.v-landing__continue {
+.v-landing-continue {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -76,37 +76,37 @@
   transition: background-color var(--v-motion-state) var(--v-ease);
 }
 
-.v-landing__continue:hover {
+.v-landing-continue:hover {
   background: var(--v-teal-500);
   text-decoration: none;
 }
 
-.v-landing__continue:active {
+.v-landing-continue:active {
   background: var(--v-teal-800);
 }
 
-.v-landing__footnote {
+.v-landing-footnote {
   margin: 0;
 }
 
 @media (max-width: 760px) {
-  .v-landing__inner {
+  .v-landing-inner {
     padding: var(--v-space-32) var(--v-space-16);
     gap: var(--v-space-16);
   }
 
-  .v-landing__columns {
+  .v-landing-columns {
     grid-template-columns: 1fr;
     gap: var(--v-space-24);
   }
 
-  .v-landing__continue {
+  .v-landing-continue {
     width: 100%;
   }
 }
 
 /* the signed-in visitor with no course: the same page frame, one sentence */
-.v-landing__enrol {
+.v-landing-enrol {
   flex: 1;
   min-height: 0;
   overflow: auto;

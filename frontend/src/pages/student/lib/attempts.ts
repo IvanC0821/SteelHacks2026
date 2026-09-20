@@ -3,14 +3,15 @@
 // disabled control always carries the reason the server would have given.
 
 import type { StudentSubmission } from "../../../api/types";
+import { assessmentState, formatPoints } from "../../../components";
+import { formatDate, isPastDue } from "../../../design/format";
 
-/** Drops a trailing .0 so 8 points reads "8" and 7.5 stays "7.5". */
-export function points(value: number): string {
-  return Number.isInteger(value) ? String(value) : String(Number(value.toFixed(2)));
-}
+// The number, date and status vocabularies are the design system's; this module only adds the
+// attempt-history rules on top of them.
+export { isPastDue };
 
 export function scoreLine(score: number | null, max: number): string {
-  return score === null ? "Needs review" : `${points(score)} of ${points(max)}`;
+  return score === null ? "Needs review" : `${formatPoints(score)} of ${formatPoints(max)}`;
 }
 
 export type AttemptStatus =
@@ -28,8 +29,9 @@ export function attemptStatus(submission: StudentSubmission): AttemptStatus {
     return { kind: "final", label: `Final score ${scoreLine(score, max)}`, score, max };
   }
   const assessment = submission.assessment;
-  if (!assessment) return { kind: "not_checked", label: "Not checked" };
-  if (assessment.score === null || assessment.status === "needs_review") {
+  const state = assessmentState(assessment);
+  if (state === "not_checked" || !assessment) return { kind: "not_checked", label: "Not checked" };
+  if (state === "needs_review" || assessment.score === null) {
     return { kind: "needs_review", label: "Needs review" };
   }
   return {
@@ -123,12 +125,6 @@ export function handInGate(input: {
   return { allowed: true, reason: null };
 }
 
-export function isPastDue(dueAt: string | null, now: Date = new Date()): boolean {
-  if (!dueAt) return false;
-  const due = new Date(dueAt);
-  return Number.isFinite(due.getTime()) && now.getTime() >= due.getTime();
-}
-
 /** Uploading a revision follows the same deadline rule; there is no attempt cap. */
 export function uploadGate(dueAt: string | null, now: Date = new Date()): HandInGate {
   return isPastDue(dueAt, now)
@@ -138,8 +134,8 @@ export function uploadGate(dueAt: string | null, now: Date = new Date()): HandIn
 
 const TIME = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" });
 const DAY = new Intl.DateTimeFormat("en-US", { weekday: "long" });
-const DATE = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
 
+/** The student area writes the clock in the same sentence as a day, so it stays lowercase. */
 function clock(date: Date): string {
   return TIME.format(date).replace(" AM", " am").replace(" PM", " pm");
 }
@@ -149,16 +145,16 @@ export function dueSentence(dueAt: string | null, now: Date = new Date()): strin
   if (!dueAt) return "No due date";
   const due = new Date(dueAt);
   if (!Number.isFinite(due.getTime())) return "No due date";
-  if (now.getTime() >= due.getTime()) return "Closed";
+  if (isPastDue(dueAt, now)) return "Closed";
   const withinAWeek = due.getTime() - now.getTime() < 7 * 24 * 60 * 60 * 1000;
-  const day = withinAWeek ? DAY.format(due) : DATE.format(due);
+  const day = withinAWeek ? DAY.format(due) : formatDate(dueAt, now);
   return `Due ${day}, ${clock(due)}`;
 }
 
-/** "Sept 19, 4:12 pm" for an upload or a hand-in stamp. */
-export function stamp(iso: string | null): string {
+/** "Sep 19, 4:12 pm" for an upload or a hand-in stamp. */
+export function stamp(iso: string | null, now: Date = new Date()): string {
   if (!iso) return "";
-  const date = new Date(iso);
-  if (!Number.isFinite(date.getTime())) return "";
-  return `${DATE.format(date)}, ${clock(date)}`;
+  const day = formatDate(iso, now);
+  // formatDate returns "" for anything it could not parse, so the clock below is always safe.
+  return day ? `${day}, ${clock(new Date(iso))}` : "";
 }

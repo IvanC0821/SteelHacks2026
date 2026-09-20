@@ -8,21 +8,21 @@ import "./landing.css";
  *  `preview` lifts it over the shell so the page can be reviewed while signed in. */
 export function Landing({ preview = false }: { preview?: boolean } = {}) {
   return (
-    <div className={preview ? "v-landing v-landing--preview" : "v-landing"}>
-      <main className="v-landing__inner" id={preview ? undefined : "main"}>
+    <div className={preview ? "v-landing-page v-landing-page--preview" : "v-landing-page"}>
+      <main className="v-landing-inner" id={preview ? undefined : "main"}>
         <Wordmark size="lg" />
-        <p className="v-copy-16 v-landing__line">{LANDING_LINE}</p>
+        <p className="v-copy-16 v-landing-line">{LANDING_LINE}</p>
 
-        <div className="v-landing__columns">
+        <div className="v-landing-columns">
           <Steps title="For students" steps={STUDENT_STEPS} />
           <Steps title="For instructors and TAs" steps={STAFF_STEPS} />
         </div>
 
-        <Link to="/session" className="v-landing__continue">
+        <Link to="/session" className="v-landing-continue">
           Continue
         </Link>
 
-        <p className="v-label-12 v-landing__footnote">{LANDING_FOOTNOTE}</p>
+        <p className="v-label-12 v-landing-footnote">{LANDING_FOOTNOTE}</p>
       </main>
     </div>
   );
@@ -30,12 +30,12 @@ export function Landing({ preview = false }: { preview?: boolean } = {}) {
 
 function Steps({ title, steps }: { title: string; steps: Step[] }) {
   return (
-    <section className="v-landing__steps">
+    <section className="v-landing-steps">
       <h2 className="v-heading-14">{title}</h2>
       <ol>
         {steps.map((step) => (
-          <li key={step.n} className="v-landing__step">
-            <span className="v-landing__step-n v-score" aria-hidden="true">
+          <li key={step.n} className="v-landing-step">
+            <span className="v-landing-step-num v-score" aria-hidden="true">
               {step.n}
             </span>
             <span className="v-copy-14">{step.text}</span>

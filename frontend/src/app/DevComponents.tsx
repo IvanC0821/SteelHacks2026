@@ -160,6 +160,7 @@ export function DevComponents() {
           <Notice tone="info">
             Automated assessment is not connected yet. You can still hand in for staff review.
           </Notice>
+          <Notice tone="success">Scores are released. Every student can see their final score.</Notice>
           <Notice tone="warn" title="Test fixture">
             These results come from a test fixture, not from a model.
           </Notice>

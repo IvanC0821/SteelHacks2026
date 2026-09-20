@@ -1,8 +1,10 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PdfDocument } from "./pdfjs";
-import { PdfViewer } from "./PdfViewer";
-import { PageThumbnails } from "./PageThumbnails";
+// The lazy wrappers in PdfViewer.tsx / PageThumbnails.tsx only add Suspense; the lifecycle under
+// test is the real component's, so these import the implementations directly.
+import { PdfViewer } from "./PdfViewerImpl";
+import { PageThumbnails } from "./PageThumbnailsImpl";
 
 const { openDocument } = vi.hoisted(() => ({ openDocument: vi.fn() }));
 vi.mock("./pdfjs", () => ({ openDocument }));

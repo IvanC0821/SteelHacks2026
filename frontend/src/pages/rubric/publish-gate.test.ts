@@ -90,12 +90,14 @@ describe("publish gate", () => {
     expect(gate({ draft })).toEqual(["Solve the system has 5 of 8 points assigned"]);
   });
 
+  // The gate borrows the app-wide formatter from components/score-format, so a fractional total
+  // reads the same here as it does on a score anywhere else: at most one decimal.
   it("reports an over-assigned question too, with tidy decimals", () => {
     const draft: RubricInput = {
       criteria: [criterion("q1-a", "q1", 8.25), criterion("q2-a", "q2", 6)],
       instructor_notes: "",
     };
-    expect(gate({ draft })).toEqual(["Solve the system has 8.25 of 8 points assigned"]);
+    expect(gate({ draft })).toEqual(["Solve the system has 8.3 of 8 points assigned"]);
   });
 
   it("blocks an empty description and a zero-point criterion", () => {

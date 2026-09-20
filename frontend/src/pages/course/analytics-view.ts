@@ -3,7 +3,7 @@
 // its row and its label but draws nothing, and a whole assignment with no estimates draws no chart.
 
 import type { Analytics, FlagCategory, Question } from "../../api/types";
-import { FLAG_LABEL } from "../../components/flags";
+import { FLAG_LABEL, flagLabel, formatPoints } from "../../components";
 
 export interface CategoryCount {
   category: string;
@@ -47,20 +47,16 @@ export interface Finding {
   text: string;
 }
 
-/** The same word the paper and the feedback panel use for this category. */
+/** The same word the paper and the feedback panel use for this category. `students_by_category`
+ *  is keyed by a plain string, so a category the client does not know yet falls back to its own
+ *  name rather than to the shared "Finding". */
 export function categoryLabel(category: string): string {
-  return FLAG_LABEL[category as FlagCategory] ?? category.replace(/_/g, " ");
+  return category in FLAG_LABEL ? flagLabel(category as FlagCategory) : category.replace(/_/g, " ");
 }
 
 /** One decimal on a mean, so 4 reads as "4.0" beside 3.3. */
 export function formatMean(value: number): string {
   return value.toFixed(1);
-}
-
-/** Point totals print without a trailing ".0": 8, not 8.0. */
-export function formatMax(value: number): string {
-  const rounded = Math.round(value * 10) / 10;
-  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
 }
 
 /** 0-100 width for a mean out of max_points. Clamped, and null when there is nothing to draw. */
@@ -98,7 +94,7 @@ export function questionBars(analytics: Analytics, questions: Question[]): Quest
       valueLabel:
         latestMean === null || scored === 0
           ? "No estimates yet"
-          : `${formatMean(latestMean)} of ${formatMax(row.max_points)}, n = ${scored}`,
+          : `${formatMean(latestMean)} of ${formatPoints(row.max_points)}, n = ${scored}`,
       categories: topCategories(row.latest.students_by_category),
       mixedRubrics: row.latest.rubric_ids.length > 1,
     };

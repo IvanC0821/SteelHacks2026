@@ -12,34 +12,41 @@ export interface PdfBlobState {
 }
 
 const IDLE: PdfBlobState = { blob: null, url: null, error: null, loading: false };
+const LOADING: PdfBlobState = { blob: null, url: null, error: null, loading: true };
 
 /** Fetches an original PDF with authorization and hands back the Blob plus an object URL.
  *  The URL is created and revoked here, so no bearer token ever reaches a URL and nothing leaks.
  *  Pass `documentId === null` to hold off (e.g. before a submission has loaded). */
 export function usePdfBlob(client: VerityClient, documentId: string | null): PdfBlobState {
-  const [state, setState] = useState<PdfBlobState>(
-    documentId ? { ...IDLE, loading: true } : IDLE,
-  );
+  // The settled fetch is keyed by the identity and the document it belongs to, so a change to
+  // either reads as "loading" during render instead of being reset from inside the effect.
+  const [settled, setSettled] = useState<{
+    client: VerityClient;
+    documentId: string;
+    state: PdfBlobState;
+  } | null>(null);
+
+  const current =
+    settled !== null && settled.client === client && settled.documentId === documentId
+      ? settled.state
+      : null;
+  const state = documentId === null ? IDLE : (current ?? LOADING);
 
   useEffect(() => {
-    if (!documentId) {
-      setState(IDLE);
-      return;
-    }
+    if (!documentId) return;
     let live = true;
     let url: string | null = null;
-    setState({ ...IDLE, loading: true });
     client
       .documentBlob(documentId)
       .then((blob) => {
         if (!live) return;
         url = URL.createObjectURL(blob);
-        setState({ blob, url, error: null, loading: false });
+        setSettled({ client, documentId, state: { blob, url, error: null, loading: false } });
       })
       .catch((cause: unknown) => {
         if (!live) return;
         const code = cause instanceof ApiError ? cause.code : "unknown";
-        setState({ ...IDLE, error: code });
+        setSettled({ client, documentId, state: { ...IDLE, error: code } });
       });
     return () => {
       live = false;

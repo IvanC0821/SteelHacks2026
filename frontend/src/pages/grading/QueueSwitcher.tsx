@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Users } from "lucide-react";
-import { Button, Score, StatusChip } from "../../components";
+import { assessmentState, Button, Score, StatusChip } from "../../components";
 import type { StaffSubmission } from "../../api/types";
-import { assessmentStateOf, entryFor, estimateOf, switcherLabel } from "./queue";
+import { entryFor, estimateOf, switcherLabel } from "./queue";
 import "./QueueSwitcher.css";
 
 export interface QueueSwitcherProps {
@@ -101,7 +101,7 @@ export function QueueSwitcher({ queue, currentId, onSelect }: QueueSwitcherProps
                       {estimate ? (
                         <Score value={estimate.score} max={estimate.max} size="sm" />
                       ) : (
-                        <StatusChip kind="assessment" status={assessmentStateOf(paper)} />
+                        <StatusChip kind="assessment" status={assessmentState(paper.assessment)} />
                       )}
                     </span>
                   </button>

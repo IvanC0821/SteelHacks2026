@@ -23,7 +23,7 @@ export function AssignmentFrame({ assignmentId, title, openReports = 0, right, c
   return (
     <>
       <PageHeader title={title} right={right} />
-      <nav className="v-tabs v-assignment__tabs" aria-label="Assignment">
+      <nav className="v-tabs v-course-tabs" aria-label="Assignment">
         {assignmentTabs(assignmentId).map((tab) => (
           <Link
             key={tab.id}
@@ -38,7 +38,7 @@ export function AssignmentFrame({ assignmentId, title, openReports = 0, right, c
           </Link>
         ))}
       </nav>
-      <div className="v-page">{children}</div>
+      <div className="v-course-page">{children}</div>
     </>
   );
 }

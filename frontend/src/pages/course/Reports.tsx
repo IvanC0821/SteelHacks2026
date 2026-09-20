@@ -72,7 +72,7 @@ export function Reports() {
     { key: "student", header: "Student", cell: (row) => <span className="v-label-14">{row.studentName}</span> },
     { key: "question", header: "Question", cell: (row) => row.questionLabel },
     { key: "kind", header: "Kind", cell: (row) => row.kindLabel },
-    { key: "message", header: "Message", cell: (row) => <span className="v-reports__message">{row.report.message}</span> },
+    { key: "message", header: "Message", cell: (row) => <span className="v-course-reports__message">{row.report.message}</span> },
     { key: "time", header: "Sent", cell: (row) => <span className="v-label-12">{row.when}</span> },
     {
       key: "status",
@@ -114,7 +114,7 @@ export function Reports() {
       {data ? (
         <>
           <Table<ReportRow>
-            className="v-rows v-reports"
+            className="v-course-rows v-course-reports"
             caption="Student reports on this assignment"
             columns={columns}
             rows={rows}
@@ -125,7 +125,7 @@ export function Reports() {
               </EmptyState>
             }
           />
-          <p className="v-label-12 v-footnote">Resolving never changes a score.</p>
+          <p className="v-label-12 v-course-footnote">Resolving never changes a score.</p>
         </>
       ) : null}
 
@@ -136,7 +136,7 @@ export function Reports() {
         onClose={close}
         primary={{ label: outcome === "resolved" ? "Resolve" : "Dismiss", onClick: () => void submit(), busy }}
       >
-        <p className="v-copy-14 v-reports__quote">{active?.message}</p>
+        <p className="v-copy-14 v-course-reports__quote">{active?.message}</p>
         <Field label="Status" as="select" value={outcome} onChange={(value) => setOutcome(value as Outcome)}>
           <option value="resolved">Resolved</option>
           <option value="dismissed">Dismissed</option>

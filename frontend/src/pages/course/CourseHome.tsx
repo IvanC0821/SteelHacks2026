@@ -28,20 +28,20 @@ export function CourseHome() {
           isInstructor ? (
             <LinkButton to={`/c/${courseId}/new`} variant="primary">
               <Icon glyph={Plus} size={16} />
-              <span className="v-wide-only">New assignment</span>
-              <span className="v-phone-only">New</span>
+              <span className="v-course-wide-only">New assignment</span>
+              <span className="v-course-phone-only">New</span>
             </LinkButton>
           ) : undefined
         }
       />
 
-      <div className="v-page">
+      <div className="v-course-page">
         {home.loading && !home.data ? <Spinner size={20} label="Loading the course" /> : null}
         {home.error ? <Notice tone="error">{errorMessage(home.error)}</Notice> : null}
 
         {home.data ? (
           <Table<AssignmentRow>
-            className="v-rows v-assignments"
+            className="v-course-rows v-course-assignments"
             caption="Assignments in this course"
             columns={columns(isStaff)}
             rows={rows}
@@ -85,7 +85,7 @@ function columns(isStaff: boolean): Array<Column<AssignmentRow>> {
       key: "title",
       header: "Assignment",
       cell: (row) => (
-        <div className="v-assignments__title">
+        <div className="v-course-assignments__title">
           <span className="v-heading-14">{row.assignment.title}</span>
           <span className="v-label-12">
             {row.assignment.due_at
@@ -119,16 +119,16 @@ function StaffCell({ row }: { row: AssignmentRow }) {
   if (!status) return null;
   const progress = status.progress;
   return (
-    <div className="v-assignments__status">
+    <div className="v-course-assignments__status">
       <span className="v-label-14">{status.label}</span>
       {progress && progress.total > 0 ? (
         <span
-          className="v-progress"
+          className="v-course-progress"
           role="img"
           aria-label={`${progress.reviewed} of ${progress.total} papers reviewed`}
         >
           <span
-            className="v-progress__fill"
+            className="v-course-progress__fill"
             style={{ inlineSize: `${(progress.reviewed / progress.total) * 100}%` }}
           />
         </span>
@@ -141,7 +141,7 @@ function StudentCell({ row }: { row: AssignmentRow }) {
   const status = row.student;
   if (!status) return null;
   return (
-    <div className="v-assignments__status">
+    <div className="v-course-assignments__status">
       <span className="v-label-14">{status.label}</span>
       {status.state === "final_score" ? (
         <Score value={status.score} max={status.maxPoints ?? undefined} size="sm" />

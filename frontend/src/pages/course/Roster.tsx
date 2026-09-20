@@ -22,13 +22,13 @@ export function Roster({ courseId, members, canEnroll, onEnrolled }: RosterProps
   const groups = groupRoster(members);
 
   return (
-    <section className="v-roster" aria-labelledby="v-roster-heading">
-      <h2 className="v-heading-16" id="v-roster-heading">
+    <section className="v-course-roster" aria-labelledby="v-course-roster-heading">
+      <h2 className="v-heading-16" id="v-course-roster-heading">
         Roster
       </h2>
-      <div className="v-roster__groups">
+      <div className="v-course-roster__groups">
         {groups.map((group) => (
-          <div key={group.role} className="v-roster__group">
+          <div key={group.role} className="v-course-roster__group">
             <p className="v-label-12">{group.label}</p>
             <ul>
               {group.members.map((member) => (
@@ -73,7 +73,7 @@ function EnrollForm({ courseId, onEnrolled }: { courseId: string; onEnrolled: ()
 
   return (
     <form
-      className="v-enroll"
+      className="v-course-enroll"
       onSubmit={(event) => {
         event.preventDefault();
         void submit();
@@ -89,7 +89,7 @@ function EnrollForm({ courseId, onEnrolled }: { courseId: string; onEnrolled: ()
         placeholder="usr_…"
         hint={ENROLL_HINT}
         error={error ?? undefined}
-        className="v-enroll__id"
+        className="v-course-enroll__id"
       />
       <Field label="Role" as="select" value={role} onChange={(value) => setRole(value as Role)}>
         {ENROLL_ROLES.map((option) => (
@@ -98,7 +98,7 @@ function EnrollForm({ courseId, onEnrolled }: { courseId: string; onEnrolled: ()
           </option>
         ))}
       </Field>
-      <Button type="submit" icon={UserPlus} busy={busy} className="v-enroll__submit">
+      <Button type="submit" icon={UserPlus} busy={busy} className="v-course-enroll__submit">
         Enroll
       </Button>
     </form>

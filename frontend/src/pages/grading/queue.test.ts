@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { assessmentState } from "../../components";
 import {
-  assessmentStateOf,
   entryFor,
   estimateOf,
   firstUnreviewed,
@@ -44,10 +44,10 @@ describe("the queue switcher", () => {
 
 describe("what the roster shows per paper", () => {
   it("reads the assessment state, including a paper never checked", () => {
-    expect(assessmentStateOf(queue[0])).toBe("estimated");
-    expect(assessmentStateOf(queue[3])).toBe("not_checked");
+    expect(assessmentState(queue[0].assessment)).toBe("estimated");
+    expect(assessmentState(queue[3].assessment)).toBe("not_checked");
     expect(
-      assessmentStateOf(fx.submission({ assessment: { ...fx.assessment, status: "needs_review", score: null } })),
+      assessmentState(fx.submission({ assessment: { ...fx.assessment, status: "needs_review", score: null } }).assessment),
     ).toBe("needs_review");
   });
 

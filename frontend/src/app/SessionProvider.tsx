@@ -23,7 +23,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [session, setSession] = useState<Session | null>(() => loadSession());
   const [loaded, setLoaded] = useState<Loaded | null>(null);
-  const [checking, setChecking] = useState(session !== null);
   const [message, setMessage] = useState<string | null>(null);
   const timers = useRef<number[]>([]);
 
@@ -44,11 +43,14 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     return { user, capabilities, courses, client };
   }, []);
 
+  // A stored session with nothing loaded yet is exactly the resume in flight: it either ends with
+  // `loaded` set or with `session` cleared, so the boot state is derived, never set from an effect.
+  const booting = session !== null && loaded === null;
+
   // resume the stored session on first paint
   useEffect(() => {
     if (!session || loaded) return;
     let live = true;
-    setChecking(true);
     load(session)
       .then((next) => {
         if (live) setLoaded(next);
@@ -62,9 +64,6 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             ? "That session expired. Paste a current token to continue."
             : "That session could not be resumed. Paste a token to continue.",
         );
-      })
-      .finally(() => {
-        if (live) setChecking(false);
       });
     return () => {
       live = false;
@@ -128,7 +127,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [loaded, signOut, refresh],
   );
 
-  if (checking && !loaded) {
+  if (booting) {
     return (
       <div className="v-session-boot">
         <Spinner size={20} label="Checking your session" />

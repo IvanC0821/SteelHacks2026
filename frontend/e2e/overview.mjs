@@ -28,7 +28,7 @@ try {
 
   const hasEstimates = analytics.questions.some((q) => q.latest.scored_students > 0);
   if (hasEstimates) {
-    const bars = page.locator(".v-bar");
+    const bars = page.locator(".v-course-bar");
     await bars.first().waitFor({ state: "visible", timeout: 10000 });
     const count = await bars.count();
     assert(count === assignment.questions.length, `expected ${assignment.questions.length} bars, got ${count}`);

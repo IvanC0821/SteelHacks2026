@@ -106,6 +106,24 @@ entrance, and `prefers-reduced-motion` is handled once in `base.css`.
 Helpers: `.v-muted`, `.v-measure` (max-width 1040), `.v-visually-hidden`. Links are `--v-teal-500`
 and underlined in prose. The focus ring is one rule: `:focus-visible` → 2px `--v-focus`, 2px offset.
 
+### CSS naming
+
+Every stylesheet in the app is global, so the prefix is the only thing keeping five concurrent page
+folders out of each other's rules.
+
+- A page CSS class is prefixed by its area: `v-course-`, `v-student-`, `v-grade-`, `v-rubric-`,
+  `v-landing-`. So `.v-grade-queue`, `.v-student-attempt`, `.v-rubric-row`. The BEM form of the same
+  prefix counts: `.v-grade`, `.v-grade__paper` and `.v-grade--dense` are all inside `v-grade`.
+- Only `src/components/**` and `src/pdf/**` own bare `v-` names (`.v-button`, `.v-pdf-page`). A page
+  never defines, and never redefines, a bare `v-` class.
+- **No page stylesheet may write a selector that does not start with its own prefix.** Not a bare
+  element (`button {}`), not a shared class (`.v-chip {}`), not a token override on `:root`. To
+  change how a shared component looks inside your page, scope it: `.v-grade-panel .v-chip { … }`,
+  and if you need that more than once, ask for a prop instead.
+- Modifiers and elements hang off the prefixed block in the same BEM-ish shape the components use:
+  `.v-grade-queue__row`, `.v-grade-queue--dense`, and `.is-selected` / `.is-busy` for state (an
+  `.is-*` class only ever appears after a prefixed one, never on its own).
+
 ## 3. Components (`src/components/`)
 
 Import from the barrel: `import { Button, Score } from "../../components";`. Each component is one
@@ -183,8 +201,13 @@ Already mounted in `App`. `const { toast } = useToast(); toast({ message, tone?,
 
 ### `<Notice>` → `.v-notice`
 
-`tone?: "info" | "warn" | "error"` · `title?` · `children` · `action?: ReactNode` · `className`.
-An inline block, never floating. `tone="error"` carries `role="alert"`.
+`tone?: "info" | "success" | "warn" | "error"` · `title?` · `children` · `action?: ReactNode` ·
+`className`. An inline block, never floating. `tone="error"` carries `role="alert"`.
+
+`tone="success"` is the credit green (`--v-credit` on `--v-credit-soft`, `CircleCheck`) and reports
+a state that has settled — scores released, a review completed, a rubric published. It is not a save
+confirmation: a consequential save is a `useToast()` confirm, which clears itself. Use `success` only
+when the state it names is still true the next time the page loads.
 
 ### `<Field>` → `.v-field`
 
@@ -224,7 +247,9 @@ the active id in the page body without rendering the control.
 `flagLabel(category)` → the reader-facing word ("Unsupported method"). `flagTone(category)` → the
 shared `MarkTone`: arithmetic, logic and unsupported_method read as deduction; notation,
 presentation, justification, unreadable and needs_review read as hint. Override per page if your
-screen has a better reason, but keep the paper and the panel in agreement.
+screen has a better reason, but keep the paper and the panel in agreement. `FLAG_LABEL` is the total
+map behind `flagLabel`, for when a page needs to list every category. All three come out of the
+barrel: `import { flagLabel, flagTone, FLAG_LABEL } from "../../components";`.
 
 ## 4. PDF (`src/pdf/`)
 
@@ -268,10 +293,27 @@ lazily (within 600px of the viewport).
 
 ```tsx
 <PageThumbnails blob={blob} selected={[2, 3]} onSelect={setPage}
-  overlay={(n) => <Chip tone="teal">{`Q${map[n]}`}</Chip>} layout="grid" tileWidth={116} />
+  overlay={(n) => <Chip tone="teal">{`Q${map[n]}`}</Chip>} overlayPosition="bottom"
+  layout="grid" tileWidth={116} />
 ```
 `selected: number[]` · `onSelect?` · `overlay?: (page) => ReactNode` (the chip slot over each tile) ·
-`tileWidth?` · `layout?: "row" | "grid"` · `label?`.
+`overlayPosition?: "top" | "bottom"` · `tileWidth?` · `layout?: "row" | "grid"` · `label?`.
+
+`overlayPosition` (default `"top"`) says which end of the tile the chip slot sits on. A page's first
+lines are the ones a reader recognises it by, so use `"bottom"` whenever the overlay is persistent —
+the question chips on the page-mapping grid — and keep `"top"` for a short-lived badge.
+
+### Lazy loading
+
+`PdfViewer` and `PageThumbnails` are thin `React.lazy` wrappers; the real components live beside
+them in `PdfViewerImpl.tsx` and `PageThumbnailsImpl.tsx` and pull pdf.js in with them. The names,
+the props and the import path are unchanged, so nothing in `src/pages/**` changes — the chunk simply
+arrives on first mount, behind a `Suspense` fallback that reserves the pane on the `--v-canvas`
+ground with the shared `Spinner` (`Pane.tsx`, classes `.v-pdf-pane` and `.v-thumbs-pane`).
+
+Keep it that way: import the viewer from `../../pdf` or `../../pdf/PdfViewer`, never from
+`PdfViewerImpl`, or pdf.js lands back in the main bundle. `vite.config.ts` also splits React, React
+DOM and the router into a `vendor-react` chunk. Main chunk 161 kB, vendor 313 kB, pdf.js 430 kB.
 
 `<ViewerToolbar>` is exported separately if a page needs the row without the scroll:
 `page`, `pageCount`, `onPageChange`, `zoom`, `onZoomChange`, `hideMarks?`, `onHideMarksChange?`,
@@ -396,3 +438,9 @@ questions, 30 points) and `Homework 2` (no published rubric). Re-seed from the r
 `shell-390-drawer.png` (rail as a drawer) · `components.png` (1440×3500) / `components-390.png` ·
 `pdf-viewer.png` (latest attempt, fit width) · `pdf-viewer-three-pages.png` (attempt 1 at 50%, five
 gutter pins across three pages) · `pdf-viewer-hidemarks.png` (the same with marks hidden).
+
+`design/screenshots/polish/` holds the code-split proof: `grading-lazy-1440.png`,
+`student-feedback-lazy-1440.png`, `dev-pdf-lazy.png` (the lazy viewer and thumbnails on a real
+paper, no console errors), `components-notice.png` (the sheet with `Notice tone="success"`) and
+`shell-390-drawer.png` / `shell-390-drawer-closes.png` (the rail drawer opens, and navigating
+closes it).

@@ -42,7 +42,7 @@ export function SetupDrawer({
 
   return (
     <Drawer open={open} title="Assignment setup" onClose={onClose} width="420px">
-      <div className="v-setup">
+      <div className="v-rubric-setup">
         {REFERENCE_KINDS.map((kind) => (
           <KindCard
             key={kind}
@@ -73,7 +73,7 @@ export function SetupDrawer({
             }}
           />
         ))}
-        <p className="v-label-12 v-setup__note">
+        <p className="v-label-12 v-rubric-setup__note">
           Solutions and examples stay private to staff. New references attach to the next published rubric version.
         </p>
       </div>
@@ -97,8 +97,8 @@ function KindCard({ kind, documents, hint, busy, error, canUpload, limit, onPick
   const many = kind === "graded_example";
 
   return (
-    <section className="v-setup__card">
-      <div className="v-setup__head">
+    <section className="v-rubric-setup__card">
+      <div className="v-rubric-setup__head">
         <h3 className="v-heading-14">{KIND_LABELS[kind]}</h3>
         {canUpload ? (
           <Button
@@ -114,20 +114,20 @@ function KindCard({ kind, documents, hint, busy, error, canUpload, limit, onPick
       </div>
       <p className="v-label-12">{hint}</p>
       {documents.length === 0 ? (
-        <p className="v-copy-14 v-setup__none">Nothing attached yet</p>
+        <p className="v-copy-14 v-rubric-setup__none">Nothing attached yet</p>
       ) : (
-        <ul className="v-setup__files">
+        <ul className="v-rubric-setup__files">
           {documents.map((document) => (
-            <li key={document.id} className="v-setup__file">
+            <li key={document.id} className="v-rubric-setup__file">
               <FileText size={16} strokeWidth={1.5} aria-hidden="true" />
-              <span className="v-copy-14 v-setup__filename">{document.filename}</span>
+              <span className="v-copy-14 v-rubric-setup__filename">{document.filename}</span>
               <span className="v-label-12">{pageCount(document.page_count)}</span>
             </li>
           ))}
         </ul>
       )}
       {error ? (
-        <Notice tone="error" className="v-setup__error">
+        <Notice tone="error" className="v-rubric-setup__error">
           {error}
         </Notice>
       ) : null}

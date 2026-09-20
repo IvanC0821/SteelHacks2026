@@ -8,7 +8,6 @@ import {
   handInGate,
   isMapped,
   latestAttempt,
-  points,
   scoreLine,
   sortedAttempts,
   stamp,
@@ -58,8 +57,8 @@ const estimated = {
 
 describe("numbers", () => {
   it("prints whole points without a decimal tail", () => {
-    expect(points(8)).toBe("8");
-    expect(points(7.5)).toBe("7.5");
+    expect(scoreLine(8, 8)).toBe("8 of 8");
+    expect(scoreLine(7.5, 8)).toBe("7.5 of 8");
     expect(scoreLine(22, 30)).toBe("22 of 30");
   });
 

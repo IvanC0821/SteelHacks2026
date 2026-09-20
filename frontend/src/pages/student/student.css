@@ -26,7 +26,7 @@
   margin: 0;
 }
 
-.v-panel-card {
+.v-student-panel-card {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-16);
@@ -36,7 +36,7 @@
   border-radius: var(--v-radius-8);
 }
 
-.v-panel-card h2 {
+.v-student-panel-card h2 {
   margin: 0;
 }
 
@@ -54,13 +54,13 @@
 
 /* --- upload zone ---------------------------------------------------------- */
 
-.v-upload {
+.v-student-upload {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-12);
 }
 
-.v-upload__zone {
+.v-student-upload__zone {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,37 +73,37 @@
   transition: background var(--v-motion-state) var(--v-ease);
 }
 
-.v-upload__zone.is-over {
+.v-student-upload__zone.is-over {
   background: var(--v-teal-50);
   border-color: var(--v-teal-600);
 }
 
-.v-upload__zone.is-disabled {
+.v-student-upload__zone.is-disabled {
   background: var(--v-panel-strong);
   border-style: solid;
 }
 
-.v-upload__glyph {
+.v-student-upload__glyph {
   color: var(--v-teal-600);
 }
 
-.v-upload__label {
+.v-student-upload__label {
   margin: 0;
 }
 
-.v-upload__hint,
-.v-upload__busy {
+.v-student-upload__hint,
+.v-student-upload__busy {
   margin: 0;
   color: var(--v-muted);
 }
 
-.v-upload__busy {
+.v-student-upload__busy {
   display: inline-flex;
   align-items: center;
   gap: var(--v-space-8);
 }
 
-.v-upload__zone .v-button {
+.v-student-upload__zone .v-button {
   margin-top: var(--v-space-8);
 }
 
@@ -150,42 +150,42 @@
   margin: 0;
 }
 
-.v-attempts__name,
-.v-attempts__status {
+.v-student-attempts__name,
+.v-student-attempts__status {
   display: inline-flex;
   align-items: center;
   gap: var(--v-space-8);
 }
 
-.v-attempts__muted {
+.v-student-attempts__muted {
   color: var(--v-muted);
   margin: 0;
 }
 
 /* --- workspace shell ------------------------------------------------------ */
 
-.v-workspace {
+.v-student-workspace {
   flex: 1;
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--v-panel-width);
 }
 
-.v-workspace__paper {
+.v-student-workspace__paper {
   min-width: 0;
   min-height: 0;
   background: var(--v-canvas);
   overflow: auto;
 }
 
-.v-workspace__state {
+.v-student-workspace__state {
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding: var(--v-space-32);
 }
 
-.v-workspace__pane {
+.v-student-workspace__pane {
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -193,7 +193,7 @@
   border-left: 1px solid var(--v-line);
 }
 
-.v-pane__body {
+.v-student-pane__body {
   align-items: flex-start;
   flex: 1;
   min-height: 0;
@@ -204,7 +204,7 @@
   gap: var(--v-space-16);
 }
 
-.v-pane__footer {
+.v-student-pane__footer {
   border-top: 1px solid var(--v-line);
   padding: var(--v-space-16);
   display: flex;
@@ -213,15 +213,15 @@
   background: var(--v-panel);
 }
 
-.v-pane__lede,
-.v-pane__muted,
-.v-pane__count,
-.v-pane__hint {
+.v-student-pane__lede,
+.v-student-pane__muted,
+.v-student-pane__count,
+.v-student-pane__hint {
   margin: 0;
   color: var(--v-muted);
 }
 
-.v-pane__count {
+.v-student-pane__count {
   color: var(--v-ink);
 }
 
@@ -233,7 +233,7 @@
 
 /* --- stepper -------------------------------------------------------------- */
 
-.v-stepper {
+.v-student-stepper {
   display: flex;
   align-items: center;
   gap: var(--v-space-12);
@@ -242,14 +242,14 @@
   list-style: none;
 }
 
-.v-stepper__step {
+.v-student-stepper__step {
   display: inline-flex;
   align-items: center;
   gap: var(--v-space-4);
   color: var(--v-muted);
 }
 
-.v-stepper__step + .v-stepper__step::before {
+.v-student-stepper__step + .v-student-stepper__step::before {
   content: "";
   width: 12px;
   height: 1px;
@@ -257,7 +257,7 @@
   margin-right: var(--v-space-8);
 }
 
-.v-stepper__number {
+.v-student-stepper__number {
   display: inline-grid;
   place-items: center;
   width: 20px;
@@ -268,17 +268,17 @@
   line-height: 1;
 }
 
-.v-stepper__step.is-current {
+.v-student-stepper__step.is-current {
   color: var(--v-ink);
 }
 
-.v-stepper__step.is-current .v-stepper__number {
+.v-student-stepper__step.is-current .v-student-stepper__number {
   background: var(--v-teal-600);
   border-color: var(--v-teal-600);
   color: var(--v-surface);
 }
 
-.v-stepper__step.is-done .v-stepper__number {
+.v-student-stepper__step.is-done .v-student-stepper__number {
   background: var(--v-teal-100);
   border-color: var(--v-teal-300);
   color: var(--v-teal-800);
@@ -286,25 +286,31 @@
 
 /* --- assign pages --------------------------------------------------------- */
 
-.v-assign__pages {
+.v-student-assign__pages {
   padding: var(--v-space-24);
 }
 
 /* keep the tiles in one readable band instead of stranding them on a wide canvas */
-.v-assign__pages .v-thumbs {
+.v-student-assign__pages .v-thumbs {
   max-width: 660px;
   margin: 0 auto;
   justify-content: center;
 }
 
-.v-assign__chips {
+/* The chips sit at the foot of the tile so the page's first lines stay readable. The tile's page
+   number is a block under the canvas, so the overlay clears it instead of covering it. */
+.v-student-assign__pages .v-thumbs__overlay--bottom {
+  bottom: calc(var(--v-space-24) + var(--v-space-8));
+}
+
+.v-student-assign__chips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--v-space-4);
   padding: var(--v-space-4);
 }
 
-.v-question-list {
+.v-student-question-list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -313,7 +319,7 @@
   gap: var(--v-space-4);
 }
 
-.v-question {
+.v-student-question {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -328,29 +334,29 @@
   transition: background var(--v-motion-state) var(--v-ease);
 }
 
-.v-question:hover {
+.v-student-question:hover {
   background: var(--v-hover);
 }
 
-.v-question.is-active {
+.v-student-question.is-active {
   background: var(--v-teal-100);
   border-left-color: var(--v-teal-600);
 }
 
-.v-question__head {
+.v-student-question__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--v-space-8);
 }
 
-.v-question__pages {
+.v-student-question__pages {
   color: var(--v-muted);
 }
 
 /* --- feedback ------------------------------------------------------------- */
 
-.v-total {
+.v-student-total {
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -362,24 +368,17 @@
   border-radius: var(--v-radius-8);
 }
 
-.v-total .v-label-12 {
+.v-student-total .v-label-12 {
   color: var(--v-muted);
 }
 
-/* The released final is the one green thing in this pane: credit ink on its soft fill. */
-.v-final-notice {
+/* The released final is the one green thing in this pane; the shared success Notice carries the
+   credit ink and fill, so this only makes it span the pane. */
+.v-student-pane__final {
   align-self: stretch;
-  background: var(--v-credit-soft);
-  border-color: var(--v-credit);
-  border-left-width: 2px;
-  color: var(--v-ink);
 }
 
-.v-final-notice .v-notice__icon {
-  color: var(--v-credit);
-}
-
-.v-pane__running {
+.v-student-pane__running {
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -391,11 +390,11 @@
   border-radius: var(--v-radius-8);
 }
 
-.v-pane__running p {
+.v-student-pane__running p {
   margin: 0;
 }
 
-.v-pane__empty {
+.v-student-pane__empty {
   align-self: stretch;
   display: flex;
   flex-direction: column;
@@ -407,25 +406,25 @@
   border-radius: var(--v-radius-8);
 }
 
-.v-pane__empty p {
+.v-student-pane__empty p {
   margin: 0;
 }
 
-.v-findings,
-.v-flags {
+.v-student-findings,
+.v-student-flags {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.v-findings {
+.v-student-findings {
   align-self: stretch;
   display: flex;
   flex-direction: column;
   gap: var(--v-space-12);
 }
 
-.v-finding {
+.v-student-finding {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-8);
@@ -435,45 +434,45 @@
   border-radius: var(--v-radius-8);
 }
 
-.v-finding__head {
+.v-student-finding__head {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-4);
 }
 
-.v-finding__head h3 {
+.v-student-finding__head h3 {
   margin: 0;
 }
 
-.v-finding__scores {
+.v-student-finding__scores {
   display: flex;
   align-items: baseline;
   gap: var(--v-space-12);
   white-space: nowrap;
 }
 
-.v-finding__score {
+.v-student-finding__score {
   display: inline-flex;
   align-items: baseline;
   gap: var(--v-space-4);
 }
 
-.v-finding__score .v-label-12 {
+.v-student-finding__score .v-label-12 {
   color: var(--v-muted);
 }
 
-.v-finding__score--final {
+.v-student-finding__score--final {
   padding-left: var(--v-space-12);
   border-left: 1px solid var(--v-line);
 }
 
-.v-flags {
+.v-student-flags {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-4);
 }
 
-.v-flag {
+.v-student-flag {
   width: 100%;
   display: grid;
   grid-template-columns: auto 1fr;
@@ -489,38 +488,38 @@
   transition: background var(--v-motion-state) var(--v-ease);
 }
 
-.v-flag:hover {
+.v-student-flag:hover {
   background: var(--v-hover);
 }
 
-.v-flag.is-selected {
+.v-student-flag.is-selected {
   background: var(--v-teal-100);
   border-left-color: var(--v-teal-600);
 }
 
-.v-flag__message {
+.v-student-flag__message {
   grid-column: 1 / -1;
   min-width: 0;
 }
 
-.v-flag__page {
+.v-student-flag__page {
   color: var(--v-muted);
   white-space: nowrap;
   justify-self: end;
 }
 
-.v-finding__actions {
+.v-student-finding__actions {
   display: flex;
   gap: var(--v-space-8);
 }
 
 /* --- version popover ------------------------------------------------------ */
 
-.v-versions {
+.v-student-versions {
   position: relative;
 }
 
-.v-versions__summary {
+.v-student-versions__summary {
   display: inline-flex;
   align-items: center;
   gap: var(--v-space-4);
@@ -532,11 +531,11 @@
   white-space: nowrap;
 }
 
-.v-versions__summary::-webkit-details-marker {
+.v-student-versions__summary::-webkit-details-marker {
   display: none;
 }
 
-.v-versions__list {
+.v-student-versions__list {
   position: absolute;
   z-index: 20;
   top: calc(100% + var(--v-space-4));
@@ -551,7 +550,7 @@
   box-shadow: var(--v-shadow-float);
 }
 
-.v-versions__item {
+.v-student-versions__item {
   width: 100%;
   display: flex;
   align-items: baseline;
@@ -565,54 +564,54 @@
   cursor: pointer;
 }
 
-.v-versions__item:hover {
+.v-student-versions__item:hover {
   background: var(--v-hover);
 }
 
-.v-versions__item.is-active {
+.v-student-versions__item.is-active {
   background: var(--v-teal-100);
 }
 
-.v-versions__meta {
+.v-student-versions__meta {
   color: var(--v-muted);
 }
 
 /* --- phone-only controls -------------------------------------------------- */
 
 /* scoped to the student workspace root so the names cannot leak into other pages */
-.v-workspace .v-sheet__handle,
-.v-workspace .v-sheet__actions,
-.v-workspace .v-pane__actions {
+.v-student-workspace .v-student-sheet__handle,
+.v-student-workspace .v-student-sheet__actions,
+.v-student-workspace .v-student-pane__actions {
   display: none;
 }
 
 @media (max-width: 760px) {
-  .v-workspace {
+  .v-student-workspace {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
   }
 
   /* Assign pages stacks: the tiles first, the question list under them, one page scroll. */
-  .v-workspace--stack {
+  .v-student-workspace--stack {
     display: block;
     overflow: auto;
   }
 
-  .v-workspace--stack .v-workspace__paper {
+  .v-student-workspace--stack .v-student-workspace__paper {
     overflow: visible;
   }
 
-  .v-workspace--stack .v-workspace__pane {
+  .v-student-workspace--stack .v-student-workspace__pane {
     border-left: 0;
     border-top: 1px solid var(--v-line);
   }
 
   /* Feedback keeps the paper full-height and puts the panel in a bottom sheet. */
-  .v-workspace--sheet {
+  .v-student-workspace--sheet {
     position: relative;
   }
 
-  .v-workspace--sheet .v-workspace__pane {
+  .v-student-workspace--sheet .v-student-workspace__pane {
     position: absolute;
     left: 0;
     right: 0;
@@ -625,19 +624,19 @@
     transition: transform var(--v-motion-panel) var(--v-ease);
   }
 
-  .v-sheet {
+  .v-student-sheet {
     transform: translateY(calc(100% - var(--v-control-lg)));
   }
 
-  .v-sheet.is-open {
+  .v-student-sheet.is-open {
     transform: translateY(0);
   }
 
-  .v-sheet .v-pane__body {
+  .v-student-sheet .v-student-pane__body {
     max-height: calc(72dvh - var(--v-control-lg));
   }
 
-  .v-workspace .v-sheet__handle {
+  .v-student-workspace .v-student-sheet__handle {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -651,36 +650,36 @@
     cursor: pointer;
   }
 
-  .v-sheet.is-open .v-sheet__handle .v-icon {
+  .v-student-sheet.is-open .v-student-sheet__handle .v-icon {
     transform: rotate(180deg);
   }
 
-  .v-assign__pages {
+  .v-student-assign__pages {
     padding: var(--v-space-16);
     padding-bottom: calc(var(--v-control-lg) + var(--v-space-24));
   }
 
-  .v-stepper__label {
+  .v-student-stepper__label {
     display: none;
   }
 
   /* On a phone the header row holds the steps and the title; the two page actions move into the
      panel where they stay reachable without squeezing the title out. */
-  .v-feedback-actions,
-  .v-assign-actions {
+  .v-student-feedback-actions,
+  .v-student-assign-actions {
     display: none;
   }
 
-  .v-workspace .v-pane__actions {
+  .v-student-workspace .v-student-pane__actions {
     display: flex;
     gap: var(--v-space-8);
   }
 
-  .v-workspace .v-pane__actions .v-button {
+  .v-student-workspace .v-student-pane__actions .v-button {
     flex: 1;
   }
 
-  .v-workspace .v-sheet__actions {
+  .v-student-workspace .v-student-sheet__actions {
     display: flex;
     gap: var(--v-space-8);
     position: sticky;
@@ -728,10 +727,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .v-workspace__pane,
-  .v-question,
-  .v-flag,
-  .v-upload__zone {
+  .v-student-workspace__pane,
+  .v-student-question,
+  .v-student-flag,
+  .v-student-upload__zone {
     transition: none;
   }
 }

@@ -21,7 +21,7 @@ export function LandingRoute() {
   return (
     <>
       <PageHeader title="Verity" />
-      <div className="v-landing__enrol">
+      <div className="v-landing-enrol">
         <EmptyState title="No course yet" icon={ClipboardList}>
           You are not enrolled in a course yet.
         </EmptyState>

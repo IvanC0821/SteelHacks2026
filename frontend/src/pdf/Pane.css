@@ -1,0 +1,21 @@
+/* The Suspense grounds for the lazily loaded PDF surfaces. These two rules stay in the main
+   bundle; PdfViewer.css and PageThumbnails.css travel with the pdf.js chunk. */
+
+.v-pdf-pane {
+  display: grid;
+  place-items: center;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  background: var(--v-canvas);
+  color: var(--v-muted);
+}
+
+.v-thumbs-pane {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  background: var(--v-canvas);
+  border-radius: var(--v-radius-8);
+  color: var(--v-muted);
+}

@@ -26,10 +26,14 @@ try {
       await page.context().close();
       process.exit(0);
     }
-    // Two "Publish rubric" buttons exist on this page: the primary in the header and a mirror
-    // inside the guided setup steps. Scope to the header's action group, which is the one this
-    // task cares about.
-    const button = page.locator(".v-rubric__actions").getByRole("button", { name: "Publish rubric" });
+    // Exactly one button on the page is named "Publish rubric" -- the header primary. The guided
+    // setup's third step used to mirror the name; it now states the blocking reason instead.
+    const button = page.getByRole("button", { name: "Publish rubric" });
+    await button.waitFor({ state: "attached", timeout: 10000 });
+    assert(
+      (await page.getByRole("button", { name: "Publish rubric" }).count()) === 1,
+      "expected exactly one button named Publish rubric on the page",
+    );
     await button.waitFor({ state: "visible", timeout: 10000 });
     assert(await button.isDisabled(), "expected Publish rubric to be disabled with no criteria");
     await page.getByText("Add at least one criterion").first().waitFor({ state: "visible" });
@@ -43,7 +47,7 @@ try {
   {
     const { page, consoleErrors } = await openPage(browser, { as: "Sam Reyes" });
     await page.goto(`${BASE_URL}/a/${unpublished.id}/rubric`, { waitUntil: "networkidle" });
-    const button = page.locator(".v-rubric__actions").getByRole("button", { name: "Publish rubric" });
+    const button = page.getByRole("button", { name: "Publish rubric" });
     await button.waitFor({ state: "visible", timeout: 10000 });
     assert(await button.isDisabled(), "expected Publish rubric to be disabled for a TA");
     await page.getByText("Only the instructor can publish a rubric").first().waitFor({ state: "visible" });

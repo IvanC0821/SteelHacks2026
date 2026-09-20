@@ -300,6 +300,12 @@
   align-items: flex-start;
 }
 
+/* the publish step before it can act: the reason, not a second Publish rubric button */
+.v-rubric__step-blocked {
+  margin: 4px 0 0;
+  color: var(--v-muted);
+}
+
 /* a quiet action on a step that is not the current one still aligns with its sentence */
 .v-rubric__step-text .v-button--quiet {
   margin-left: calc(-1 * var(--v-space-12));
@@ -438,13 +444,13 @@
 
 /* --- setup drawer --------------------------------------------------------- */
 
-.v-setup {
+.v-rubric-setup {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-12);
 }
 
-.v-setup__card {
+.v-rubric-setup__card {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-4);
@@ -454,18 +460,18 @@
   background: var(--v-surface);
 }
 
-.v-setup__head {
+.v-rubric-setup__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--v-space-8);
 }
 
-.v-setup__none {
+.v-rubric-setup__none {
   color: var(--v-muted);
 }
 
-.v-setup__files {
+.v-rubric-setup__files {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -474,7 +480,7 @@
   gap: var(--v-space-4);
 }
 
-.v-setup__file {
+.v-rubric-setup__file {
   display: flex;
   align-items: center;
   gap: var(--v-space-8);
@@ -483,7 +489,7 @@
   background: var(--v-panel);
 }
 
-.v-setup__filename {
+.v-rubric-setup__filename {
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -491,17 +497,17 @@
   white-space: nowrap;
 }
 
-.v-setup__error {
+.v-rubric-setup__error {
   margin-top: var(--v-space-4);
 }
 
-.v-setup__note {
+.v-rubric-setup__note {
   padding-bottom: var(--v-space-16);
 }
 
 /* --- new assignment ------------------------------------------------------- */
 
-.v-new {
+.v-rubric-new {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -510,7 +516,7 @@
   background: var(--v-surface);
 }
 
-.v-new__body {
+.v-rubric-new__body {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-24);
@@ -518,23 +524,23 @@
   padding: var(--v-space-24) var(--v-space-24) var(--v-space-48);
 }
 
-.v-new__top {
+.v-rubric-new__top {
   display: flex;
   gap: var(--v-space-16);
   align-items: flex-start;
 }
 
-.v-new__top .v-field:first-child {
+.v-rubric-new__top .v-field:first-child {
   flex: 1 1 auto;
 }
 
-.v-new__due {
+.v-rubric-new__due {
   display: flex;
   gap: var(--v-space-8);
   flex: 0 0 auto;
 }
 
-.v-new__questions-head {
+.v-rubric-new__questions-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -543,7 +549,7 @@
   border-bottom: 1px solid var(--v-line);
 }
 
-.v-new__rows {
+.v-rubric-new__rows {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -552,40 +558,40 @@
   gap: var(--v-space-12);
 }
 
-.v-new__row {
+.v-rubric-new__row {
   padding: var(--v-space-12);
   border: 1px solid var(--v-line);
   border-radius: var(--v-radius-8);
   background: var(--v-panel);
 }
 
-.v-new__row-head {
+.v-rubric-new__row-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--v-space-8);
 }
 
-.v-new__row-move {
+.v-rubric-new__row-move {
   display: flex;
   gap: var(--v-space-2);
 }
 
-.v-new__row-grid {
+.v-rubric-new__row-grid {
   display: grid;
   grid-template-columns: 160px 1fr 110px;
   gap: var(--v-space-12);
   margin-top: var(--v-space-8);
 }
 
-.v-new__prompt {
+.v-rubric-new__prompt {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-4);
   margin-top: var(--v-space-12);
 }
 
-.v-new__add {
+.v-rubric-new__add {
   display: flex;
   align-items: center;
   gap: var(--v-space-12);
@@ -644,22 +650,22 @@
     width: min(360px, calc(100vw - var(--v-space-24)));
   }
 
-  .v-new__body {
+  .v-rubric-new__body {
     padding: var(--v-space-16) var(--v-space-16) var(--v-space-32);
   }
 
-  .v-new__top,
-  .v-new__row-grid {
+  .v-rubric-new__top,
+  .v-rubric-new__row-grid {
     display: flex;
     flex-direction: column;
     gap: var(--v-space-12);
   }
 
-  .v-new__due {
+  .v-rubric-new__due {
     width: 100%;
   }
 
-  .v-new__due .v-field {
+  .v-rubric-new__due .v-field {
     flex: 1 1 0;
   }
 }

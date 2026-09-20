@@ -2,8 +2,8 @@
 // reading order (page first, then the order the backend returned it), so the numbered chip in
 // the panel and the numbered pin on the page always say the same thing.
 
-import type { Anchor, Flag, FlagCategory, Question, StudentAssessment } from "../../../api/types";
-import { FLAG_LABEL } from "../../../components/flags";
+import type { Anchor, Flag, Question, StudentAssessment } from "../../../api/types";
+import { flagLabel } from "../../../components";
 
 export interface NumberedFlag {
   /** 1-based, unique across the whole paper */
@@ -14,12 +14,8 @@ export interface NumberedFlag {
   /** the first page this flag touches, 1-based */
   page: number;
   anchors: Anchor[];
+  /** the shared reader-facing word for the category, so the paper and the panel agree */
   categoryLabel: string;
-}
-
-/** The shared category vocabulary from the design system, so the word is the same everywhere. */
-export function categoryLabel(category: string): string {
-  return FLAG_LABEL[category as FlagCategory] ?? category.replace(/_/g, " ");
 }
 
 function firstPage(flag: Flag): number {
@@ -60,7 +56,7 @@ export function numberFlags(
       flag: row.flag,
       page: row.page,
       anchors: row.flag.anchors,
-      categoryLabel: categoryLabel(row.flag.category),
+      categoryLabel: flagLabel(row.flag.category),
     }));
 }
 

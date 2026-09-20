@@ -136,4 +136,18 @@ describe("studentStatus", () => {
     expect(status.state).toBe("final_score");
     expect(status.score).toBeNull();
   });
+
+  it("labels a null estimate Needs review, never Estimated", () => {
+    const attempt = {
+      id: "s1", assignment_id: "a1", student_id: "u1", document_id: "d1", version: 1, rubric_id: "r1",
+      created_at: "2026-09-19T00:00:00Z", mapping: { q1: [1] }, sealed: true, final: false, handed_in_at: null,
+      job_id: null, document: { id: "d1", assignment_id: "a1", kind: "submission", filename: "x.pdf", page_count: 1, sha256: "", extraction: "pdf_text", has_unreadable_pages: false },
+      assessment: { score: null, max_points: 30, status: "needs_review", questions: [], provider_id: "dev", mode: "fixture", assessed_at: "" },
+      review: { status: "not_started" },
+    };
+    const status = studentStatus(assignment(), [attempt as never]);
+    expect(status.state).toBe("needs_review");
+    expect(status.label).toBe("Needs review");
+    expect(status.estimate).toBeNull();
+  });
 });

@@ -167,7 +167,7 @@ export function AssignPages() {
     <PageHeader
       title={assignment.data ? `${assignment.data.title} · Attempt ${attempt?.version ?? ""}` : "Assign pages"}
       left={<Stepper current={2} />}
-      right={<div className="v-student-header-actions v-assign-actions">{actions}</div>}
+      right={<div className="v-student-header-actions v-student-assign-actions">{actions}</div>}
     />
   );
 
@@ -185,10 +185,10 @@ export function AssignPages() {
   return (
     <>
       {header}
-      <div className="v-workspace v-workspace--stack">
-        <div className="v-workspace__paper v-assign__pages" ref={gridRef}>
+      <div className="v-student-workspace v-student-workspace--stack">
+        <div className="v-student-workspace__paper v-student-assign__pages" ref={gridRef}>
           {pdf.error ? (
-            <div className="v-workspace__state">
+            <div className="v-student-workspace__state">
               <Notice tone="error">{`Your PDF could not be fetched (${pdf.error}).`}</Notice>
             </div>
           ) : pdf.blob ? (
@@ -197,10 +197,11 @@ export function AssignPages() {
               layout="grid"
               tileWidth={176}
               label={`Pages of attempt ${attempt?.version ?? ""}`}
+              overlayPosition="bottom"
               selected={active ? pagesFor(selection, active).map((p) => p + 1) : []}
               onSelect={frozen ? undefined : toggle}
               overlay={(page) => (
-                <span className="v-assign__chips">
+                <span className="v-student-assign__chips">
                   {questionsOnPage(selection, questions, page - 1).map((question) => (
                     <Chip
                       key={question.id}
@@ -214,41 +215,41 @@ export function AssignPages() {
               )}
             />
           ) : (
-            <div className="v-workspace__state">
+            <div className="v-student-workspace__state">
               <Spinner size={20} label="Loading your pages" />
             </div>
           )}
         </div>
 
-        <aside className="v-workspace__pane" aria-label="Questions">
-          <div className="v-pane__body">
+        <aside className="v-student-workspace__pane" aria-label="Questions">
+          <div className="v-student-pane__body">
             {frozen ? (
               <Notice tone="info">
                 This attempt is already checked, so its pages are fixed. Upload a revision to change
                 which pages hold which question.
               </Notice>
             ) : (
-              <p className="v-copy-14 v-pane__lede">
+              <p className="v-copy-14 v-student-pane__lede">
                 Pick a question, then click every page that holds your answer. A page can belong to
                 more than one question.
               </p>
             )}
-            <ul className="v-question-list">
+            <ul className="v-student-question-list">
               {questions.map((question, index) => {
                 const pages = pagesFor(selection, question.id);
                 return (
                   <li key={question.id}>
                     <button
                       type="button"
-                      className={`v-question${question.id === active ? " is-active" : ""}`}
+                      className={`v-student-question${question.id === active ? " is-active" : ""}`}
                       aria-current={question.id === active}
                       onClick={() => setActive(question.id)}
                     >
-                      <span className="v-question__head">
+                      <span className="v-student-question__head">
                         <span className="v-label-14">{`${index + 1}. ${question.title}`}</span>
                         <Kbd>{String(index + 1)}</Kbd>
                       </span>
-                      <span className="v-copy-14 v-question__pages">
+                      <span className="v-copy-14 v-student-question__pages">
                         {pages.length === 0
                           ? "No pages yet"
                           : `Page${pages.length > 1 ? "s" : ""} ${pages.map((p) => p + 1).join(", ")}`}
@@ -259,18 +260,18 @@ export function AssignPages() {
               })}
             </ul>
           </div>
-          <div className="v-pane__footer">
+          <div className="v-student-pane__footer">
             {problem ? <Notice tone="error">{problem}</Notice> : null}
             {!canCheck ? (
               <Notice tone="info">
                 Automated assessment is not connected yet. You can still hand in for staff review.
               </Notice>
             ) : null}
-            <p className="v-copy-14 v-pane__count" role="status">
+            <p className="v-copy-14 v-student-pane__count" role="status">
               {state.sentence}
             </p>
-            <div className="v-pane__actions">{actions}</div>
-            <p className="v-label-12 v-pane__hint">
+            <div className="v-student-pane__actions">{actions}</div>
+            <p className="v-label-12 v-student-pane__hint">
               {pageCount > 0 ? `${pageCount} pages in this PDF. ` : ""}
               {frozen
                 ? "Every page stays as you assigned it."

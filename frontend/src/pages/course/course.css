@@ -1,7 +1,7 @@
 /* Course home, staff assignment page, Overview and Reports. Content pages: one scrolling column
  * on the 1040px measure, left aligned, no cards around cards. */
 
-.v-page {
+.v-course-page {
   flex: 1;
   min-height: 0;
   overflow: auto;
@@ -14,74 +14,74 @@
   width: 100%;
 }
 
-.v-link-button {
+.v-course-link-button {
   text-decoration: none;
 }
 
-.v-link-button:hover {
+.v-course-link-button:hover {
   text-decoration: none;
 }
 
-.v-footnote {
+.v-course-footnote {
   margin: 0;
 }
 
-.v-block {
+.v-course-block {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-12);
 }
 
 /* a chart reads better short than wide: the bars stop well inside the 1040 measure */
-.v-block--chart {
+.v-course-block--chart {
   max-inline-size: 720px;
 }
 
-.v-wide-only {
+.v-course-wide-only {
   display: inline;
 }
 
-.v-phone-only {
+.v-course-phone-only {
   display: none;
 }
 
 /* --- the four staff tabs, directly under the 52px header ------------------- */
 
-.v-assignment__tabs {
+.v-course-tabs {
   flex: none;
   padding: 0 var(--v-space-24);
   gap: var(--v-space-4);
 }
 
-.v-assignment__tabs .v-tabs__tab {
+.v-course-tabs .v-tabs__tab {
   text-decoration: none;
   color: var(--v-muted);
 }
 
-.v-assignment__tabs .v-tabs__tab:hover {
+.v-course-tabs .v-tabs__tab:hover {
   text-decoration: none;
 }
 
-.v-assignment__tabs .v-tabs__tab[aria-current="page"] {
+.v-course-tabs .v-tabs__tab[aria-current="page"] {
   color: var(--v-ink);
   border-bottom-color: var(--v-teal-600);
 }
 
 /* --- assignment table ------------------------------------------------------ */
 
-.v-assignments__title {
+.v-course-assignments__title {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-2);
 }
 
-.v-assignments__status {
+.v-course-assignments__status {
   display: flex;
   align-items: center;
   gap: var(--v-space-8);
 }
 
-.v-progress {
+.v-course-progress {
   display: block;
   inline-size: 96px;
   block-size: 4px;
@@ -90,7 +90,7 @@
   overflow: hidden;
 }
 
-.v-progress__fill {
+.v-course-progress__fill {
   display: block;
   block-size: 100%;
   background: var(--v-teal-600);
@@ -98,7 +98,7 @@
 
 /* --- tiles ----------------------------------------------------------------- */
 
-.v-tiles {
+.v-course-tiles {
   display: flex;
   flex-wrap: wrap;
   border: var(--v-border-hairline);
@@ -106,7 +106,7 @@
   background: var(--v-panel);
 }
 
-.v-tile {
+.v-course-tile {
   flex: 1 1 0;
   min-inline-size: 140px;
   display: flex;
@@ -118,33 +118,33 @@
   text-decoration: none;
 }
 
-.v-tile:first-child {
+.v-course-tile:first-child {
   border-left: 0;
 }
 
-.v-tile__value {
+.v-course-tile__value {
   font-size: var(--v-text-20);
   line-height: var(--v-lead-20);
 }
 
-.v-tile--link:hover {
+.v-course-tile--link:hover {
   background: var(--v-hover);
   text-decoration: none;
 }
 
-.v-tile--link .v-tile__value {
+.v-course-tile--link .v-course-tile__value {
   color: var(--v-teal-600);
 }
 
 /* --- bars ------------------------------------------------------------------ */
 
-.v-bars {
+.v-course-bars {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-16);
 }
 
-.v-bar__head {
+.v-course-bar__head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -152,56 +152,65 @@
   margin-bottom: var(--v-space-4);
 }
 
-.v-bar__label {
+.v-course-bar__label {
   display: inline-flex;
   align-items: center;
   gap: var(--v-space-8);
   min-width: 0;
 }
 
-.v-bar__value {
+.v-course-bar__value {
   flex: none;
   font-variant-numeric: tabular-nums lining-nums;
 }
 
-.v-bar__track {
+.v-course-bar__track {
   position: relative;
   block-size: 12px;
   border-radius: 2px;
   background: var(--v-panel-strong);
 }
 
-.v-bar__fill {
+.v-course-bar__fill {
   block-size: 100%;
   border-radius: 2px;
   background: var(--v-teal-600);
 }
 
-.v-bar__tick {
+/* the first-attempt marker: a 2px rule centred on the value, the track's height plus a 2px cap
+ * above and below. The caps are what keep it reading as a tick on a ruler rather than as the seam
+ * between two bars. */
+.v-course-bar__tick {
   position: absolute;
-  inset-block: -3px;
+  inset-block: -2px;
   inline-size: 2px;
+  margin-inline-start: -1px;
   background: var(--v-line-strong);
 }
 
-/* inside the teal fill the tick has to read against the fill, not the track */
-.v-bar__tick.is-inside {
+/* only the crossing itself is knocked out white where it runs over the teal fill; the caps stay
+ * line-strong, so the fill still reads as one bar */
+.v-course-bar__tick.is-inside::after {
+  content: "";
+  position: absolute;
+  inset-block: 2px;
+  inset-inline: 0;
   background: var(--v-surface);
 }
 
-.v-bars__key {
+.v-course-bars__key {
   margin: 0;
 }
 
 /* --- most flagged ---------------------------------------------------------- */
 
-.v-flagged {
+.v-course-flagged {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-8);
 }
 
-.v-flagged__row {
+.v-course-flagged__row {
   display: flex;
   align-items: baseline;
   gap: var(--v-space-12);
@@ -209,16 +218,16 @@
   border-bottom: var(--v-border-hairline);
 }
 
-.v-flagged__row:last-child {
+.v-course-flagged__row:last-child {
   border-bottom: 0;
 }
 
-.v-flagged__label {
+.v-course-flagged__label {
   flex: none;
   inline-size: 240px;
 }
 
-.v-flagged__chips {
+.v-course-flagged__chips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--v-space-4);
@@ -226,7 +235,7 @@
 
 /* --- roster and enroll ------------------------------------------------------ */
 
-.v-roster {
+.v-course-roster {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-12);
@@ -234,37 +243,37 @@
   border-top: var(--v-border-hairline);
 }
 
-.v-roster__groups {
+.v-course-roster__groups {
   display: flex;
   flex-wrap: wrap;
   gap: var(--v-space-32);
 }
 
-.v-roster__group {
+.v-course-roster__group {
   display: flex;
   flex-direction: column;
   gap: var(--v-space-4);
   min-inline-size: 160px;
 }
 
-.v-enroll {
+.v-course-enroll {
   display: flex;
   align-items: flex-start;
   gap: var(--v-space-12);
   padding-top: var(--v-space-8);
 }
 
-.v-enroll__id {
+.v-course-enroll__id {
   inline-size: 320px;
 }
 
-.v-enroll__submit {
+.v-course-enroll__submit {
   margin-top: 22px;
 }
 
 /* --- reports ---------------------------------------------------------------- */
 
-.v-reports__message {
+.v-course-reports__message {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -272,7 +281,7 @@
   overflow: hidden;
 }
 
-.v-reports__quote {
+.v-course-reports__quote {
   padding: var(--v-space-12);
   border-left: 2px solid var(--v-line-strong);
   background: var(--v-panel);
@@ -282,99 +291,99 @@
 /* --- phone ------------------------------------------------------------------ */
 
 @media (max-width: 760px) {
-  .v-wide-only {
+  .v-course-wide-only {
     display: none;
   }
 
-  .v-phone-only {
+  .v-course-phone-only {
     display: inline;
   }
 
-  .v-page {
+  .v-course-page {
     gap: var(--v-space-24);
     padding: var(--v-space-16);
   }
 
-  .v-assignment__tabs {
+  .v-course-tabs {
     padding: 0 var(--v-space-16);
     overflow-x: auto;
   }
 
-  .v-assignment__tabs .v-tabs__tab {
+  .v-course-tabs .v-tabs__tab {
     height: var(--v-control-lg);
   }
 
   /* tiles stack two by two */
-  .v-tile {
+  .v-course-tile {
     flex: 1 1 42%;
     min-inline-size: 42%;
   }
 
-  .v-tile:nth-child(odd) {
+  .v-course-tile:nth-child(odd) {
     border-left: 0;
   }
 
-  .v-tile:nth-child(n + 3) {
+  .v-course-tile:nth-child(n + 3) {
     border-top: var(--v-border-hairline);
   }
 
   /* tables become stacked rows with the action at the end */
-  .v-rows thead {
+  .v-course-rows thead {
     display: none;
   }
 
-  .v-rows,
-  .v-rows tbody,
-  .v-rows tr,
-  .v-rows td {
+  .v-course-rows,
+  .v-course-rows tbody,
+  .v-course-rows tr,
+  .v-course-rows td {
     display: block;
     width: 100%;
   }
 
-  .v-rows tr {
+  .v-course-rows tr {
     padding: var(--v-space-12) 0;
     border-bottom: var(--v-border-hairline);
   }
 
-  .v-rows tbody tr:last-child {
+  .v-course-rows tbody tr:last-child {
     border-bottom: 0;
   }
 
-  .v-rows td {
+  .v-course-rows td {
     padding: var(--v-space-2) 0;
     border-bottom: 0;
     text-align: left;
   }
 
-  .v-rows td.v-table__cell--end {
+  .v-course-rows td.v-table__cell--end {
     text-align: left;
     padding-top: var(--v-space-8);
   }
 
-  .v-reports__message {
+  .v-course-reports__message {
     -webkit-line-clamp: 4;
     line-clamp: 4;
   }
 
-  .v-flagged__row {
+  .v-course-flagged__row {
     flex-direction: column;
     gap: var(--v-space-4);
   }
 
-  .v-flagged__label {
+  .v-course-flagged__label {
     inline-size: auto;
   }
 
-  .v-enroll {
+  .v-course-enroll {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .v-enroll__id {
+  .v-course-enroll__id {
     inline-size: auto;
   }
 
-  .v-enroll__submit {
+  .v-course-enroll__submit {
     margin-top: 0;
     align-self: flex-start;
     height: var(--v-control-lg);

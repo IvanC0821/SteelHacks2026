@@ -3,6 +3,7 @@
 // would not also give, and never enabled into a 422.
 
 import type { DocumentMeta, Question, Role, Rubric, RubricInput } from "../../api/types";
+import { formatPoints } from "../../components/score-format";
 import { CRITERION_ID_PATTERN, canonical, pointsAssigned } from "./draft";
 
 export interface PublishGateInput {
@@ -25,10 +26,6 @@ export function referenceIds(documents: DocumentMeta[]): string[] {
 
 function sameReferences(a: string[], b: string[]): boolean {
   return a.length === b.length && a.every((id, index) => id === b[index]);
-}
-
-export function formatPoints(value: number): string {
-  return Number.isInteger(value) ? String(value) : String(Math.round(value * 100) / 100);
 }
 
 /**

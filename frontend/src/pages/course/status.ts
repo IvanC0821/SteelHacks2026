@@ -3,9 +3,16 @@
 // action per state, so the course home never shows two competing calls to action.
 
 import type { Assignment, StaffSubmission, StudentSubmission } from "../../api/types";
+import { assessmentState } from "../../components";
 
 export type StaffState = "rubric_missing" | "no_papers" | "grading" | "all_reviewed" | "released";
-export type StudentState = "not_started" | "not_checked" | "estimated" | "handed_in" | "final_score";
+export type StudentState =
+  | "not_started"
+  | "not_checked"
+  | "needs_review"
+  | "estimated"
+  | "handed_in"
+  | "final_score";
 
 export interface RowAction {
   label: string;
@@ -149,12 +156,16 @@ export function studentStatus(
       action: open,
     };
   }
-  if (latest.assessment) {
+  // the same derivation every other screen uses: a missing assessment is "Not checked", never a zero
+  const checked = assessmentState(latest.assessment);
+  if (checked !== "not_checked") {
+    // a null total is "Needs review", never a zero and never "Estimated"
+    const needsReview = checked === "needs_review";
     return {
-      state: "estimated",
-      label: "Estimated",
+      state: needsReview ? "needs_review" : "estimated",
+      label: needsReview ? "Needs review" : "Estimated",
       score: null,
-      estimate: latest.assessment.score,
+      estimate: latest.assessment?.score ?? null,
       maxPoints: max,
       action: open,
     };

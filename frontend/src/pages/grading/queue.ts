@@ -2,7 +2,6 @@
 // each paper gets in the roster popover.
 
 import type { StaffSubmission } from "../../api/types";
-import type { AssessmentState } from "../../components";
 
 export interface QueueEntry {
   submission: StaffSubmission;
@@ -37,11 +36,6 @@ export function switcherLabel(entry: QueueEntry | null, compact = false): string
   return compact
     ? `${entry.position} / ${entry.total}`
     : `${entry.submission.student_name} · ${entry.position} of ${entry.total}`;
-}
-
-export function assessmentStateOf(submission: StaffSubmission): AssessmentState {
-  if (!submission.assessment) return "not_checked";
-  return submission.assessment.status === "needs_review" ? "needs_review" : "estimated";
 }
 
 /** The estimate shown beside a paper in the roster: null stays null, never 0. */

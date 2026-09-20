@@ -34,6 +34,10 @@ import { setupSteps } from "./steps";
 import { Versions } from "./Versions";
 import "./rubric.css";
 
+/** The header's Publish rubric button. The guided setup's third step points focus here instead
+ *  of repeating the name, so the page never carries two buttons that read the same. */
+const PUBLISH_BUTTON_ID = "publish-rubric";
+
 const SAVE_ERRORS: Record<string, string> = {
   rubric_points_mismatch: "The server refused the draft: a question's points do not add up",
   rubric_question_coverage: "The server refused the draft: every question needs at least one criterion",
@@ -164,6 +168,15 @@ export function RubricStudio() {
     }
   };
 
+  /** Step 3 of the guided card: send the instructor to the real Publish rubric button, which
+   *  carries the gate and its reason. Scrolled into view first so focus does not jump blind. */
+  const goToPublish = () => {
+    const target = document.getElementById(PUBLISH_BUTTON_ID);
+    if (!target) return;
+    target.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    target.focus({ preventScroll: true });
+  };
+
   // --- the paper ----------------------------------------------------------
   const solution = latestOfKind(documents, "solution");
   const paperDocument = solution ?? latestOfKind(documents, "questions");
@@ -222,6 +235,7 @@ export function RubricStudio() {
           <div className="v-rubric__actions">
             {blockers.length > 0 ? <p className="v-label-12 v-rubric__reason">{blockers[0]}</p> : null}
             <Button
+              id={PUBLISH_BUTTON_ID}
               variant="primary"
               size="lg"
               disabled={blockers.length > 0 || publishing}
@@ -319,20 +333,23 @@ export function RubricStudio() {
                     <div className="v-rubric__step-text">
                       <p className="v-heading-14">{step.title}</p>
                       <p className="v-copy-14">{step.sentence}</p>
-                      {canEdit ? (
+                      {!canEdit ? null : step.id === "publish" && blockers.length > 0 ? (
+                        // Not a disabled button: the header already carries Publish rubric with
+                        // its own gate, and a second control reading the same name would give a
+                        // screen reader two identical buttons. The step states the reason instead.
+                        <p className="v-label-12 v-rubric__step-blocked">{blockers[0]}</p>
+                      ) : (
                         <Button
                           variant={step.current ? "secondary" : "quiet"}
-                          disabled={step.id === "publish" && blockers.length > 0}
-                          title={step.id === "publish" ? publishGateTitle(blockers) : undefined}
                           onClick={() => {
                             if (step.id === "solution") setSetupOpen(true);
                             else if (step.id === "draft") addCriterion(questions[0]?.id ?? "");
-                            else void publish();
+                            else goToPublish();
                           }}
                         >
                           {step.action}
                         </Button>
-                      ) : null}
+                      )}
                     </div>
                   </li>
                 ))}

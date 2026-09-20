@@ -40,7 +40,10 @@ export function setupSteps(assignment: AssignmentDetail): SetupStep[] {
       id: "publish",
       title: "Publish",
       sentence: "Students see the assignment once the first rubric is published.",
-      action: "Publish rubric",
+      // Not "Publish rubric": the header already owns a button with that name, and two buttons
+      // reading the same on one page leave a screen-reader user with no way to tell them apart.
+      // This one only sends focus to the real one.
+      action: "Go to publish",
     },
   ];
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink, Outlet, useLocation, useMatches } from "react-router-dom";
 import { ClipboardList, LogOut, Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Button } from "../components/Button";
@@ -36,9 +36,11 @@ export function Shell() {
   const location = useLocation();
 
   const [expanded, setExpanded] = useState(readExpanded);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
-  useEffect(() => setDrawerOpen(false), [location.pathname]);
+  // The drawer is keyed to the path it was opened on, so navigating closes it during render
+  // instead of through an effect that would paint the open drawer on the new page first.
+  const [drawer, setDrawer] = useState<{ path: string; open: boolean } | null>(null);
+  const drawerOpen = drawer !== null && drawer.open && drawer.path === location.pathname;
+  const setDrawerOpen = (open: boolean) => setDrawer({ path: location.pathname, open });
 
   const workspace = handle.workspace === true;
   const collapsed = workspace && !expanded;

@@ -127,7 +127,7 @@ export function AssignmentPage() {
       key: "attempt",
       header: "Attempt",
       cell: (row) => (
-        <span className="v-attempts__name">
+        <span className="v-student-attempts__name">
           <span className="v-label-14">Attempt {row.version}</span>
           {row.final ? <Chip tone="teal">Handed in</Chip> : null}
         </span>
@@ -137,7 +137,7 @@ export function AssignmentPage() {
     {
       key: "uploaded",
       header: "Uploaded",
-      cell: (row) => <span className="v-copy-14 v-attempts__muted">{stamp(row.created_at)}</span>,
+      cell: (row) => <span className="v-copy-14 v-student-attempts__muted">{stamp(row.created_at)}</span>,
       width: "22%",
     },
     {
@@ -146,7 +146,7 @@ export function AssignmentPage() {
       cell: (row) => {
         const status = attemptStatus(row);
         return (
-          <span className="v-attempts__status">
+          <span className="v-student-attempts__status">
             <span className="v-copy-14">{status.label}</span>
             {row.assessment?.mode === "fixture" ? <Chip tone="fixture" /> : null}
           </span>
@@ -178,7 +178,7 @@ export function AssignmentPage() {
           {actionProblem ? <Notice tone="error">{actionProblem}</Notice> : null}
 
           {attempts.length === 0 ? (
-            <section className="v-panel-card">
+            <section className="v-student-panel-card">
               <h2 className="v-heading-16">Upload your work</h2>
               <p className="v-copy-16 v-student-lede">
                 Upload a PDF of your handwritten work. Next you say which pages hold which question,
@@ -245,7 +245,7 @@ export function AssignmentPage() {
                         />
                       </div>
                     ) : (
-                      <p className="v-copy-14 v-attempts__muted">
+                      <p className="v-copy-14 v-student-attempts__muted">
                         A staff member reviews it before a final score appears.
                       </p>
                     )}
@@ -261,7 +261,7 @@ export function AssignmentPage() {
                   rowKey={(row) => row.id}
                   caption={`Attempts for ${detail.title}`}
                 />
-                <p className="v-copy-14 v-attempts__muted">
+                <p className="v-copy-14 v-student-attempts__muted">
                   Every attempt stays here. A revision is a new attempt and never replaces an older one.
                 </p>
                 {blankDoc && blank.url ? (
