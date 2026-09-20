@@ -71,12 +71,19 @@ class Service:
             self.store.audit(db, user["id"], "course.created", obj["id"])
         return obj
 
+    @staticmethod
+    def public_course(course):
+        return {key: course[key] for key in ("id", "name", "created_at")}
+
     def list_courses(self, user):
         with self.store.connection() as db:
             memberships = db.execute(
                 "SELECT course_id,role FROM memberships WHERE user_id=?", (user["id"],)
             ).fetchall()
-            return [{**required(self.store, db, "course", r[0]), "role": r[1]} for r in memberships]
+            return [
+                {**self.public_course(required(self.store, db, "course", r[0])), "role": r[1]}
+                for r in memberships
+            ]
 
     def enroll(self, user, course_id, body):
         with self.store.transaction() as db:
@@ -211,6 +218,9 @@ class Service:
                 "published_at": now(),
                 **data,
                 "reference_ids": references,
+                "course_deductions": required(self.store, db, "course", a["course_id"]).get(
+                    "deductions"
+                ),
             }
             self.store.put(db, "rubric", rubric, assignment_id)
             a["published_rubric_id"] = rubric["id"]
@@ -588,6 +598,9 @@ class Service:
             "references": [
                 d for d in self.store.all(db, "document", a["id"]) if d["kind"] != "submission"
             ],
+            "course_deductions": required(self.store, db, "course", a["course_id"]).get(
+                "deductions"
+            ),
         }
         if job["kind"] == "assessment":
             s = required(self.store, db, "submission", job["target_id"])
@@ -596,6 +609,7 @@ class Service:
                 submission=s,
                 document=required(self.store, db, "document", s["document_id"]),
                 rubric=rubric,
+                course_deductions=rubric.get("course_deductions"),
             )
             context["references"] = [
                 d for d in context["references"] if d["id"] in rubric["reference_ids"]

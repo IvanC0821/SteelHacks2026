@@ -8,8 +8,10 @@ export interface SessionValue {
   user: User;
   capabilities: Capabilities;
   client: VerityClient;
-  /** the courses this identity belongs to; `courses[0]` is the rail's course */
+  /** only courses this identity belongs to */
   courses: Course[];
+  activeCourse: Course | null;
+  selectCourse: (courseId: string) => void;
   /** clears localStorage and returns to session setup */
   signOut: () => void;
   /** refetches me/capabilities/courses, e.g. after a course is created */

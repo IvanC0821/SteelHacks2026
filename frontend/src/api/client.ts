@@ -7,6 +7,9 @@ import type {
   AssignmentDetail,
   Capabilities,
   Course,
+  CourseDetail,
+  CourseDeductions,
+  CourseDeductionDraft,
   DocumentKind,
   DocumentMeta,
   FieldError,
@@ -111,6 +114,32 @@ export class VerityClient {
   }
   createCourse(name: string): Promise<Course> {
     return this.request("POST", "/courses", { name });
+  }
+  course(courseId: string): Promise<CourseDetail> {
+    return this.request("GET", `/courses/${courseId}`);
+  }
+  extractCourseDeductions(file: File): Promise<CourseDeductionDraft> {
+    const form = new FormData();
+    form.append("file", file);
+    return this.request("POST", "/course-deduction-drafts", undefined, form);
+  }
+  createCourseWithDeductions(name: string, deductions: CourseDeductions, file: File | null, requestId: string): Promise<Course> {
+    const form = new FormData();
+    form.append("name", name);
+    form.append("deductions", JSON.stringify(deductions));
+    form.append("request_id", requestId);
+    if (file) form.append("file", file);
+    return this.request("POST", "/courses/from-pdf", undefined, form);
+  }
+  async courseDeductionsBlob(courseId: string): Promise<Blob> {
+    let response: Response;
+    try {
+      response = await fetch(`${this.base}/api/courses/${courseId}/deductions-pdf`, {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+    } catch { throw new ApiError(0, "network"); }
+    if (!response.ok) throw new ApiError(response.status, `http_${response.status}`);
+    return response.blob();
   }
   members(courseId: string): Promise<Member[]> {
     return this.request("GET", `/courses/${courseId}/members`);

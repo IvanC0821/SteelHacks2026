@@ -1,0 +1,13 @@
+.v-new-course { flex: 1; min-height: 0; overflow-y: auto; width: 100%; max-width: 820px; padding: 28px 24px 56px; display: flex; flex-direction: column; gap: 24px; }
+.v-new-course > * { flex-shrink: 0; }
+.v-new-course__section { display: flex; flex-direction: column; align-items: stretch; gap: 14px; border-top: var(--v-border-hairline); padding-top: 22px; }
+.v-new-course__section > .v-button { align-self: flex-start; }
+.v-new-course__rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.v-new-course__rule { padding: 16px; border: var(--v-border-control); border-radius: 8px; display: grid; gap: 12px; background: var(--v-panel); }
+.v-new-course__rule-heading, .v-new-course__actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.v-new-course__rule blockquote { margin: 12px 0 0; padding-left: 12px; border-left: 2px solid var(--v-teal-500); white-space: pre-wrap; }
+.v-new-course input[type=file] { max-width: 100%; min-height: 44px; padding: 10px 0; }
+.v-course-deductions { margin-top: 32px; border-top: var(--v-border-hairline); padding-top: 24px; display: grid; gap: 14px; }
+.v-course-deductions ul { padding-left: 20px; display: grid; gap: 12px; }
+.v-course-deductions__notes { white-space: pre-wrap; }
+@media (max-width: 760px) { .v-new-course { padding: 20px 16px 40px; } }

@@ -1,0 +1,73 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7em}
+\begin{document}
+\textbf{21-127 Concepts of Mathematics (fictional)}
+
+Homework 1 - Foundations of proof --- Practice submission A
+
+Student: Fictional learner
+
+\section*{Question 1: Sets in three forms}
+
+(a) $A=\{16,25,27,36,49,64,81\}$.
+
+(b) $B=\{5k+1:k\in\mathbb{Z},\ k\geq0\}$.
+
+(c) $C=\{3^k:k\in\mathbb{Z}\}$.
+
+\newpage
+\textbf{21-127 Concepts of Mathematics (fictional)}
+
+Homework 1 - Foundations of proof --- Practice submission A
+
+Student: Fictional learner
+
+\section*{Question 2: A divisibility claim}
+
+False: take $a=2$ and $b=5$. Their product is $10=10\cdot1$. Neither $2/10$ nor $5/10$ is an integer, so neither factor is divisible by $10$. This disproves the universal implication.
+
+\newpage
+\textbf{21-127 Concepts of Mathematics (fictional)}
+
+Homework 1 - Foundations of proof --- Practice submission A
+
+Student: Fictional learner
+
+\section*{Question 3: A rational point inside an interval}
+
+My first thought was to call this a weighted average, but I will check the required definition directly. Choose integers $a,b,c,d$ with $b,d\neq0$ such that $x=a/b$ and $y=c/d$.
+
+Then $u=(3ad+bc)/(4bd)$. Both parts are integers, and $4bd$ is nonzero. Hence $u\in\mathbb{Q}$.
+
+Finally, $u-x=(y-x)/4>0$ and $y-u=3(y-x)/4>0$, since $x<y$. This proves the strict inequalities.
+
+\newpage
+\textbf{21-127 Concepts of Mathematics (fictional)}
+
+Homework 1 - Foundations of proof --- Practice submission A
+
+Student: Fictional learner
+
+\section*{Question 4: An odd expression}
+
+For any integer $n$, first factor $n^2+3n=n(n+3)$. If $n$ is even, this product is even. If $n$ is odd, write $n=2k+1$ with $k\in\mathbb{Z}$; then $n+3=2(k+2)$, so the product is again even.
+
+Thus $n(n+3)=2m$ for some integer $m$, and $n^2+3n+1=2m+1$. This is odd by definition. No positivity assumption was made.
+
+\newpage
+\textbf{21-127 Concepts of Mathematics (fictional)}
+
+Homework 1 - Foundations of proof --- Practice submission A
+
+Student: Fictional learner
+
+\section*{Question 5: Removing either set}
+
+Let $t\in A\setminus(B\cup C)$. It lies in $A$ but in neither $B$ nor $C$, so it lies in both differences on the right. This proves left-to-right containment.
+
+Now let $t$ belong to the intersection on the right. Membership in its two factors says $t\in A$, $t\notin B$, and $t\notin C$. Thus it lies in $A$ but outside $B\cup C$, which is the left-hand side. Both containments hold, so the sets are equal.
+
+\end{document}

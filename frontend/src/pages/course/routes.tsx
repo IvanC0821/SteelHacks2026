@@ -1,5 +1,6 @@
 import type { RouteObject } from "react-router-dom";
-import { STAFF } from "../../app/route-meta";
+import { INSTRUCTOR, STAFF } from "../../app/route-meta";
+import { NewCourse } from "./NewCourse";
 import { CourseHome } from "./CourseHome";
 import { Overview } from "./Overview";
 import { Reports } from "./Reports";
@@ -8,6 +9,7 @@ import { Reports } from "./Reports";
  *  `/a/:assignmentId` is shared with Task 4: staff land on Overview, students on their workspace,
  *  and the router's RoleSplit picks between the two. */
 const routes: RouteObject[] = [
+  { path: "/courses/new", element: <NewCourse />, handle: { roles: INSTRUCTOR, title: "Create course" } },
   {
     path: "/c/:courseId",
     element: <CourseHome />,

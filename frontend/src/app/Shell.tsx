@@ -13,6 +13,7 @@ import { allowsRole, resolveHandle, wrongRoleSentence } from "./route-meta";
 import type { Assignment, Role } from "../api/types";
 import "./Shell.css";
 import { ViewSwitcher } from "./ViewSwitcher";
+import { CourseSwitcher } from "./CourseSwitcher";
 
 /** Only workspace routes carry a collapse choice; content routes always show the full rail. */
 const COLLAPSE_KEY = "verity.rail.workspace-expanded";
@@ -57,8 +58,6 @@ export function Shell() {
   };
 
   const railProps = {
-    courseName: course?.name ?? null,
-    courseId: course?.id ?? null,
     assignments: assignments.data ?? [],
     userName: user.name,
     roleWord: ROLE_WORD[user.role],
@@ -111,8 +110,6 @@ interface RailContentProps {
   collapsed: boolean;
   /** the drawer's own header already carries the wordmark */
   hideBrand?: boolean;
-  courseName: string | null;
-  courseId: string | null;
   assignments: Assignment[];
   userName: string;
   roleWord: string;
@@ -125,8 +122,6 @@ interface RailContentProps {
 function RailContent({
   collapsed,
   hideBrand = false,
-  courseName,
-  courseId,
   assignments,
   userName,
   roleWord,
@@ -155,11 +150,7 @@ function RailContent({
         </div>
       )}
 
-      {courseName && !collapsed ? (
-        <NavLink to={courseId ? `/c/${courseId}` : "/"} className="v-rail__course v-label-14">
-          {courseName}
-        </NavLink>
-      ) : null}
+      <CourseSwitcher collapsed={collapsed} />
 
       <div className="v-rail__list">
         {!collapsed ? <p className="v-label-12 v-rail__list-label">Assignments</p> : null}

@@ -1,0 +1,73 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7em}
+\begin{document}
+\textbf{21-127 Concepts of Mathematics (fictional)}
+
+Homework 2 - Creative mathematical worlds --- Practice submission A
+
+Student: Fictional learner
+
+\section*{Question 1: The two-button robot}
+
+The answer is all even integers. With nonnegative counts $p,q$, the final value is $8p-6q=2(4p-3q)$, so no odd integer can occur.
+
+Let the desired value be $2t$. When $t\geq0$, repeat P,Q $t$ times, adding $2t$. When $t<0$, repeat P,P,Q,Q,Q $-t$ times: each block subtracts $2$, giving $2t$. The case $t=0$ uses the empty sequence. Thus the characterization includes both directions and both signs.
+
+\newpage
+\textbf{21-127 Concepts of Mathematics (fictional)}
+
+Homework 2 - Creative mathematical worlds --- Practice submission A
+
+Student: Fictional learner
+
+\section*{Question 2: One key for every visitor?}
+
+The first statement is $\forall v\in V\ \exists k\in K\ R(v,k)$; the second is $\exists k\in K\ \forall v\in V\ R(v,k)$.
+
+I briefly wondered whether having equally many visitors and keys forces a universal key, but that count says nothing about which lockers they open. Make only (Ada,red), (Bo,green), and (Cy,blue) true; make every other pair false.
+
+Every visitor now has a witness for the first statement. Each key fails for two visitors, so none witnesses the second. Thus (a) does not imply (b).
+
+\newpage
+\textbf{21-127 Concepts of Mathematics (fictional)}
+
+Homework 2 - Creative mathematical worlds --- Practice submission A
+
+Student: Fictional learner
+
+\section*{Question 3: Three self-referential cards}
+
+Assume B is false. Then its statement 'C is false' is false, so C is true. C would force A to be false, but A being false says B is not false. That contradicts our assumption. Hence B is true.
+
+Consequently C is false and A is false. Checking the resulting triple: B really is true, so A's claim is false; C really is false, so B's claim is true; A and B are not both false, so C's claim is false. The alternative value for B was impossible, proving uniqueness.
+
+\newpage
+\textbf{21-127 Concepts of Mathematics (fictional)}
+
+Homework 2 - Creative mathematical worlds --- Practice submission A
+
+Student: Fictional learner
+
+\section*{Question 4: The archive's invert-selection button}
+
+For a file $x\in U$, two inversions change selected to unselected to selected, or unselected to selected to unselected. Formally, $x\in T(T(A))$ if and only if $x\in A$. Neither set has an element outside $U$, so they are equal.
+
+Suppose $U$ has an element $x$. Whichever membership status $x$ has in $A$, its status in $T(A)$ is opposite. Therefore $T(A)\neq A$ for every $A$. If $U=\varnothing$, the only possible $A$ is empty, and inversion leaves it empty.
+
+\newpage
+\textbf{21-127 Concepts of Mathematics (fictional)}
+
+Homework 2 - Creative mathematical worlds --- Practice submission A
+
+Student: Fictional learner
+
+\section*{Question 5: The paired shelf labels}
+
+Use the pairs $\{i,i+12\}$ for $i=1,\ldots,12$. The first entries are exactly 1 through 12 and the second entries exactly 13 through 24, so these pairs partition the available labels.
+
+If no pair had both entries selected, each of the 12 pairs could contribute at most one chosen label. That would allow at most 12 chosen labels, contrary to 13. Therefore some whole pair is selected, and its two labels differ by 12.
+
+\end{document}

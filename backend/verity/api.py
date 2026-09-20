@@ -1,12 +1,13 @@
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import BackgroundTasks, Depends, FastAPI, File, Query, UploadFile
+from fastapi import BackgroundTasks, Depends, FastAPI, File, Form, Query, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
+from .course_materials import CourseMaterials
 from .documents import MAX_BYTES
 from .provider import load_provider
 from .schemas import (
@@ -31,6 +32,7 @@ from .store import Store
 def create_app(data_dir=None, provider=None, run_jobs=True):
     store = Store(data_dir or os.getenv("VERITY_DATA_DIR", ".data"))
     service = Service(store, provider or load_provider())
+    course_materials = CourseMaterials(service)
 
     @asynccontextmanager
     async def lifespan(app):
@@ -107,6 +109,9 @@ def create_app(data_dir=None, provider=None, run_jobs=True):
             "max_upload_bytes": MAX_BYTES,
             "max_pages": 40,
             "human_review_required": True,
+            "course_deduction_extraction": callable(
+                getattr(service.provider, "draft_course_deductions", None)
+            ),
         }
 
     @app.post("/api/courses", status_code=201, tags=["courses"])
@@ -116,6 +121,59 @@ def create_app(data_dir=None, provider=None, run_jobs=True):
     @app.get("/api/courses", tags=["courses"])
     def courses(user=Depends(current_user)):
         return service.list_courses(user)
+
+    async def course_pdf(file):
+        try:
+            content = await file.read(MAX_BYTES + 1)
+            if len(content) > MAX_BYTES:
+                fail(413, "pdf_too_large")
+            return content
+        finally:
+            await file.close()
+
+    @app.post("/api/course-deduction-drafts", tags=["courses"])
+    async def extract_course_deductions(file: UploadFile = File(...), user=Depends(current_user)):
+        from starlette.concurrency import run_in_threadpool
+
+        course_materials.instructor(user)
+        content = await course_pdf(file)
+        return await run_in_threadpool(course_materials.extract, user, file.filename, content)
+
+    @app.post("/api/courses/from-pdf", status_code=201, tags=["courses"])
+    async def create_course_from_pdf(
+        name: str = Form(min_length=1, max_length=200),
+        deductions: str = Form(max_length=500000),
+        request_id: str = Form(min_length=1, max_length=100),
+        file: UploadFile | None = File(default=None),
+        user=Depends(current_user),
+    ):
+        from starlette.concurrency import run_in_threadpool
+
+        course_materials.instructor(user)
+        content = await course_pdf(file) if file else None
+        return await run_in_threadpool(
+            course_materials.create,
+            user,
+            name,
+            deductions,
+            request_id,
+            (file.filename or "deductions.pdf") if file else None,
+            content,
+        )
+
+    @app.get("/api/courses/{course_id}", tags=["courses"])
+    def course_detail(course_id: str, user=Depends(current_user)):
+        return course_materials.detail(user, course_id)
+
+    @app.get("/api/courses/{course_id}/deductions-pdf", tags=["courses"])
+    def course_deductions_pdf(course_id: str, user=Depends(current_user)):
+        doc = course_materials.document(user, course_id)
+        return FileResponse(
+            store.root / "files" / f"{doc['id']}.pdf",
+            media_type="application/pdf",
+            filename=doc["filename"],
+            content_disposition_type="inline",
+        )
 
     @app.post("/api/courses/{course_id}/members", tags=["courses"])
     def enroll(course_id: str, body: EnrollmentInput, user=Depends(current_user)):

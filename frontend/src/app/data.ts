@@ -35,33 +35,29 @@ export function useResource<T>(
   fetcher: (key: string) => Promise<T>,
   deps: unknown[] = [],
 ): Resource<T> {
-  const [data, setData] = useState<T | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(key !== null);
+  const [result, setResult] = useState<{
+    key: string | null; data: T | null; error: string | null; loading: boolean;
+  }>({ key, data: null, error: null, loading: key !== null });
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
     if (!key) {
-      setData(null);
-      setError(null);
-      setLoading(false);
+      setResult({ key, data: null, error: null, loading: false });
       return;
     }
     let live = true;
-    setLoading(true);
+    setResult((previous) => ({ key, data: previous.key === key ? previous.data : null,
+      error: null, loading: true }));
     fetcher(key)
       .then((value) => {
         if (!live) return;
-        setData(value);
-        setError(null);
+        setResult({ key, data: value, error: null, loading: false });
       })
       .catch((cause: unknown) => {
         if (!live) return;
         if (cause instanceof ApiError && cause.expired) throw cause;
-        setError(cause instanceof ApiError ? cause.code : "unknown");
-      })
-      .finally(() => {
-        if (live) setLoading(false);
+        setResult((previous) => ({ key, data: previous.key === key ? previous.data : null,
+          error: cause instanceof ApiError ? cause.code : "unknown", loading: false }));
       });
     return () => {
       live = false;
@@ -70,7 +66,9 @@ export function useResource<T>(
   }, [key, tick, ...deps]);
 
   const refetch = useCallback(() => setTick((n) => n + 1), []);
-  return { data, error, loading, refetch };
+  // Do not show the previous course's assignments during the next course's fetch.
+  const current = result.key === key ? result : { data: null, error: null, loading: key !== null };
+  return { data: current.data, error: current.error, loading: current.loading, refetch };
 }
 
 /** GET /api/assignments/{id}. Staff get the draft and rubric versions; students get the public view. */
@@ -104,8 +102,7 @@ export function useSubmission(submissionId: string | null | undefined): Resource
   return useResource(submissionId ?? null, (id) => client.submission(id), [client]);
 }
 
-/** The course the rail is showing: the first course this identity belongs to. */
+/** The selected course, resolved from the current route or the last authorized selection. */
 export function usePrimaryCourse() {
-  const { courses } = useSession();
-  return courses[0] ?? null;
+  return useSession().activeCourse;
 }

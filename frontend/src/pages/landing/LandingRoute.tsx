@@ -16,7 +16,7 @@ export function LandingRoute() {
   if (!session) return <Landing />;
   // `/?preview=landing` shows the signed-out page to a signed-in reader, for design review
   if (params.get("preview") === "landing") return <Landing preview />;
-  const course = session.courses[0];
+  const course = session.activeCourse;
   if (course) return <Navigate to={`/c/${course.id}`} replace />;
   return (
     <>

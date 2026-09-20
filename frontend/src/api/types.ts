@@ -19,6 +19,7 @@ export interface Capabilities {
   max_upload_bytes: number;
   max_pages: number;
   human_review_required: boolean;
+  course_deduction_extraction?: boolean;
 }
 
 export interface Course {
@@ -27,6 +28,31 @@ export interface Course {
   created_at: string;
   /** the current user's role in this course */
   role: Role;
+}
+
+export interface CourseDeduction {
+  description: string;
+  /** Text preserves units, caps, ranges and per-question/per-occurrence conditions. */
+  penalty: string | null;
+  source_page: number | null;
+  source_quote: string;
+}
+
+export interface CourseDeductions {
+  rules: CourseDeduction[];
+  notes: string;
+}
+
+export interface CourseDetail extends Course {
+  /** Staff only. Students receive the ordinary Course projection. */
+  deductions?: CourseDeductions;
+  deductions_document?: { id: string; filename: string; page_count: number } | null;
+}
+
+export interface CourseDeductionDraft {
+  draft: CourseDeductions;
+  page_count: number;
+  provider_id: string;
 }
 
 export interface Member {
