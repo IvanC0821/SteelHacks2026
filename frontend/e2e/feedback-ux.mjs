@@ -73,6 +73,18 @@ async function checkComparison(page) {
 async function desktop(page) {
   await page.goto(`${BASE_URL}/s/${latest.id}`, { waitUntil: "networkidle" });
   await page.getByRole("region", { name: "What to revisit" }).waitFor();
+  if (latest.assessment.mode === "fixture") {
+    assert(await page.getByText("Example feedback", { exact: true }).isVisible(),
+      "fixture feedback should be labeled as an example");
+    assert(await page.getByText("Scores and flags are simulated. These prompts demonstrate the feedback style. No model has checked this paper.", { exact: true }).isVisible(),
+      "fixture feedback must explain that no model checked the paper");
+  }
+  for (const question of attention) {
+    for (const flag of question.flags) {
+      assert(await page.locator(".v-student-flag__message").getByText(flag.message, { exact: true }).count() > 0,
+        "student feedback must render the full coaching prompt from the API");
+    }
+  }
   await checkActions(page, page.locator(".v-student-feedback-actions"));
   await checkComparison(page);
 

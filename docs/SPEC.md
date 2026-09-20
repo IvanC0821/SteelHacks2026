@@ -20,8 +20,13 @@ editable drafts until published. Every published version is immutable.
 
 Students upload PDFs and assign one or more pages to every question. A page may
 belong to several questions. Assessment freezes this mapping and rubric version.
-Each revision is a new immutable attempt. Students see an estimated score and broad
-possible-error categories with real page anchors. No solution, criterion rationale,
+Each revision is a new immutable attempt. Students see an estimated score and
+possible-error categories with coaching prompts and real page anchors. Handwritten prompts
+point to what to revisit without giving a worked answer. Known demo rubric requirements
+have specific prompts; other requirements use category guidance. Uncertain or unreadable
+work asks for clarification or human review rather than asserting an error. Fixture-mode
+feedback explicitly labels scores and flags as simulated; no model has checked the paper.
+No solution, criterion rationale,
 raw model output or private reference reaches student responses.
 
 Hand-in is explicit and freezes the latest attempt, even when a model is unavailable.

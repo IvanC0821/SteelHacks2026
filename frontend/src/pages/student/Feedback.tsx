@@ -298,6 +298,11 @@ export function Feedback() {
 
         {assessment ? (
           <>
+            {assessment.mode === "fixture" ? (
+              <Notice tone="info" title="Example feedback">
+                Scores and flags are simulated. These prompts demonstrate the feedback style. No model has checked this paper.
+              </Notice>
+            ) : null}
             <section className="v-student-next" aria-label="What to revisit">
               <h2 className="v-heading-20">{attention.length ? attentionLabel : "No flags in this check"}</h2>
               <p className="v-copy-14 v-student-pane__muted">
@@ -382,7 +387,7 @@ export function Feedback() {
             <p className="v-heading-16">Not checked yet</p>
             <p className="v-copy-14 v-student-pane__muted">
               {canCheck
-                ? "Check your work to see broad flags on your pages."
+                ? "Check your work to see what to revisit on each page."
                 : "Automated assessment is not connected yet. You can still hand in for staff review."}
             </p>
             {canCheck ? (

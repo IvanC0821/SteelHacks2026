@@ -64,8 +64,12 @@ error codes (`not_configured`, `invalid_result`, `provider_failed`, `interrupted
 exception strings are not returned. Provider id/mode are saved with each result. Configure vendor
 timeouts, bounded response size and request limits in the adapter before enabling real calls.
 
-Student output uses fixed category text and backend-generated flag/anchor identifiers. Staff see
-the original rubric, decisions and reasons. Never put raw provider output in a frontend response.
+Student output uses reviewed, handwritten coaching prompts and backend-generated flag/anchor
+identifiers. `backend/verity/feedback.py` selects specific prompts for exact known demo rubric
+requirements, with category guidance for unfamiliar requirements. Uncertain/unreadable outcomes
+always use review guidance. These are not model-generated diagnoses; connecting a provider alone
+does not make this text generative. Staff see the original rubric, decisions and reasons.
+Never put raw provider output in a frontend response.
 Human review is separate and required even when automated results appear clean.
 
 The model team owns dataset creation, fine-tuning and evaluation. This repository bundles no model

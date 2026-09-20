@@ -5,8 +5,9 @@ from fastapi import HTTPException
 from pydantic import ValidationError
 
 from .documents import inspect_pdf
+from .feedback import student_hint
 from .provider import ProviderUnavailable
-from .schemas import HINTS, ProviderAssessment, RubricInput
+from .schemas import ProviderAssessment, RubricInput
 from .store import new_id, now
 
 
@@ -633,7 +634,7 @@ class Service:
                     {
                         "id": f"{q['id']}-flag-{len(flags) + 1}",
                         "category": category,
-                        "message": HINTS[category],
+                        "message": student_hint(criteria[d["criterion_id"]], category),
                         "anchors": [
                             {
                                 "id": f"anchor-{index}",
