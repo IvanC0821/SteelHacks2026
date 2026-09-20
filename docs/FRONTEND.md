@@ -88,6 +88,10 @@ with “Automated assessment is not connected yet. You can still hand in for sta
 
 ## Staff flow
 
+Course instructors and TAs can edit/save rubric drafts and start, poll or retry generated-draft
+jobs. Instructors publish rubric versions and upload assignment reference documents. Draft
+edits do not change published rubrics or past attempts.
+
 Create questions with stable IDs and total points, upload references, edit or request a rubric,
 review it, then publish. Question setup is immutable in this initial API; create a new assignment
 for a different question set. Later rubric versions retain question IDs and total points. Adding
@@ -106,6 +110,12 @@ Analytics `first` means the earliest upload, `latest` the most recent upload, in
 hand-in. Missing/uncertain scores are excluded from means. Show sample count with averages; empty
 means are null. Category counts are distinct students per question. Rubric IDs indicate potentially
 mixed standards. Changes in flags/estimates are not evidence of learning.
+
+Each question's first/latest stats also include `assessed_students` (completed checks, including
+uncertain scores), `flagged_students` (distinct students with any flag, counted once across
+categories), and `assessment_modes` (for fixture labeling). The TA overview uses one bar chart
+of latest flagged-student counts and retains Grading/Reports navigation. Never sum category
+counts to estimate the number of affected students.
 
 ## Acceptance before live demo
 

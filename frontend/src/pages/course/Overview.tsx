@@ -4,12 +4,15 @@ import { AssignmentFrame } from "./AssignmentFrame";
 import { hasEstimates, overviewTiles, questionBars, selectFinding, type OverviewTile } from "./analytics-view";
 import { errorMessage, useOverview } from "./data";
 import { ScoresByQuestion } from "./ScoresByQuestion";
+import { useUser } from "../../app";
+import { FeedbackByQuestion } from "./FeedbackByQuestion";
 import "./course.css";
 
 /** The staff Overview tab: what has come in, what the estimates look like per question, and what
  *  students are most often flagged for. Every number comes from `GET /analytics`. */
 export function Overview() {
   const { assignmentId = "" } = useParams();
+  const user = useUser();
   const { data, error, loading } = useOverview(assignmentId);
 
   const analytics = data?.analytics ?? null;
@@ -25,7 +28,9 @@ export function Overview() {
       {loading && !data ? <Spinner size={20} label="Loading the overview" /> : null}
       {error ? <Notice tone="error">{errorMessage(error)}</Notice> : null}
 
-      {analytics ? (
+      {analytics && data && user.role === "ta" ? (
+        <FeedbackByQuestion analytics={analytics} questions={data.assignment.questions} />
+      ) : analytics ? (
         <>
           <Tiles tiles={overviewTiles(analytics, assignmentId)} />
           <ScoresByQuestion bars={bars} finding={finding} hasEstimates={hasEstimates(analytics)} />

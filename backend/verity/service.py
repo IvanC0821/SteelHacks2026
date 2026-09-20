@@ -178,7 +178,7 @@ class Service:
 
     def save_rubric(self, user, assignment_id, body):
         with self.store.transaction() as db:
-            a, _ = self.assignment(db, user, assignment_id, {"instructor"})
+            a, _ = self.assignment(db, user, assignment_id, {"instructor", "ta"})
             a["rubric_draft"] = self.validate_rubric(a, body)
             a["draft_revision"] += 1
             self.store.put(db, "assignment", a)
@@ -516,7 +516,7 @@ class Service:
 
     def start_rubric_job(self, user, assignment_id):
         with self.store.transaction() as db:
-            a, _ = self.assignment(db, user, assignment_id, {"instructor"})
+            a, _ = self.assignment(db, user, assignment_id, {"instructor", "ta"})
             existing = [
                 j
                 for j in self.store.all(db, "job", assignment_id)
@@ -534,7 +534,7 @@ class Service:
         if job["kind"] == "assessment":
             self.submission(db, user, job["target_id"])
         else:
-            self.assignment(db, user, job["assignment_id"], {"instructor"})
+            self.assignment(db, user, job["assignment_id"], {"instructor", "ta"})
 
     def get_job(self, user, job_id):
         with self.store.connection() as db:
@@ -884,6 +884,7 @@ class Service:
                 }
                 for label, index in (("first", 0), ("latest", -1)):
                     scores, counts, versions = [], {}, set()
+                    assessed, flagged, modes = 0, 0, set()
                     for attempts in students.values():
                         s = sorted(attempts, key=lambda s: s["version"])[index]
                         if not s["assessment"]:
@@ -892,11 +893,17 @@ class Service:
                         question = next(
                             x for x in s["assessment"]["questions"] if x["question_id"] == q["id"]
                         )
+                        assessed += 1
+                        flagged += bool(question["flags"])
+                        modes.add(s["assessment"]["mode"])
                         if question["score"] is not None:
                             scores.append(question["score"])
                         for cat in {f["category"] for f in question["flags"]}:
                             counts[cat] = counts.get(cat, 0) + 1
                     stats[label] = {
+                        "assessed_students": assessed,
+                        "flagged_students": flagged,
+                        "assessment_modes": sorted(modes),
                         "scored_students": len(scores),
                         "mean_score": round(sum(scores) / len(scores), 6) if scores else None,
                         "students_by_category": counts,

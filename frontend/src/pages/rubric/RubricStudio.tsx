@@ -44,7 +44,7 @@ const SAVE_ERRORS: Record<string, string> = {
   rubric_question_coverage: "The server refused the draft: every question needs at least one criterion",
   duplicate_criterion: "The server refused the draft: two criteria share an ID",
   invalid_request: "The server refused the draft: check the criteria you just edited",
-  course_access_denied: "Only the instructor can edit the rubric",
+  course_access_denied: "Only instructors and TAs in this course can edit the rubric",
   network: "The draft could not reach the server. It is still here; try Save draft again",
 };
 
@@ -68,7 +68,8 @@ export function RubricStudio() {
   const [collapsedQuestions, setCollapsedQuestions] = useState<Set<string>>(new Set());
   const panesRef = useRef<HTMLDivElement>(null);
 
-  const canEdit = user.role === "instructor";
+  const canEdit = user.role === "instructor" || user.role === "ta";
+  const canManageReferences = user.role === "instructor";
   const loadedFor = useRef<string | null>(null);
 
   useEffect(() => {
@@ -282,12 +283,12 @@ export function RubricStudio() {
               type="button"
               className="v-rubric__chip"
               onClick={() => setSetupOpen(true)}
-              aria-label={`${chip.label}: ${chip.detail ?? (canEdit ? "add" : "nothing attached")}. Open assignment setup`}
+              aria-label={`${chip.label}: ${chip.detail ?? (canManageReferences ? "add" : "nothing attached")}. Open assignment setup`}
             >
               <Icon glyph={FileText} size={16} />
               <span className="v-label-14">{chip.label}</span>
               <span className="v-label-12 v-rubric__chip-detail">
-                {chip.detail ?? (canEdit ? "Add" : "None")}
+                {chip.detail ?? (canManageReferences ? "Add" : "None")}
               </span>
             </button>
           ))}
@@ -407,6 +408,9 @@ export function RubricStudio() {
             </section>
           ) : null}
 
+          {user.role === "ta" ? (
+            <p className="v-copy-14 v-muted">You can edit and save this draft. Your instructor publishes the version students use.</p>
+          ) : null}
           {canEdit ? (
             <div className="v-rubric__editor-top">
               <Button
@@ -424,7 +428,7 @@ export function RubricStudio() {
             </div>
           ) : (
             <Notice tone="info" className="v-rubric__banner">
-              TAs can read the rubric. Only the instructor edits and publishes it.
+              Only instructors and TAs in this course can edit the rubric.
             </Notice>
           )}
 
@@ -513,7 +517,7 @@ export function RubricStudio() {
         assignmentId={detail.id}
         documents={documents}
         capabilities={capabilities}
-        canUpload={canEdit}
+        canUpload={canManageReferences}
         onUploaded={assignment.refetch}
       />
     </div>

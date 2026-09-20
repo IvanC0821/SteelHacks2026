@@ -245,6 +245,11 @@ export interface Report {
 }
 
 export interface QuestionStats {
+  /** Includes completed checks whose score is uncertain. */
+  assessed_students: number;
+  /** Distinct students with at least one flag, across all categories. */
+  flagged_students: number;
+  assessment_modes: string[];
   scored_students: number;
   mean_score: number | null;
   students_by_category: Record<string, number>;

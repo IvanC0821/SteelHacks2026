@@ -30,7 +30,8 @@ def test_auth_and_cross_user_course_access(h):
         assert h.request("GET", path, "student").status_code == 403
     assert h.request("POST", "/courses", "student", json={"name": "No"}).status_code == 403
     assert (
-        h.request("PUT", f"/assignments/{h.aid}/rubric-draft", "ta", json=RUBRIC).status_code == 403
+        h.request("PUT", f"/assignments/{h.aid}/rubric-draft", "student", json=RUBRIC).status_code
+        == 403
     )
     assert h.request("POST", f"/submissions/{s['id']}/hand-in", "ta").status_code == 403
 
@@ -204,6 +205,83 @@ def test_latest_missing_assessment_is_not_counted_as_improvement(h):
     assert stats["first"]["scored_students"] == 1
     assert stats["latest"]["mean_score"] is None
     assert stats["latest"]["scored_students"] == 0
+    assert stats["latest"]["assessed_students"] == 0
+    assert stats["latest"]["flagged_students"] == 0
+    assert stats["latest"]["assessment_modes"] == []
+
+
+def test_ta_can_edit_draft_but_cannot_publish_or_change_historical_rubrics(h):
+    before = h.attempt()
+    changed = deepcopy(RUBRIC)
+    changed["criteria"][0]["description"] = "TA reviewed criterion"
+    changed["instructor_notes"] = "TA draft notes"
+    saved = h.call("PUT", f"/assignments/{h.aid}/rubric-draft", "ta", json=changed)
+    assert saved["draft"] == changed
+    detail = h.call("GET", f"/assignments/{h.aid}", "ta")
+    assert detail["rubric_draft"] == changed
+    assert detail["rubrics"][0]["criteria"] == RUBRIC["criteria"]
+    assert h.sub(before)["rubric_id"] == h.rubric["id"]
+    assert h.request("POST", f"/assignments/{h.aid}/rubric-publish", "ta").status_code == 403
+    for role in ("student", "other", "outsider"):
+        assert (
+            h.request("PUT", f"/assignments/{h.aid}/rubric-draft", role, json=changed).status_code
+            == 403
+        )
+        assert h.request("POST", f"/assignments/{h.aid}/rubric-jobs", role).status_code == 403
+    invalid = deepcopy(changed)
+    invalid["criteria"][0]["points"] = 100
+    assert (
+        h.request("PUT", f"/assignments/{h.aid}/rubric-draft", "ta", json=invalid).status_code
+        == 422
+    )
+    assert h.call("GET", f"/assignments/{h.aid}")["rubric_draft"] == changed
+    published = h.call("POST", f"/assignments/{h.aid}/rubric-publish")
+    assert published["version"] == 2
+    assert published["criteria"] == changed["criteria"]
+
+
+def test_ta_can_generate_poll_and_retry_rubric_drafts(h):
+    h.app.state.service.provider = UnconfiguredProvider()
+    job = h.call("POST", f"/assignments/{h.aid}/rubric-jobs", "ta")
+    failed = h.call("GET", f"/jobs/{job['id']}", "ta")
+    assert failed["status"] == "failed"
+    for role in ("student", "outsider"):
+        assert h.request("GET", f"/jobs/{job['id']}", role).status_code == 403
+        assert h.request("POST", f"/jobs/{job['id']}/retry", role).status_code == 403
+    h.app.state.service.provider = StubProvider()
+    h.call("POST", f"/jobs/{job['id']}/retry", "ta")
+    result = h.call("GET", f"/jobs/{job['id']}", "ta")
+    assert result["status"] == "succeeded"
+    assert result["attempts"] == 2
+    assert len(h.call("GET", f"/assignments/{h.aid}")["rubrics"]) == 1
+
+
+def test_flagged_student_counts_deduplicate_categories_and_include_uncertainty(h):
+    class MultipleFlags(StubProvider):
+        def assess(self, context):
+            result = super().assess(context)
+            for decision in result["decisions"]:
+                decision["outcome"] = "not_met"
+            return result
+
+    h.app.state.service.provider = MultipleFlags()
+    first = h.attempt()
+    h.assess(first)
+    h.app.state.service.provider = StubProvider()
+    unclear = h.attempt("unreadable.pdf", "other")
+    h.assess(unclear, "other")
+    stats = h.call("GET", f"/assignments/{h.aid}/analytics", "ta")["questions"][0]["latest"]
+    assert stats["assessed_students"] == 2
+    assert stats["flagged_students"] == 2  # several flags on one paper still count once
+    assert stats["scored_students"] == 1
+    assert stats["students_by_category"]["arithmetic"] == 1
+    assert stats["students_by_category"]["justification"] == 1
+    assert stats["assessment_modes"] == ["fixture"]
+    revised = h.attempt("attempt-2.pdf")
+    h.assess(revised)
+    latest = h.call("GET", f"/assignments/{h.aid}/analytics", "ta")["questions"][0]["latest"]
+    assert latest["assessed_students"] == 2
+    assert latest["flagged_students"] == 1  # the earlier flags are not carried forward
 
 
 def test_validation_error_omits_input_content(h):

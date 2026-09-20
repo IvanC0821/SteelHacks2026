@@ -11,6 +11,9 @@ import {
 } from "./analytics-view";
 
 const stats = (overrides: Partial<QuestionStats> = {}): QuestionStats => ({
+  assessed_students: 6,
+  flagged_students: 0,
+  assessment_modes: ["fixture"],
   scored_students: 6,
   mean_score: 4,
   students_by_category: {},
