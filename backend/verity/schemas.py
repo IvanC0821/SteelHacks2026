@@ -35,6 +35,19 @@ class CourseInput(Input):
     name: str = Field(min_length=1, max_length=200)
 
 
+class CourseDeduction(Input):
+    description: str = Field(min_length=1, max_length=2000)
+    # Keep units, caps and per-occurrence/per-question conditions intact, not just a number.
+    penalty: str | None = Field(default=None, max_length=1000)
+    source_page: int | None = Field(default=None, ge=1, le=40)
+    source_quote: str = Field(default="", max_length=3000)
+
+
+class CourseDeductions(Input):
+    rules: list[CourseDeduction] = Field(default_factory=list, max_length=100)
+    notes: str = Field(default="", max_length=5000)
+
+
 class EnrollmentInput(Input):
     user_id: str
     role: str = Field(pattern="^(student|ta|instructor)$")

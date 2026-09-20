@@ -9,6 +9,7 @@ import { Landing } from "../pages/landing";
 import { Spinner } from "../components/Spinner";
 import { demoViews, demoSession, type DemoOption, type DemoView } from "../api/demo";
 import { DemoSetup } from "./DemoSetup";
+import { preferredCourse, rememberedCourse, rememberCourse, routeCourseId } from "./course-selection";
 
 interface Loaded {
   user: User;
@@ -29,6 +30,37 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [views, setViews] = useState<DemoOption[] | null>(null);
   const [switchDestination, setSwitchDestination] = useState<{ userId: string; path: string } | null>(null);
   const timers = useRef<number[]>([]);
+  const [routedCourse, setRoutedCourse] = useState<{ path: string; userId: string; courseId: string | null } | null>(null);
+
+  const coursePath = location.pathname.match(/^\/c\/([^/]+)(?:\/|$)/)?.[1];
+  const needsCourseLookup = /^\/[as]\//.test(location.pathname);
+  const activeCourse = !loaded ? null : coursePath
+    ? loaded.courses.find((course) => course.id === coursePath) ?? null
+    : needsCourseLookup
+      ? loaded.courses.find((course) => routedCourse?.path === location.pathname
+        && routedCourse.userId === loaded.user.id && course.id === routedCourse.courseId) ?? null
+      : preferredCourse(loaded.courses, rememberedCourse(loaded.user.id));
+
+  useEffect(() => {
+    if (!loaded) return;
+    let live = true;
+    const path = location.pathname;
+    void routeCourseId(loaded.client, path).then((courseId) => {
+      if (!live) return;
+      const authorized = loaded.courses.some((course) => course.id === courseId) ? courseId : null;
+      setRoutedCourse({ path, userId: loaded.user.id, courseId: authorized });
+      if (authorized) rememberCourse(loaded.user.id, authorized);
+    }).catch(() => {
+      if (live) setRoutedCourse({ path, userId: loaded.user.id, courseId: null });
+    });
+    return () => { live = false; };
+  }, [loaded, location.pathname]);
+
+  const selectCourse = useCallback((courseId: string) => {
+    if (!loaded?.courses.some((course) => course.id === courseId)) return;
+    rememberCourse(loaded.user.id, courseId);
+    navigate(`/c/${courseId}`);
+  }, [loaded, navigate]);
 
   useEffect(() => {
     let live = true;
@@ -140,7 +172,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     if ((view === "student") !== (result.user.role === "student")) throw new Error("Wrong demo identity");
     if (view === "student" && targetStudentId && result.user.id !== targetStudentId) throw new Error("Wrong student identity");
     if (account && !result.courses.some((course) => course.id === account.courseId)) throw new Error("Wrong demo class");
-    const nextPath = destination ?? (result.courses[0] ? `/c/${result.courses[0].id}` : "/");
+    const nextCourse = preferredCourse(result.courses, activeCourse?.id ?? rememberedCourse(result.user.id));
+    if (nextCourse) rememberCourse(result.user.id, nextCourse.id);
+    const nextPath = destination ?? (nextCourse ? `/c/${nextCourse.id}` : "/");
     // Keep the new account from mounting on the previous student's route while the
     // router commits navigation. Failed account validation still leaves the old view intact.
     setSwitchDestination({ userId: result.user.id, path: nextPath });
@@ -149,7 +183,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setLoaded(result);
     setMessage(null);
     navigate(nextPath, { replace: true });
-  }, [load, navigate, loaded, location.pathname, views]);
+  }, [load, navigate, loaded, location.pathname, views, activeCourse]);
 
   const value: SessionValue | null = useMemo(
     () =>
@@ -158,13 +192,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
             user: loaded.user,
             capabilities: loaded.capabilities,
             courses: loaded.courses,
+            activeCourse,
+            selectCourse,
             client: loaded.client,
             signOut,
             refresh,
             demo: views?.length ? { views, switchView } : undefined,
           }
         : null,
-    [loaded, signOut, refresh, views, switchView],
+    [loaded, activeCourse, selectCourse, signOut, refresh, views, switchView],
   );
 
   if (switchDestination && loaded?.user.id === switchDestination.userId && location.pathname === switchDestination.path) {

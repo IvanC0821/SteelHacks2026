@@ -6,6 +6,7 @@ import { formatDate } from "../../design/format";
 import { errorMessage, useCourseHome, type AssignmentRow } from "./data";
 import { LinkButton } from "./LinkButton";
 import { Roster } from "./Roster";
+import { CourseDeductionsPanel } from "./CourseDeductionsPanel";
 import "./course.css";
 
 /** The course home: every assignment with the one status that matters to this reader and the one
@@ -66,6 +67,7 @@ export function CourseHome() {
           />
         ) : null}
 
+        {isStaff && home.data ? <CourseDeductionsPanel key={courseId} courseId={courseId} /> : null}
         {isStaff && home.data ? (
           <Roster
             courseId={courseId}

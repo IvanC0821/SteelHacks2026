@@ -20,6 +20,33 @@
   overflow: hidden;
 }
 
+.v-course-switch { flex: none; position: relative; padding: 8px; }
+.v-course-switch__trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; min-height: 44px; padding: 8px; text-align: left;
+  border: 0; border-radius: 6px; background: transparent; color: var(--v-ink); cursor: pointer;
+}
+.v-course-switch__trigger span { flex: 1; }
+.v-course-switch__trigger:hover, .v-course-switch__option:hover { background: var(--v-hover); }
+.v-course-switch__options {
+  display: flex; flex-direction: column; padding: 4px; margin-top: 4px;
+  border: var(--v-border-control); border-radius: 6px; background: var(--v-panel);
+  max-height: 40vh; overflow-y: auto;
+}
+.v-course-switch__option {
+  display: block; text-decoration: none;
+  border: 0; border-radius: 4px; background: transparent; color: var(--v-ink);
+  padding: 10px 8px; text-align: left; cursor: pointer; min-height: 44px;
+}
+.v-course-switch__option.is-current { background: var(--v-teal-100); color: var(--v-teal-600); }
+.v-course-switch.is-compact { padding: 4px; }
+.v-course-switch.is-compact .v-course-switch__trigger { justify-content: center; padding: 0; }
+/* Fixed positioning avoids clipping by the narrow rail's overflow boundary. */
+.v-course-switch.is-compact .v-course-switch__options {
+  position: fixed; z-index: 40; left: 56px; top: 104px; width: min(280px, calc(100vw - 72px));
+  box-shadow: 0 8px 24px #0002;
+}
+
 .v-rail--drawer {
   border-right: 0;
   background: transparent;
