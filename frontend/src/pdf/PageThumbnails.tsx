@@ -10,6 +10,8 @@ export interface PageThumbnailsProps {
   onSelect?: (page: number) => void;
   /** chips or badges drawn over each tile, keyed by 1-based page number */
   overlay?: (page: number) => ReactNode;
+  /** where the overlay sits on the tile; "bottom" keeps the page's first lines readable */
+  overlayPosition?: "top" | "bottom";
   /** CSS width of one tile; the height follows the page's aspect ratio */
   tileWidth?: number;
   /** "row" scrolls horizontally (a strip under a toolbar); "grid" wraps (page mapping) */
@@ -25,6 +27,7 @@ export function PageThumbnails({
   selected = [],
   onSelect,
   overlay,
+  overlayPosition = "top",
   tileWidth = 116,
   layout = "grid",
   label = "Pages",
@@ -80,7 +83,7 @@ export function PageThumbnails({
             selected={selected.includes(page)}
             onSelect={onSelect}
           />
-          {overlay ? <div className="v-thumbs__overlay">{overlay(page)}</div> : null}
+          {overlay ? <div className={`v-thumbs__overlay v-thumbs__overlay--${overlayPosition}`}>{overlay(page)}</div> : null}
         </li>
       ))}
     </ul>

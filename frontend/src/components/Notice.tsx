@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
-import { AlertTriangle, Info, OctagonAlert } from "lucide-react";
+import { AlertTriangle, CircleCheck, Info, OctagonAlert } from "lucide-react";
 import { Icon } from "./Icon";
 import "./Notice.css";
 
-export type NoticeTone = "info" | "warn" | "error";
+export type NoticeTone = "info" | "success" | "warn" | "error";
 
 export interface NoticeProps {
   tone?: NoticeTone;
@@ -15,7 +15,7 @@ export interface NoticeProps {
   className?: string;
 }
 
-const GLYPH = { info: Info, warn: AlertTriangle, error: OctagonAlert } as const;
+const GLYPH = { info: Info, success: CircleCheck, warn: AlertTriangle, error: OctagonAlert } as const;
 
 /** An inline block, never a floating alert. Errors use role="alert"; info is silent. */
 export function Notice({ tone = "info", title, children, action, className }: NoticeProps) {

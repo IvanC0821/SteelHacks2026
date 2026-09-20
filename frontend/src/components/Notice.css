@@ -33,6 +33,11 @@
   background: var(--v-teal-50);
 }
 
+.v-notice--success {
+  --v-notice-ink: var(--v-credit);
+  background: var(--v-credit-soft);
+}
+
 .v-notice--warn {
   --v-notice-ink: var(--v-warn);
   background: var(--v-warn-soft);

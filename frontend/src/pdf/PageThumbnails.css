@@ -71,3 +71,8 @@ button.v-thumbs__tile:hover {
   gap: var(--v-space-4);
   pointer-events: none;
 }
+
+.v-thumbs__overlay--bottom {
+  top: auto;
+  bottom: var(--v-space-8);
+}
